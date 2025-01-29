@@ -38,6 +38,8 @@ nav_order: 3
 
 (2024-02-09) Webpage has been created.
 
+---
+
 ## PLANNED
 [Planned / On task] github-io web-hosting using Jekyll (New webpage)
 

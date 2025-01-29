@@ -7,15 +7,20 @@ permalink: /
 nav_order: 1
 ---
 
-# BMS Library
+# BMS Library 
+## Information
+1. This website is aimed to distribute BMS Songs, Sabuns in public
+2. Insane packages are for skilled BMS Players only. Stop whining that it does not contain non-insane scales.
+3. There is no plan to distribute packages for ordinary level scale.
+4. Few songs / sabuns in packages are missing because of hash mismatching, complete data lost.
+5. Try torrents first for better downloads. But seeding maybe unstable because of technical issues. If torrents do not work, try static download links instead.
+6. Packages will be renewed in every single year. New Patches are planned in every 3 ~ 4 months.
+
 (Latest fix : 2025-01-29)
 
-1. Insane packages are for skilled BMS Players only. Stop whining that it does not contain non-insane scales.
-2. Few songs / sabuns in packages are missing because of hash mismatching, complete data lost.
-3. Try torrents first for better downloads. But seeding maybe unstable because of technical issues. If torrents do not work, try static download links instead.
-4. Packages will be renewed in every single year. New Patches are planned in every 3 ~ 4 months.
+----
 
-## Packages
+## Insane Packages
 Follow the symbols below and select a package you want.
 
 SP
@@ -25,7 +30,8 @@ DP
 
 
 ### Stellaverse (2025-01-18) : StellaBMS-only, Lightweight.
-Compatible with
+#### Compatible with :
+
 >★
 >{: .label .label-blue }
 >★★
@@ -45,7 +51,7 @@ Compatible with
 >{: .label .label-green }
 
 
-Download Links
+#### Download Links : 
 
 [Link 1](https://horie.synology.me:1048/BMS%20Library/Package/Stellaverse%20(2025-01-18).rar){: .btn .btn-purple }
 [Link 2](http://horie.iptime.org:1048/list/HDD1/Torrent/Stellaverse%20(2025-01-18).rar){: .btn .btn-purple }
@@ -53,7 +59,7 @@ Download Links
 
 
 ### Insane BMS (2025-01-18) : Full package
-Compatible with
+#### Compatible with :
 
 >★
 >{: .label .label-blue }
@@ -99,13 +105,15 @@ Compatible with
 >黒
 >{: .label .label-green }
 
-Download Links
+#### Download Links :
 
 [Link 1](https://horie.synology.me:1048/BMS%20Library/Package/Insane%20BMS%20(2025-01-18).rar){: .btn .btn-purple }
 [Link 2](http://horie.iptime.org:1048/list/HDD1/Torrent/Insane%20BMS%20(2025-01-18).rar){: .btn .btn-purple }
 [Torrent](https://drive.google.com/file/d/12cS6rVLnvohLcgESBdM3ONmgXxQ6h9BN/view?usp=sharing){: .btn .btn-blue }
 
 ### Patch (2024-09-14 to 2025-01-18) : Patch for previous distribution
+#### Compatible with :
+
 >satellite
 >{: .label .label-blue }
 >stella
@@ -118,7 +126,7 @@ Download Links
 >stella
 >{: .label .label-green }
 
-Download Links
+#### Download Links :
 
 [Link](https://drive.google.com/file/d/1FAcU-sMENRXcCjEF13TSpkY53xeSh-l4/view?usp=drive_link){: .btn .btn-purple }
 
