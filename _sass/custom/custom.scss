@@ -1,7 +1,17 @@
-.DLimageCenter {
+.ImgPropDL {
     display: block;
     margin-left: auto;
     margin-right: auto;
     width: 25px;
     height: 25px;
+  }
+
+  .HeaderComposer {
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .HeaderDL {
+    text-align: center;
+    font-weight: bold;
   }
