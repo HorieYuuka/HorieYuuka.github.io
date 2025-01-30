@@ -3,8 +3,8 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: default
-title:  Archive
-permalink: /Archive
+title:  Archives
+permalink: /Archives
 nav_order: 5
 has_children: true
 ---
