@@ -83,7 +83,7 @@ has_toc: false
     <tr>
       <td>%E3%83%96%E3%83%B3%E3%82%BF%E3%83%B3</td>
       <td>
-        <a href="https://horie.synology.me:1048/BMS%20Library/Song/[((LMB))]%20%E3%83%96%E3%83%B3%E3%82%BF%E3%83%B3.zip">
+        <a href="https://horie.synology.me:1048/BMS%20Library/Song/[((LMB))]&percnt;20&percnt;E3&percnt;83&percnt;96&percnt;E3&percnt;83&percnt;B3&percnt;E3&percnt;82&percnt;BF&percnt;E3&percnt;83&percnt;B3.zip">
           <img src="/Resource/Image/Icon_DL.png" class="ImgPropDL" />
         </a>
       </td>
