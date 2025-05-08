@@ -9,9 +9,13 @@ nav_order: 1
 # Breaking news
 Patch (2025-01-18 to 2025-05-08) is available now.
 1. Updating tons of ▼.
+(Few of sabuns are missing because of hash mismatching, Webpage lost.)
 2. Updating Stella, Satellite (including DP sabuns)
 
 This patch uses 23GB. (Torrent distribution)
+
+
+Twitter account for notification will be soon.
 
 
 # BMS Library 
