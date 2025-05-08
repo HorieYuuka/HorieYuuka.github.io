@@ -6,6 +6,13 @@ title:  "Home"
 permalink: /
 nav_order: 1
 ---
+# Breaking news
+Patch (2025-01-18 to 2025-05-08) is available now.
+1. Updating tons of ▼.
+2. Updating Stella, Satellite (including DP sabuns)
+
+This patch uses 23GB. (Torrent distribution)
+
 
 # BMS Library 
 ## Information
@@ -109,14 +116,14 @@ DP
 [Link](http://horie.iptime.org:1048/list/HDD1/Torrent/Insane%20BMS%20(2025-01-18).rar){: .btn .btn-purple }
 [Torrent](https://drive.google.com/file/d/12cS6rVLnvohLcgESBdM3ONmgXxQ6h9BN/view?usp=sharing){: .btn .btn-blue }
 
-### Patch (2024-09-14 to 2025-01-18) : Patch for previous distribution
+### Patch (2025-01-18 to 2025-05-08) : Patch for previous distribution
 #### Compatible with :
 
 >satellite
 >{: .label .label-blue }
 >stella
 >{: .label .label-blue }
->Dystopia
+>▼
 >{: .label .label-blue }
 
 >satellite
@@ -126,5 +133,4 @@ DP
 
 #### Download Links :
 
-[Link](https://drive.google.com/file/d/1FAcU-sMENRXcCjEF13TSpkY53xeSh-l4/view?usp=drive_link){: .btn .btn-purple }
-
+[Torrent](https://drive.google.com/file/d/1YvCipTFKbVY37XVwu3H2tSaCDGnWQgo_/view?usp=sharing){: .btn .btn-blue }
