@@ -8,6 +8,7 @@ nav_order: 1
 ---
 # SORRY
 I'd had temporary technical difficulties on my internet status.
+Renewing my indoor internet meshes with CAT6e.
 All green now.
 
 # Breaking news
