@@ -6,6 +6,10 @@ title:  "Home"
 permalink: /
 nav_order: 1
 ---
+# SORRY
+I'd had temporary technical difficulties on my internet status.
+All green now.
+
 # Breaking news
 Patch (2025-01-18 to 2025-05-08) is available now.
 1. Updating tons of ▼.
