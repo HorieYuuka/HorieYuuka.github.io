@@ -6,21 +6,19 @@ title:  "Home"
 permalink: /
 nav_order: 1
 ---
-# SORRY
-I'd had temporary technical difficulties on my internet status.
-Renewing my indoor internet meshes with CAT6e.
-All green now.
 
 # Breaking news
-Patch (2025-01-18 to 2025-05-08) is available now.
-1. Updating tons of ▼.
+Patch (2025-05-08 to 2025-08-23) is available now.
+1. Update solar(so) / supernova(sn).
+2. Update NEW GENERATION
 (Few of sabuns are missing because of hash mismatching, Webpage lost.)
-2. Updating Stella, Satellite (including DP sabuns)
+3. Update Stella, Satellite (including DP sabuns)
 
-This patch uses 23GB. (Torrent distribution)
+This patch uses 15GB. (Torrent distribution)
 
 
-Twitter account for notification will be soon.
+Twitter account for notification will be. 
+(Maybe? I don't use social media actaully.)
 
 
 # BMS Library 
@@ -125,6 +123,29 @@ DP
 [Link](http://horie.iptime.org:1048/list/HDD1/Torrent/Insane%20BMS%20(2025-01-18).rar){: .btn .btn-purple }
 [Torrent](https://drive.google.com/file/d/12cS6rVLnvohLcgESBdM3ONmgXxQ6h9BN/view?usp=sharing){: .btn .btn-blue }
 
+### Patch (2025-05-08 to 2025-08-23) : Patch for previous distribution
+#### Compatible with :
+
+>satellite
+>{: .label .label-blue }
+>stella
+>{: .label .label-blue }
+>NEW GENERATION
+>{: .label .label-blue }
+>solar
+>{: .label .label-blue }
+>supernova
+>{: .label .label-blue }
+
+>satellite
+>{: .label .label-green }
+>stella
+>{: .label .label-green }
+
+#### Download Links :
+
+[Torrent](https://drive.google.com/file/d/1w-GSsLIE1Mo2xnH4RaH9QfjuLMqG6EOs/view?usp=sharing){: .btn .btn-blue }
+
 ### Patch (2025-01-18 to 2025-05-08) : Patch for previous distribution
 #### Compatible with :
 
@@ -143,3 +164,4 @@ DP
 #### Download Links :
 
 [Torrent](https://drive.google.com/file/d/1YvCipTFKbVY37XVwu3H2tSaCDGnWQgo_/view?usp=sharing){: .btn .btn-blue }
+
