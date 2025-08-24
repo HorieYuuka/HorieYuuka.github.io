@@ -67,7 +67,7 @@ DP
 
 #### Download Links : 
 
-[Link](http://horie.iptime.org:1048/list/HDD1/Torrent/Stellaverse%20(2025-01-18).rar){: .btn .btn-purple }
+[Link](https://horie.synology.me:1048/BMS%20Library/Package/Stellaverse%20(2025-01-18).rar){: .btn .btn-purple }
 [Torrent](https://drive.google.com/file/d/1ujcE8MBJoWInBkYaJvQEJsBn0kljLqLM/view?usp=sharing){: .btn .btn-blue }
 
 
@@ -120,7 +120,7 @@ DP
 
 #### Download Links :
 
-[Link](http://horie.iptime.org:1048/list/HDD1/Torrent/Insane%20BMS%20(2025-01-18).rar){: .btn .btn-purple }
+[Link](https://horie.synology.me:1048/BMS%20Library/Package/Insane%20BMS%20(2025-01-18).rar){: .btn .btn-purple }
 [Torrent](https://drive.google.com/file/d/12cS6rVLnvohLcgESBdM3ONmgXxQ6h9BN/view?usp=sharing){: .btn .btn-blue }
 
 ### Patch (2025-05-08 to 2025-08-23) : Patch for previous distribution
