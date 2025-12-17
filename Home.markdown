@@ -8,17 +8,14 @@ nav_order: 1
 ---
 
 # Breaking news
-Patch (2025-05-08 to 2025-08-23) is available now.
-1. Update solar(so) / supernova(sn).
-2. Update NEW GENERATION
-(Few of sabuns are missing because of hash mismatching, Webpage lost.)
-3. Update Stella, Satellite (including DP sabuns)
+Patch (2025-08-23 to 2025-12-14) is available now.
+Insane BMS (2025-12-14) is avaliable now.
+Stellaverse (2025-12-14) is avaliable now.
 
-This patch uses 15GB. (Torrent distribution)
+Previous distribution will be suspended in a couple of days.
 
-
-Twitter account for notification will be. 
-(Maybe? I don't use social media actaully.)
+Since Solar / Supernova added to this package, You need a lot of storage space to download packages.
+Make sure you have enough space before downloading packages.
 
 
 # BMS Library 
@@ -27,10 +24,10 @@ Twitter account for notification will be.
 2. Insane packages are for skilled BMS Players only. Stop whining that it does not contain non-insane scales.
 3. There is no plan to distribute packages for ordinary level scale.
 4. Few songs / sabuns in packages are missing because of hash mismatching, complete data lost.
-5. Try torrents first for better downloads. But seeding maybe unstable because of technical issues. If torrents do not work, try static download links instead.
+5. Download torrent files to get packages.
 6. Packages will be renewed in every single year. New Patches are planned in every 3 ~ 4 months.
 
-(Latest fix : 2025-01-29)
+(Latest fix : 2025-12-24)
 
 ----
 
@@ -43,7 +40,7 @@ DP
 {: .label .label-green }
 
 
-### Stellaverse (2025-01-18) : StellaBMS-only, Lightweight.
+### Stellaverse (2025-12-14) : StellaBMS-only, Lightweight.
 #### Compatible with :
 
 >★
@@ -53,6 +50,10 @@ DP
 >satellite
 >{: .label .label-blue }
 >stella
+>{: .label .label-blue }
+>solar
+>{: .label .label-blue }
+>supernova
 >{: .label .label-blue }
 
 >★
@@ -67,11 +68,10 @@ DP
 
 #### Download Links : 
 
-[Link](http://horie.iptime.org:1048/list/HDD1/Torrent/Stellaverse%20(2025-01-18).rar){: .btn .btn-purple }
-[Torrent](https://drive.google.com/file/d/1ujcE8MBJoWInBkYaJvQEJsBn0kljLqLM/view?usp=sharing){: .btn .btn-blue }
+[Torrent](https://drive.google.com/file/d/1--RsHVtdw-OZC91wiE2d3aKXK11Pn2H2/view?usp=sharing){: .btn .btn-blue }
 
 
-### Insane BMS (2025-01-18) : Full package
+### Insane BMS (2025-12-14) : Full package
 #### Compatible with :
 
 >★
@@ -102,6 +102,10 @@ DP
 >{: .label .label-blue }
 >連打
 >{: .label .label-blue }
+>solar
+>{: .label .label-blue }
+>supernova
+>{: .label .label-blue }
 
 >★
 >{: .label .label-green }
@@ -120,17 +124,20 @@ DP
 
 #### Download Links :
 
-[Link](http://horie.iptime.org:1048/list/HDD1/Torrent/Insane%20BMS%20(2025-01-18).rar){: .btn .btn-purple }
-[Torrent](https://drive.google.com/file/d/12cS6rVLnvohLcgESBdM3ONmgXxQ6h9BN/view?usp=sharing){: .btn .btn-blue }
+[Torrent](https://drive.google.com/file/d/1Fn9raDo546GrH0gPW3Ogs3cQmqv_dYCY/view?usp=sharing){: .btn .btn-blue }
 
-### Patch (2025-05-08 to 2025-08-23) : Patch for previous distribution
+### Patch (2025-08-23 to 2025-12-14).rar : Patch for previous distribution
 #### Compatible with :
 
 >satellite
 >{: .label .label-blue }
 >stella
 >{: .label .label-blue }
->NEW GENERATION
+>▼
+>{: .label .label-blue }
+>★★ (第三期)
+>{: .label .label-blue }
+>ディレイjoy
 >{: .label .label-blue }
 >solar
 >{: .label .label-blue }
@@ -146,22 +153,4 @@ DP
 
 [Torrent](https://drive.google.com/file/d/1w-GSsLIE1Mo2xnH4RaH9QfjuLMqG6EOs/view?usp=sharing){: .btn .btn-blue }
 
-### Patch (2025-01-18 to 2025-05-08) : Patch for previous distribution
-#### Compatible with :
-
->satellite
->{: .label .label-blue }
->stella
->{: .label .label-blue }
->▼
->{: .label .label-blue }
-
->satellite
->{: .label .label-green }
->stella
->{: .label .label-green }
-
-#### Download Links :
-
-[Torrent](https://drive.google.com/file/d/1YvCipTFKbVY37XVwu3H2tSaCDGnWQgo_/view?usp=sharing){: .btn .btn-blue }
 
