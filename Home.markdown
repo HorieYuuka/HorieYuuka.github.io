@@ -9,7 +9,9 @@ nav_order: 1
 
 # Breaking news
 Patch (2025-08-23 to 2025-12-14) is available now.
+
 Insane BMS (2025-12-14) is avaliable now.
+
 Stellaverse (2025-12-14) is avaliable now.
 
 Previous distribution will be suspended in a couple of days.
@@ -67,9 +69,7 @@ DP
 
 
 #### Download Links : 
-
-[Link](http://horie.iptime.org:1048/list/HDD1/Torrent/Stellaverse%20(2025-01-18).rar){: .btn .btn-purple }
-[Torrent](https://drive.google.com/file/d/1ujcE8MBJoWInBkYaJvQEJsBn0kljLqLM/view?usp=sharing){: .btn .btn-blue }
+[Torrent](https://drive.google.com/file/d/1--RsHVtdw-OZC91wiE2d3aKXK11Pn2H2/view?usp=drive_link){: .btn .btn-blue }
 
 
 ### Insane BMS (2025-12-14) : Full package
@@ -152,6 +152,6 @@ DP
 
 #### Download Links :
 
-[Torrent](https://drive.google.com/file/d/1w-GSsLIE1Mo2xnH4RaH9QfjuLMqG6EOs/view?usp=sharing){: .btn .btn-blue }
+[Torrent](https://drive.google.com/file/d/1A35qocTsBJjpFJ7gvZiGg35-MvCb_a-d/view?usp=drive_link){: .btn .btn-blue }
 
 
