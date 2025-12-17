@@ -10,9 +10,12 @@ nav_order: 1
 # Breaking news
 Patch (2025-08-23 to 2025-12-14) is available now.
 
+
 Insane BMS (2025-12-14) is avaliable now.
 
+
 Stellaverse (2025-12-14) is avaliable now.
+
 
 Previous distribution will be suspended in a couple of days.
 
@@ -42,7 +45,7 @@ DP
 {: .label .label-green }
 
 
-### Stellaverse (2025-12-14) : StellaBMS-only, Lightweight.
+### Stellaverse (2025-12-14) : StellaBMS-only, Lightweight. (150 GB)
 #### Compatible with :
 
 >★
@@ -72,7 +75,7 @@ DP
 [Torrent](https://drive.google.com/file/d/1--RsHVtdw-OZC91wiE2d3aKXK11Pn2H2/view?usp=drive_link){: .btn .btn-blue }
 
 
-### Insane BMS (2025-12-14) : Full package
+### Insane BMS (2025-12-14) : Full package (230 GB)
 #### Compatible with :
 
 >★
@@ -127,7 +130,7 @@ DP
 
 [Torrent](https://drive.google.com/file/d/1Fn9raDo546GrH0gPW3Ogs3cQmqv_dYCY/view?usp=drive_link){: .btn .btn-blue }
 
-### Patch (2025-08-23 to 2025-12-14).rar : Patch for previous distribution
+### Patch (2025-08-23 to 2025-12-14) : Patch for previous distribution (21 GB)
 #### Compatible with :
 
 >satellite
