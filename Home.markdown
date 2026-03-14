@@ -8,31 +8,26 @@ nav_order: 1
 ---
 
 # Breaking news
-Patch (2025-08-23 to 2025-12-14) is available now.
+- Patch (2025-08-23 to 2025-12-14) is now available.
+- Insane BMS (2025-12-14) is now available.
+- Stellaverse (2025-12-14) is now available.
 
+Previous distributions will be suspended in a few days.
 
-Insane BMS (2025-12-14) is avaliable now.
-
-
-Stellaverse (2025-12-14) is avaliable now.
-
-
-Previous distribution will be suspended in a couple of days.
-
-Since Solar / Supernova added to this package, You need a lot of storage space to download packages.
-Make sure you have enough space before downloading packages.
+Since Solar / Supernova has been added to these packages, you will need a large amount of storage space.
+Please make sure you have enough free space before downloading.
 
 
 # BMS Library 
 ## Information
-1. This website is aimed to distribute BMS Songs, Sabuns in public
-2. Insane packages are for skilled BMS Players only. Stop whining that it does not contain non-insane scales.
-3. There is no plan to distribute packages for ordinary level scale.
-4. Few songs / sabuns in packages are missing because of hash mismatching, complete data lost.
-5. Download torrent files to get packages.
-6. Packages will be renewed in every single year. New Patches are planned in every 3 ~ 4 months.
+1. This website is intended to distribute BMS songs and sabuns publicly.
+2. Insane packages are intended for experienced BMS players only.
+3. There are no plans to distribute packages for ordinary level scales.
+4. Some songs / sabuns may be missing from packages due to hash mismatches or lost source data.
+5. Please use the torrent files to download packages.
+6. Packages are renewed every year. New patches are planned every 3 to 4 months.
 
-(Latest fix : 2025-12-24)
+Latest fix: 2025-12-24
 
 ----
 
@@ -48,6 +43,9 @@ DP
 ### Stellaverse (2025-12-14) : StellaBMS-only, Lightweight. (150 GB)
 #### Compatible with :
 
+SP
+{: .label .label-blue }
+
 >★
 >{: .label .label-blue }
 >★★
@@ -60,6 +58,9 @@ DP
 >{: .label .label-blue }
 >supernova
 >{: .label .label-blue }
+
+DP
+{: .label .label-green }
 
 >★
 >{: .label .label-green }
@@ -77,6 +78,9 @@ DP
 
 ### Insane BMS (2025-12-14) : Full package (230 GB)
 #### Compatible with :
+
+SP
+{: .label .label-blue }
 
 >★
 >{: .label .label-blue }
@@ -111,6 +115,9 @@ DP
 >supernova
 >{: .label .label-blue }
 
+DP
+{: .label .label-green }
+
 >★
 >{: .label .label-green }
 >★★
@@ -133,6 +140,9 @@ DP
 ### Patch (2025-08-23 to 2025-12-14) : Patch for previous distribution (21 GB)
 #### Compatible with :
 
+SP
+{: .label .label-blue }
+
 >satellite
 >{: .label .label-blue }
 >stella
@@ -147,6 +157,9 @@ DP
 >{: .label .label-blue }
 >supernova
 >{: .label .label-blue }
+
+DP
+{: .label .label-green }
 
 >satellite
 >{: .label .label-green }

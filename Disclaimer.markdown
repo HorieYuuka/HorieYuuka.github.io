@@ -7,27 +7,35 @@ permalink: /Disclaimer
 nav_order: 2
 ---
 {:.important}
-To guarantee copyright holders' rights to their works, 
-<br>YOU SHOULD AGREE THE CONTENTS BELOW TO DOWNLOAD THE DATASETS.
+To protect the rights of copyright holders,
+<br>you must agree to the terms below before downloading the datasets.
 
+## 1. Definitions
+- The term "dataset" means collections of BMS contents provided through this website.
+- The term "dataset distributor" means the distributor who provides datasets through torrents or download links.
+- The term "copyright holders" means BMS song / sabun makers who hold rights to the works included in the dataset.
 
-1. WORD EXPLANATION
-- THE WORD "DATASET" MEANS ASSORTMENTS OF BMS CONTENTS WHICH ARE PROVIEDED IN THIS WEBPAGES.
-- THE WORD "DATASET DISTRIBUTOR" MEANS DISTRIBUTOR WHO PROVIDE DATASET THROUGH TORRENTS, DOWNLOAD LINKS
-- THE WORD "COPYRIGHT HOLDERS" MEANS BMS SONG / SABUN MAKERS WHO HAVE RIGHTS TO THEIR WORKS WHICH ARE IN THE DATASET.
+## 2. Ownership
+The dataset distributor does not own the dataset itself. Copyright holders who created songs or sabuns included in the dataset retain ownership of their works.
 
-2. THE DATASET DISTRIBUTOR HAS NO RIGHTS TO THE DATASET ITSELF. COPYRIGHT HOLDERS WHO MADE SABUNS/SONGS WHICH ARE IN THE DATASET CAN CLAIM ITS OWNERSHIP TO THEIR WORKS.
+## 3. Source of the contents
+The contents of the dataset come from public BMS contests or public BMS communities. They are distributed here as freely accessible materials, but all rights remain reserved by their respective copyright holders. This means the dataset is treated as freely usable unless a copyright holder requests otherwise in the future.
 
-3. THE CONTENTS OF DATASET IS FROM PUBLIC BMS CONTESTS OR PUBLIC BMS COMMUNITIES AND THESE ARE FREE TO USE BUT COPYRIGHT HOLDERS HAVE ALL RIGHTS RESERVED. IT MEANS, THE DATASET IS ALSO FREE TO USE UNLESS COPYRIGHT HOLDERS TAKE ACTIONS TO THEIR WORKS IN FUTURE.
+## 4. Warranty and liability
+The dataset is provided "as is", without warranty of any kind, express or implied. In no event shall the dataset distributor or the copyright holders be liable for any claim, damages, or other liability arising from or related to the dataset or its use.
 
-4. THE DATASET IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE DATASET DISTRIBUTOR OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE DATASET OR THE USE OR OTHER DEALINGS IN THE DATASET.
+## 5. Restrictions on use
+The dataset must not be used in merchandising, advertising, or any other activity intended to promote sale, use, or other distribution without permission from the relevant copyright holders.
 
-5. THE DATASET SHALL NOT BE USED IN MERCHANDISING, ADVERTISING OR OTHERWISE TO PROMOTE THE SALE, USE OR OTHER DEALINGS WITHOUT ANY PERMISSIONS FROM COPYRIGHT HOLDERS WHO HAVE RIGHT TO THEIR WORKS.
+## 6. Distribution route
+Please download the dataset only from this website. The dataset distributor is not responsible for downloads obtained through other routes.
 
-6. DOWNLOAD THE DATASET ONLY HERE. THE DATASET DISTRIBUTOR WILL NOT TAKE RESPONSIBILITIES FOR DOWNLOANDING DATASET FROM THE OTHER ROUTES.
+## 7. Agreement
+By downloading the dataset, you are considered to have agreed to all terms above.
 
-7. YOU ARE CONSIDERED THAT YOU AGREE ALL CONTENTS ABOVE IF YOU DOWNLOAD THE DATASET.
+## 8. Contact
+If you are a copyright holder and would like to take action regarding your work, please leave an issue at the link below or contact the address below.
 
-8. IF YOU ARE A COPYRIGHT HOLDER AND IF YOU WANT TO TAKE ACTIONS TO YOUR WORK, PLEASE LEAVE A ISSUE IN THE LINK BELOW OR E-MAIL THE ADDRESS BELOW.
+[Issue tracker](https://github.com/HorieYuuka/HorieYuuka.github.io/issues)
 
-[Issue tracker](https://github.com/HorieYuuka/HorieYuuka.github.io/issues) / horie.lunaticrave@gmail.com
+horie.lunaticrave@gmail.com

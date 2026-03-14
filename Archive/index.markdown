@@ -5,7 +5,7 @@
 layout: default
 title:  Archives
 permalink: /Archives
-nav_order: 5
+nav_order: 4
 has_children: true
 ---
 Resources from the original distributor, sunaneko (KENIN).
