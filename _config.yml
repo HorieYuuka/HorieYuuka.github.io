@@ -45,16 +45,17 @@ nav_external_links:
     url: https://Horie.synology.me:10482/d/s/17Q2Wa1kNi1x4dAzmZtscNBfPtrbw8P6/c3koeWjp27NVW3gaYxclie11mRUqKGOr-gbkg1hVhCw0
     hide_icon: false # set to true to hide the external link icon - defaults to false
     opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
-  - title: Sabuns
-    url: https://drive.google.com/drive/folders/1OhnvhNbHrAftB2t1O6X8UESUSN4JCObj?usp=sharing
-    hide_icon: false # set to true to hide the external link icon - defaults to false
-    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
+
   - title: Report issues
     url: https://github.com/HorieYuuka/HorieYuuka.github.io/issues
     hide_icon: false # set to true to hide the external link icon - defaults to false
     opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
   - title: IIDX.org
     url: https://iidx.org
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
+  - title: X
+    url: https://x.com/YuukaHorie
     hide_icon: false # set to true to hide the external link icon - defaults to false
     opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
 kramdown:
@@ -102,5 +103,8 @@ exclude:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+
+
 
 
