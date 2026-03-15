@@ -205,9 +205,113 @@
     });
   }
 
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function buildArchiveRow(entry) {
+    const row = document.createElement("tr");
+    const folder = entry.parent_path || entry.path || "";
+    const directUrl = entry.direct_download_url || "";
+    const shareUrl = entry.share_url || "";
+
+    row.innerHTML = `
+      <td data-sort-value="${escapeHtml(entry.name || "")}">${escapeHtml(entry.name || "")}</td>
+      <td data-sort-value="${escapeHtml(folder)}">${escapeHtml(folder)}</td>
+      <td class="archive-search-actions">
+        ${directUrl ? `<a href="${encodeURI(directUrl)}" target="_blank" rel="noopener noreferrer">Download</a>` : ""}
+        ${shareUrl ? `<a href="${encodeURI(shareUrl)}" target="_blank" rel="noopener noreferrer">Open</a>` : ""}
+      </td>
+    `;
+
+    return row;
+  }
+
+  function initArchiveSearch(root) {
+    if (root.dataset.archiveSearchInitialized === "true") {
+      return;
+    }
+
+    const source = root.dataset.source;
+    const input = root.querySelector("[data-archive-search-input]");
+    const resultBody = root.querySelector("[data-archive-search-results]");
+    const summary = root.querySelector("[data-archive-search-summary]");
+    const emptyState = root.querySelector("[data-archive-search-empty]");
+    const table = root.querySelector("table.sortable-table");
+    const initialLimit = Number(root.dataset.initialLimit || "150");
+    const renderLimit = Number(root.dataset.renderLimit || "250");
+
+    if (!source || !input || !resultBody || !summary || !emptyState || !table) {
+      return;
+    }
+
+    const collator = new Intl.Collator(undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
+
+    let entries = [];
+
+    const render = (query) => {
+      const normalizedQuery = query.trim().toLowerCase();
+      const filtered = normalizedQuery
+        ? entries.filter((entry) => {
+            const haystack = `${entry.name || ""} ${entry.path || ""} ${entry.parent_path || ""}`.toLowerCase();
+            return haystack.includes(normalizedQuery);
+          })
+        : entries.slice(0, initialLimit);
+
+      const visible = normalizedQuery ? filtered.slice(0, renderLimit) : filtered;
+      const fragment = document.createDocumentFragment();
+      visible.forEach((entry) => fragment.appendChild(buildArchiveRow(entry)));
+      resultBody.replaceChildren(fragment);
+
+      const hiddenCount = Math.max(filtered.length - visible.length, 0);
+      summary.textContent = normalizedQuery
+        ? `${filtered.length.toLocaleString()} matches${hiddenCount ? `, showing first ${visible.length.toLocaleString()}` : ""}`
+        : `${entries.length.toLocaleString()} files indexed, showing first ${visible.length.toLocaleString()}`;
+
+      emptyState.hidden = visible.length > 0;
+    };
+
+    fetch(source)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load ${source}`);
+        }
+        return response.json();
+      })
+      .then((payload) => {
+        const files = Array.isArray(payload.files) ? payload.files : [];
+        files.sort((left, right) => collator.compare(left.name || "", right.name || ""));
+        entries = files;
+        render("");
+        initSortableTable(table);
+      })
+      .catch((error) => {
+        summary.textContent = "Failed to load file index.";
+        emptyState.hidden = false;
+        emptyState.textContent = "File metadata could not be loaded.";
+        console.error(error);
+      });
+
+    input.addEventListener("input", (event) => {
+      render(event.target.value || "");
+    });
+
+    root.dataset.archiveSearchInitialized = "true";
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-tab-control]").forEach(initTabs);
     document.querySelectorAll("table.sortable-table").forEach(initSortableTable);
     document.querySelectorAll("[data-scale-analyzer]").forEach(initScaleAnalyzer);
+    document.querySelectorAll("[data-archive-search]").forEach(initArchiveSearch);
   });
 })();
+

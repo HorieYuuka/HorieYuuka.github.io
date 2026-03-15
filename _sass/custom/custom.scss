@@ -204,3 +204,80 @@
     align-items: flex-start;
     text-align: left;
   }
+
+  .archive-search {
+    margin-top: 1.5rem;
+  }
+
+  .archive-search-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .archive-search-input {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #d0d7de;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    font: inherit;
+    margin-bottom: 0.75rem;
+  }
+
+  .archive-search-input:focus-visible {
+    outline: 2px solid #1f6feb;
+    outline-offset: 2px;
+    border-color: #1f6feb;
+  }
+
+  .archive-search-summary,
+  .archive-search-empty {
+    color: #57606a;
+    margin: 0 0 0.75rem;
+  }
+
+  .archive-search-table {
+    min-width: 52rem;
+    table-layout: fixed;
+  }
+
+  .archive-search-table th:nth-child(1),
+  .archive-search-table td:nth-child(1) {
+    width: 40%;
+    text-align: left;
+  }
+
+  .archive-search-table th:nth-child(2),
+  .archive-search-table td:nth-child(2) {
+    width: 40%;
+    text-align: left;
+  }
+
+  .archive-search-table th:nth-child(3),
+  .archive-search-table td:nth-child(3) {
+    width: 20%;
+    text-align: left;
+  }
+
+  .archive-search-table th,
+  .archive-search-table td {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    vertical-align: top;
+  }
+
+  .archive-search-table .sort-button {
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .archive-search-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }

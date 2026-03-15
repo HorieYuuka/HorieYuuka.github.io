@@ -33,6 +33,18 @@ plugins:
 
   # External navigation links
 nav_external_links:
+  - title: Songs
+    url: https://Horie.synology.me:10482/d/s/17QAKptrBsLE3bL87T0FEB5sDiV6EdqO/x-tAFDGc-dD8bWRLGh-GRyOpNDb1K-M6-ibnA2SNhCw0
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
+  - title: Archive
+    url: https://Horie.synology.me:10482/d/s/17PweDqh4B3iq0DJHqBJ0lBQrzedrTB8/t3buwV0QCrlhVMpGkiIazwNUYf7L8XmG-Er_gs6msCg0
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
+  - title: Packages
+    url: https://Horie.synology.me:10482/d/s/17Q2Wa1kNi1x4dAzmZtscNBfPtrbw8P6/c3koeWjp27NVW3gaYxclie11mRUqKGOr-gbkg1hVhCw0
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
   - title: Sabuns
     url: https://drive.google.com/drive/folders/1OhnvhNbHrAftB2t1O6X8UESUSN4JCObj?usp=sharing
     hide_icon: false # set to true to hide the external link icon - defaults to false
@@ -45,7 +57,6 @@ nav_external_links:
     url: https://iidx.org
     hide_icon: false # set to true to hide the external link icon - defaults to false
     opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
-
 kramdown:
   syntax_highlighter_opts:
     block:
@@ -91,3 +102,5 @@ exclude:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+
