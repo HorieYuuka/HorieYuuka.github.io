@@ -215,15 +215,23 @@
     margin-bottom: 0.5rem;
   }
 
-  .archive-search-input {
+  .archive-search-toolbar {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
     width: 100%;
-    max-width: 34rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .archive-search-input {
+    flex: 1 1 auto;
+    min-width: 0;
     padding: 0.7rem 0.9rem;
     border: 1px solid #d0d7de;
     border-radius: 0.75rem;
     background: #ffffff;
     font: inherit;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
   }
 
   .archive-search-input:focus-visible {
@@ -233,40 +241,237 @@
   }
 
   .archive-search-summary,
-  .archive-search-empty {
+  .archive-search-empty,
+  .archive-search-status {
     color: #57606a;
     margin: 0 0 0.75rem;
   }
 
+  .archive-search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .archive-search-submit,
+  .archive-search-clear {
+    min-width: 5.5rem;
+  }
+
+  .archive-icon-button {
+    min-width: 2.75rem;
+    width: 2.75rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    font-size: 1rem;
+    line-height: 1;
+    flex: 0 0 2.75rem;
+  }
+
+  .archive-icon-button svg {
+    width: 1rem;
+    height: 1rem;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .archive-search-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .archive-page-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .archive-page-button {
+    min-width: 2.5rem;
+  }
+
+  .archive-page-nav {
+    min-width: 2.25rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+  }
+
+  .archive-page-button[disabled] {
+    opacity: 0.65;
+    cursor: default;
+  }
+
+  .archive-page-button.is-active {
+    background: #1f6feb;
+    border-color: #1f6feb;
+    color: #ffffff;
+  }
+
   .archive-search-table {
-    min-width: 52rem;
+    width: 100%;
+    min-width: 0;
     table-layout: fixed;
   }
 
   .archive-search-table th:nth-child(1),
   .archive-search-table td:nth-child(1) {
-    width: 40%;
+    width: 76%;
     text-align: left;
   }
 
   .archive-search-table th:nth-child(2),
   .archive-search-table td:nth-child(2) {
-    width: 40%;
-    text-align: left;
+    width: 14%;
+    white-space: nowrap;
   }
 
   .archive-search-table th:nth-child(3),
   .archive-search-table td:nth-child(3) {
-    width: 20%;
-    text-align: left;
+    width: 10%;
+    white-space: nowrap;
+  }
+
+  .archive-search-table th:nth-child(2),
+  .archive-search-table th:nth-child(3) {
+    text-align: center;
+  }
+
+  .archive-search-table td:nth-child(2) {
+    text-align: center;
+  }
+
+  .archive-search-table td:nth-child(3) {
+    text-align: center;
   }
 
   .archive-search-table th,
   .archive-search-table td {
+    vertical-align: top;
+  }
+
+  .archive-search-table th:nth-child(1),
+  .archive-search-table td:nth-child(1) {
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
-    vertical-align: top;
+  }
+
+  .archive-name-primary {
+    font-weight: 500;
+  }
+
+  .archive-name-secondary {
+    margin-top: 0.15rem;
+    font-size: 0.82rem;
+    color: #57606a;
+  }
+
+  [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(1),
+  [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(1) {
+    width: 66%;
+  }
+
+  [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(2),
+  [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(2) {
+    width: 24%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(3),
+  [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(3) {
+    width: 10%;
+  }
+
+  @media (max-width: 64rem) {
+    [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(1),
+    [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(1) {
+      width: 62%;
+    }
+
+    [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(2),
+    [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(2) {
+      width: 26%;
+    }
+
+    [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(3),
+    [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(3) {
+      width: 12%;
+    }
+
+    .archive-search-table th:nth-child(1),
+    .archive-search-table td:nth-child(1) {
+      width: 72%;
+    }
+
+    .archive-search-table th:nth-child(2),
+    .archive-search-table td:nth-child(2) {
+      width: 16%;
+    }
+
+    .archive-search-table th:nth-child(3),
+    .archive-search-table td:nth-child(3) {
+      width: 12%;
+    }
+  }
+
+  @media (max-width: 42rem) {
+    [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(1),
+    [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(1) {
+      width: 58%;
+    }
+
+    [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(2),
+    [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(2) {
+      width: 28%;
+    }
+
+    [data-column-mode="name-artist-download"] .archive-search-table th:nth-child(3),
+    [data-column-mode="name-artist-download"] .archive-search-table td:nth-child(3) {
+      width: 14%;
+    }
+
+    .archive-search-toolbar {
+      flex-wrap: wrap;
+    }
+
+    .archive-search-submit,
+    .archive-search-clear {
+      flex: 1 1 calc(50% - 0.375rem);
+      min-width: 0;
+    }
+
+    .archive-icon-button {
+      width: auto;
+    }
+
+    .archive-search-table th:nth-child(1),
+    .archive-search-table td:nth-child(1) {
+      width: 68%;
+    }
+
+    .archive-search-table th:nth-child(2),
+    .archive-search-table td:nth-child(2) {
+      width: 18%;
+    }
+
+    .archive-search-table th:nth-child(3),
+    .archive-search-table td:nth-child(3) {
+      width: 14%;
+    }
+
+    .archive-download-link {
+      width: 2rem;
+      height: 2rem;
+    }
   }
 
   .archive-search-table .sort-button {
@@ -276,8 +481,36 @@
     text-align: left;
   }
 
-  .archive-search-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .archive-download-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 1px solid #d0d7de;
+    border-radius: 999px;
+    color: #1f6feb;
+    text-decoration: none;
+    background: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .archive-download-link:hover,
+  .archive-download-link:focus-visible {
+    color: #ffffff;
+    background: #1f6feb;
+    border-color: #1f6feb;
+    outline: none;
+  }
+
+  .archive-download-link:disabled {
+    opacity: 0.65;
+    cursor: default;
+  }
+
+  .archive-download-link svg {
+    width: 1rem;
+    height: 1rem;
   }

@@ -1,32 +1,30 @@
 ---
 layout: scale_analyzer
-title: "Sabuns"
-permalink: /Sabuns
-nav_order: 10
+title: "Archive"
+permalink: /Archive
+nav_order: 3
 ---
 
-## Sabuns
+## Archive
 
-Browse sabuns, look up a title, and download what you need.
+Browse archive files, look up a title, and download what you need.
 
 <div
   class="archive-search"
   data-archive-search
-  data-source="https://horie.synology.me:8443/api/v1/sabuns"
-  data-browser-label="Sabuns"
-  data-item-label-singular="sabun"
-  data-item-label-plural="sabuns"
-  data-page-limit="100"
-  data-download-grant-path-template="/api/v1/sabuns/{id}/download-grants"
-  data-column-mode="name-artist-download">
-  <label class="archive-search-label" for="sabuns-filter">Search</label>
+  data-source="https://horie.synology.me:8443/api/v1/folders/Archive/files"
+  data-browser-label="Archive"
+  data-item-label-singular="archive file"
+  data-item-label-plural="archive files"
+  data-page-limit="100">
+  <label class="archive-search-label" for="archive-filter">Search</label>
   <div class="archive-search-toolbar">
     <input
-      id="sabuns-filter"
+      id="archive-filter"
       class="archive-search-input"
       type="search"
       inputmode="search"
-      placeholder="Type part of a sabun title or file name"
+      placeholder="Type part of an archive file name or path"
       autocomplete="off"
       data-archive-search-input>
     <button type="button" class="btn archive-search-submit archive-icon-button" data-archive-search-submit aria-label="Search" title="Search">
@@ -43,7 +41,7 @@ Browse sabuns, look up a title, and download what you need.
     </button>
   </div>
 
-  <p class="archive-search-summary" data-archive-search-summary>Loading sabuns...</p>
+  <p class="archive-search-summary" data-archive-search-summary>Loading archive files...</p>
   <p class="archive-search-status" data-archive-search-status></p>
 
   <div class="archive-search-pagination" data-archive-search-pagination>
@@ -56,14 +54,14 @@ Browse sabuns, look up a title, and download what you need.
     </button>
   </div>
 
-  <p class="archive-search-empty" data-archive-search-empty hidden>No sabuns are available right now.</p>
+  <p class="archive-search-empty" data-archive-search-empty hidden>No archive files are available right now.</p>
 
   <div class="table-wrapper">
     <table class="archive-search-table">
       <thead>
         <tr>
           <th>Name</th>
-          <th>Artist</th>
+          <th>Size</th>
           <th>DL</th>
         </tr>
       </thead>

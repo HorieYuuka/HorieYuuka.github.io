@@ -2,10 +2,14 @@
 layout: default
 title:  "History"
 permalink: /History
-nav_order: 7
+nav_order: 9
 ---
 
 ## 2026
+
+### 2026-03-21
+
+- Added internal Songs, Archive, and Packages browsers backed by the NAS REST API.
 
 ### 2026-03-15
 

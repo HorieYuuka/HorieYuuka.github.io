@@ -34,19 +34,6 @@ plugins:
 
   # External navigation links
 nav_external_links:
-  - title: Songs
-    url: https://Horie.synology.me:10482/d/s/17QAKptrBsLE3bL87T0FEB5sDiV6EdqO/x-tAFDGc-dD8bWRLGh-GRyOpNDb1K-M6-ibnA2SNhCw0
-    hide_icon: false # set to true to hide the external link icon - defaults to false
-    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
-  - title: Archive
-    url: https://Horie.synology.me:10482/d/s/17PweDqh4B3iq0DJHqBJ0lBQrzedrTB8/t3buwV0QCrlhVMpGkiIazwNUYf7L8XmG-Er_gs6msCg0
-    hide_icon: false # set to true to hide the external link icon - defaults to false
-    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
-  - title: Packages
-    url: https://Horie.synology.me:10482/d/s/17Q2Wa1kNi1x4dAzmZtscNBfPtrbw8P6/c3koeWjp27NVW3gaYxclie11mRUqKGOr-gbkg1hVhCw0
-    hide_icon: false # set to true to hide the external link icon - defaults to false
-    opens_in_new_tab: false # set to true to open this link in a new tab - defaults to false
-
   - title: Report issues
     url: https://github.com/HorieYuuka/HorieYuuka.github.io/issues
     hide_icon: false # set to true to hide the external link icon - defaults to false
@@ -84,6 +71,10 @@ callouts:
 
 sass:
     sass_dir: _sass
+    quiet_deps: true
+    silence_deprecations:
+      - import
+      - global-builtin
 
 # Exclude from processing.
 # The following items will not be processed, by default.
