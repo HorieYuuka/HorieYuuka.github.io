@@ -2,7 +2,7 @@
 layout: scale_analyzer
 title: "Songs"
 permalink: /Songs
-nav_order: 2
+nav_order: 4
 ---
 
 ## Songs

@@ -4,7 +4,7 @@
 layout: scale_analyzer
 title: "Scale analyzer"
 permalink: /Scale-analyzer
-nav_order: 8
+nav_order: 3
 ---
 
 ## Scale Analyzer

@@ -4,7 +4,7 @@
 layout: default
 title:  "Disclaimer"
 permalink: /Disclaimer
-nav_order: 5
+nav_order: 8
 ---
 {:.important}
 To protect the rights of copyright holders,

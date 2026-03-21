@@ -2,7 +2,7 @@
 layout: scale_analyzer
 title: "Sabuns"
 permalink: /Sabuns
-nav_order: 10
+nav_order: 5
 ---
 
 ## Sabuns

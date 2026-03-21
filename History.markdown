@@ -2,7 +2,7 @@
 layout: default
 title:  "History"
 permalink: /History
-nav_order: 9
+nav_order: 2
 ---
 
 ## 2026
