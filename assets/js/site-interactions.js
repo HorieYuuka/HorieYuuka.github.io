@@ -136,24 +136,180 @@
     return number.toFixed(3);
   }
 
+  const SCALE_DELTA_MIN = 0.05; // suppress visual noise below this absolute change
+
+  function appendDeltaBadge(cell, current, previous) {
+    if (!Number.isFinite(current) || !Number.isFinite(previous)) {
+      return;
+    }
+    const diff = current - previous;
+    if (Math.abs(diff) < SCALE_DELTA_MIN) {
+      return;
+    }
+    const badge = document.createElement("span");
+    badge.className = `scale-delta-badge ${diff > 0 ? "is-up" : "is-down"}`;
+    const arrow = diff > 0 ? "↑" : "↓";
+    badge.textContent = `${arrow}${Math.abs(diff).toFixed(2)}`;
+    badge.setAttribute(
+      "title",
+      `Previous: ${previous.toFixed(3)} → Current: ${current.toFixed(3)} (Δ ${diff >= 0 ? "+" : ""}${diff.toFixed(3)})`,
+    );
+    cell.appendChild(document.createTextNode(" "));
+    cell.appendChild(badge);
+  }
+
   function buildScaleRow(entry) {
     const row = document.createElement("tr");
+    const lowConfidence = entry.lowConfidence === true;
+    if (lowConfidence) {
+      row.classList.add("is-low-confidence");
+    }
+    const isNew = entry.previousDiscrimination === undefined
+      && entry.previousEasy === undefined
+      && entry.previousHard === undefined;
     const cells = [
-      { text: entry.title, sortValue: entry.title },
+      { text: entry.title, sortValue: entry.title, isTitle: true },
       { text: entry.difficulty, sortValue: entry.difficulty },
-      { text: formatNumber(entry.discrimination), sortValue: entry.discrimination },
-      { text: formatNumber(entry.easy), sortValue: entry.easy },
-      { text: formatNumber(entry.hard), sortValue: entry.hard },
+      {
+        text: formatNumber(entry.discrimination),
+        sortValue: entry.discrimination,
+        current: entry.discrimination,
+        previous: entry.previousDiscrimination,
+      },
+      {
+        text: formatNumber(entry.easy),
+        sortValue: entry.easy,
+        current: entry.easy,
+        previous: entry.previousEasy,
+      },
+      {
+        text: formatNumber(entry.hard),
+        sortValue: entry.hard,
+        current: entry.hard,
+        previous: entry.previousHard,
+      },
     ];
 
     cells.forEach((cellData) => {
       const cell = document.createElement("td");
       cell.textContent = cellData.text;
       cell.dataset.sortValue = String(cellData.sortValue ?? "");
+      if (cellData.isTitle) {
+        if (lowConfidence) {
+          const badge = document.createElement("span");
+          badge.className = "scale-low-confidence-badge";
+          badge.setAttribute(
+            "title",
+            "Low-confidence estimate — either sample size is small or success/fail counts are too one-sided to pin the difficulty.",
+          );
+          badge.setAttribute("aria-label", "Low-confidence estimate");
+          badge.textContent = "⚠";
+          cell.appendChild(document.createTextNode(" "));
+          cell.appendChild(badge);
+        }
+        if (isNew) {
+          const newBadge = document.createElement("span");
+          newBadge.className = "scale-new-badge";
+          newBadge.setAttribute("title", "New chart since the last published update.");
+          newBadge.textContent = "NEW";
+          cell.appendChild(document.createTextNode(" "));
+          cell.appendChild(newBadge);
+        }
+      } else if (cellData.previous !== undefined) {
+        appendDeltaBadge(cell, Number(cellData.current), Number(cellData.previous));
+      }
       row.appendChild(cell);
     });
 
     return row;
+  }
+
+  function buildPlayerRow(entry) {
+    const row = document.createElement("tr");
+    const cells = [
+      { text: entry.nick || "", sortValue: (entry.nick || "").toLowerCase() },
+      { text: entry.dani || "—", sortValue: entry.dani || "" },
+      { text: formatNumber(entry.skill), sortValue: entry.skill ?? -Infinity },
+      { text: formatNumber(entry.ceiling), sortValue: entry.ceiling ?? -Infinity },
+    ];
+    cells.forEach((cellData) => {
+      const cell = document.createElement("td");
+      cell.textContent = cellData.text;
+      cell.dataset.sortValue = String(cellData.sortValue ?? "");
+      row.appendChild(cell);
+    });
+    return row;
+  }
+
+  function initPlayerAnalyzer(root) {
+    const tables = Array.from(root.querySelectorAll("[data-player-table]"));
+    if (!tables.length) {
+      return;
+    }
+
+    tables.forEach((table) => {
+      const source = table.dataset.source;
+      const mode = table.dataset.playerTable;
+      if (!source) {
+        return;
+      }
+      const tbody = table.tBodies[0];
+      if (!tbody) {
+        return;
+      }
+      const searchInput = root.querySelector(`[data-player-search='${mode}']`);
+      const countTarget = root.querySelector(`[data-player-count='${mode}']`);
+
+      fetch(source)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to load ${source}`);
+          }
+          return response.json();
+        })
+        .then((entries) => {
+          // Default sort: skill descending so the leaderboard view is the entry experience.
+          entries.sort((a, b) => (b.skill ?? -Infinity) - (a.skill ?? -Infinity));
+
+          const fragment = document.createDocumentFragment();
+          const records = entries.map((entry) => {
+            const row = buildPlayerRow(entry);
+            fragment.appendChild(row);
+            return { row, nick: (entry.nick || "").toLowerCase() };
+          });
+          tbody.replaceChildren(fragment);
+
+          function applyFilter(query) {
+            const q = (query || "").trim().toLowerCase();
+            let visible = 0;
+            for (const r of records) {
+              const match = !q || r.nick.includes(q);
+              r.row.hidden = !match;
+              if (match) visible += 1;
+            }
+            if (countTarget) {
+              countTarget.textContent = q
+                ? `${visible.toLocaleString()} / ${records.length.toLocaleString()} players`
+                : `${records.length.toLocaleString()} players`;
+            }
+          }
+
+          applyFilter("");
+          initSortableTable(table);
+
+          if (searchInput) {
+            let timer = null;
+            searchInput.addEventListener("input", () => {
+              clearTimeout(timer);
+              timer = setTimeout(() => applyFilter(searchInput.value), 80);
+            });
+          }
+        })
+        .catch((error) => {
+          tbody.innerHTML = `<tr><td colspan="4">Failed to load player data.</td></tr>`;
+          console.error(error);
+        });
+    });
   }
 
   function initScaleAnalyzer(root) {
@@ -546,6 +702,7 @@
     document.querySelectorAll("[data-tab-control]").forEach(initTabs);
     document.querySelectorAll("table.sortable-table").forEach(initSortableTable);
     document.querySelectorAll("[data-scale-analyzer]").forEach(initScaleAnalyzer);
+    document.querySelectorAll("[data-player-analyzer]").forEach(initPlayerAnalyzer);
     document.querySelectorAll("[data-archive-search]").forEach(initArchiveSearch);
   });
 })();

@@ -6,3 +6,4 @@ vendor
 scripts/
 AGENT/
 AGENTS/
+.playwright-mcp/

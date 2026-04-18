@@ -15,6 +15,9 @@ Each table lists the chart title, difficulty label, discrimination, and the esti
 * `Discrimination`: how strongly a chart separates player skill levels.
 * `Easy`: estimated difficulty for achieving an EASY clear.
 * `Hard`: estimated difficulty for achieving a HARD clear.
+* Rows marked with a ⚠ badge are low-confidence estimates (small sample, or success/fail counts too one-sided to pin the difficulty) — treat their numbers as provisional.
+* Rows tagged `NEW` did not exist in the previous published update.
+* `↑` / `↓` next to a number shows how that value moved compared to the previously published estimate (hover for exact before → after).
 * These values are only rough analytical references, so please do not treat them as absolute or fully reliable ratings.
 
 

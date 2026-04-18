@@ -139,6 +139,10 @@
     margin-bottom: 1rem;
   }
 
+  .scale-chart-frame--tall {
+    height: 60rem;
+  }
+
   .scale-chart-meta {
     margin: 0.5rem 0 0.75rem;
     color: #57606a;
@@ -198,6 +202,131 @@
   }
 
   .scale-analyzer-table .sort-button {
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .scale-analyzer-table tr.is-low-confidence td {
+    color: #6e7781;
+    font-style: italic;
+  }
+
+  .scale-low-confidence-badge {
+    display: inline-block;
+    margin-left: 0.25rem;
+    padding: 0 0.35rem;
+    border-radius: 0.6rem;
+    background: #fff4ce;
+    color: #8a6d00;
+    font-size: 0.75rem;
+    font-style: normal;
+    line-height: 1.2;
+    cursor: help;
+    user-select: none;
+  }
+
+  .scale-new-badge {
+    display: inline-block;
+    margin-left: 0.25rem;
+    padding: 0 0.4rem;
+    border-radius: 0.6rem;
+    background: #dafbe1;
+    color: #1a7f37;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+    user-select: none;
+  }
+
+  .scale-delta-badge {
+    display: inline-block;
+    margin-left: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: help;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .scale-delta-badge.is-up {
+    color: #b35900;
+  }
+
+  .scale-delta-badge.is-down {
+    color: #0a64a4;
+  }
+
+  .player-search {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.75rem 0 0.5rem;
+  }
+
+  .player-search-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 24rem;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid #d0d7de;
+    border-radius: 0.6rem;
+    background: #ffffff;
+    font: inherit;
+    margin-bottom: 0;
+  }
+
+  .player-search-input:focus-visible {
+    outline: 2px solid #1f6feb;
+    outline-offset: 2px;
+  }
+
+  .player-count {
+    color: #57606a;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .player-stats-table-wrap {
+    width: 100%;
+  }
+
+  .player-stats-table {
+    table-layout: fixed;
+    min-width: 40rem;
+  }
+
+  .player-stats-table th:nth-child(1),
+  .player-stats-table td:nth-child(1) {
+    width: 42%;
+  }
+
+  .player-stats-table th:nth-child(2),
+  .player-stats-table td:nth-child(2) {
+    width: 18%;
+  }
+
+  .player-stats-table th:nth-child(3),
+  .player-stats-table td:nth-child(3),
+  .player-stats-table th:nth-child(4),
+  .player-stats-table td:nth-child(4) {
+    width: 20%;
+    text-align: right;
+  }
+
+  .player-stats-table th,
+  .player-stats-table td {
+    vertical-align: middle;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .player-stats-table .sort-button {
     display: inline-flex;
     width: 100%;
     justify-content: space-between;
