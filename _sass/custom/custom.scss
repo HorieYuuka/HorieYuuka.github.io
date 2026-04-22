@@ -720,7 +720,11 @@
 
 .note-attrs {
   display: grid;
-  grid-template-columns: minmax(280px, 360px) 1fr;
+  // minmax(0, 1fr) (not just 1fr) so the detail column cannot grow past
+  // the container when its intrinsic content (the sub-metrics table) is
+  // wider than the viewport. Without min-size 0, a wide table pushes the
+  // whole page beyond the layout and overlaps the site nav.
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
   gap: 1.5rem;
   margin-top: 1rem;
   align-items: start;
@@ -913,6 +917,10 @@ fieldset.note-attrs-field {
   padding: 1rem 1.25rem;
   background: var(--body-background-color, #fff);
   min-height: 320px;
+  // Belt-and-suspenders: even if a child forgets overflow, keep the
+  // detail panel clipped to its grid cell.
+  min-width: 0;
+  overflow-x: auto;
 }
 
 .note-attrs-empty {
@@ -965,25 +973,6 @@ fieldset.note-attrs-field {
   cursor: pointer;
   font-weight: 600;
   margin-bottom: 0.5rem;
-}
-
-.note-attrs-submetrics {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8rem;
-}
-
-.note-attrs-submetrics th,
-.note-attrs-submetrics td {
-  padding: 0.2rem 0.5rem;
-  border-bottom: 1px solid rgba(208, 215, 222, 0.4);
-  text-align: left;
-}
-
-.note-attrs-submetrics td:last-child {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  font-family: var(--mono-font, monospace);
 }
 
 .note-attrs-stub {

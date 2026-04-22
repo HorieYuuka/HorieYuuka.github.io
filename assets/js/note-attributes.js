@@ -2,8 +2,8 @@
   "use strict";
 
   const PAGE_SIZE = 50;
-  const AXES = ["chord", "stream", "scratch", "soft", "ln", "stair", "peak", "jack"];
-  const AXIS_LABELS = ["Chord", "Stream", "Scratch", "Soft", "LN", "Stair", "Peak", "Jack"];
+  const AXES = ["chord", "stream", "scratch", "soft", "ln", "stair", "peak", "distraction"];
+  const AXIS_LABELS = ["Chord", "Stream", "Scratch", "Soft", "LN", "Stair", "Peak", "Distraction"];
 
   const TAG_LABELS = {
     big_chord_burst: "Big Chord Burst",
@@ -11,8 +11,10 @@
     chord_heavy: "Chord Density",
     chord_stream: "Chord Stream",
     dense_chart: "High Density",
+    distraction_heavy: "Distraction",
     extreme_burst: "Extreme Burst",
     fast_chart: "Fast Tempo",
+    flow_break: "Flow Break",
     gimmick_soflan: "Gimmick Soflan",
     jack_chart: "Jack Pattern",
     ln_chart: "Long Note",
@@ -20,6 +22,8 @@
     peak_outlier: "Peak Outlier",
     pure_stream: "Pure Stream",
     scratch_active: "Scratch",
+    scratch_burst: "Scratch Burst",
+    scratch_chord: "Scratch Chord",
     slow_chart: "Slow Tempo",
     soflan: "Soflan",
     stair_focused: "Stair Pattern",
@@ -285,43 +289,6 @@
     const data = AXES.map((a) => row["x_" + a] || 0);
     drawRadar(canvas, data);
 
-    fetch(attrsBase + encodeURIComponent(file.replace(/\.(bms|bme|bml)$/i, "")) + ".json")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((attrs) => {
-        if (token !== state.detailToken || !attrs) return;
-        renderSubmetrics(els.detail.querySelector("[data-na-submetrics]"), attrs);
-      })
-      .catch(() => {});
-  }
-
-  function renderSubmetrics(table, attrs) {
-    const sm = attrs.submetrics || {};
-    const rows = [];
-    AXES.forEach((axis) => {
-      const block = sm[axis];
-      if (!block) return;
-      Object.entries(block).forEach(([k, v]) => {
-        rows.push([axis, k, v]);
-      });
-    });
-    table.innerHTML =
-      "<thead><tr><th>Axis</th><th>Metric</th><th>Value</th></tr></thead>" +
-      "<tbody>" +
-      rows
-        .map(
-          ([axis, k, v]) =>
-            `<tr><td>${axis}</td><td>${escapeHtml(k)}</td><td>${formatVal(v)}</td></tr>`
-        )
-        .join("") +
-      "</tbody>";
-  }
-
-  function formatVal(v) {
-    if (typeof v === "number") {
-      if (Number.isInteger(v)) return String(v);
-      return v.toFixed(4);
-    }
-    return escapeHtml(String(v));
   }
 
   function drawRadar(canvas, data) {

@@ -7,7 +7,7 @@ nav_order: 3.7
 
 ## Note Attributes
 
-Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stair / peak / jack), with qualitative tags. Pick a chart on the left to see its octagon, sub-metrics, and (later) its ranking distribution.
+Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stair / peak / distraction), with qualitative tags. Pick a chart on the left to see its octagon, sub-metrics, and (later) its ranking distribution.
 
 * All axes are normalised to the [0, 1] range against per-mode references — **SP and DP are not directly comparable on raw axis values**.
 * Tags are heuristic descriptors (e.g. `chord_heavy`, `peak_intense`, `ln_dense`) thresholded against the same per-mode corpus.
@@ -51,7 +51,7 @@ Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stai
           <option value="x_ln:desc">LN (high→low)</option>
           <option value="x_stair:desc">Stair (high→low)</option>
           <option value="x_peak:desc">Peak (high→low)</option>
-          <option value="x_jack:desc">Jack (high→low)</option>
+          <option value="x_distraction:desc">Distraction (high→low)</option>
           <option value="header_bpm:desc">BPM (high→low)</option>
           <option value="title:asc">Title (A→Z)</option>
         </select>
@@ -84,11 +84,6 @@ Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stai
   <div class="note-attrs-radar-wrap">
     <canvas data-na-radar width="360" height="360"></canvas>
   </div>
-
-  <details class="note-attrs-section" open>
-    <summary>Sub-metrics</summary>
-    <table class="note-attrs-submetrics" data-na-submetrics></table>
-  </details>
 
   <details class="note-attrs-section">
     <summary>Ranking</summary>
