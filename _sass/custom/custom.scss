@@ -262,6 +262,36 @@
     color: #0a64a4;
   }
 
+  .player-ir-badge {
+    display: inline-block;
+    margin-left: 0.2rem;
+    padding: 0 0.35rem;
+    border-radius: 0.5rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    cursor: help;
+    user-select: none;
+    vertical-align: middle;
+  }
+
+  .player-ir-badge.ir-lr2 {
+    background: #e1efff;
+    color: #0a4a8a;
+  }
+
+  .player-ir-badge.ir-tachi {
+    background: #fde9d6;
+    color: #9a4a05;
+  }
+
+  .player-ir-badge.ir-minir {
+    background: #e6f4dd;
+    color: #2f6b1f;
+  }
+
   .player-search {
     display: flex;
     align-items: center;

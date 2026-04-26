@@ -224,15 +224,41 @@
     return row;
   }
 
+  const IR_BADGE_LABELS = { lr2: "LR2", tachi: "TACHI", minir: "MIN" };
+
+  function appendIrBadges(cell, ir) {
+    if (!Array.isArray(ir) || ir.length === 0) {
+      return;
+    }
+    for (const source of ir) {
+      const key = String(source || "").toLowerCase();
+      const label = IR_BADGE_LABELS[key];
+      if (!label) {
+        continue;
+      }
+      const badge = document.createElement("span");
+      badge.className = `player-ir-badge ir-${key}`;
+      badge.textContent = label;
+      badge.setAttribute("title", `IR source: ${label}`);
+      cell.appendChild(document.createTextNode(" "));
+      cell.appendChild(badge);
+    }
+  }
+
   function buildPlayerRow(entry) {
     const row = document.createElement("tr");
-    const cells = [
-      { text: entry.nick || "", sortValue: (entry.nick || "").toLowerCase() },
+    const nickCell = document.createElement("td");
+    nickCell.textContent = entry.nick || "";
+    nickCell.dataset.sortValue = (entry.nick || "").toLowerCase();
+    appendIrBadges(nickCell, entry.ir);
+    row.appendChild(nickCell);
+
+    const rest = [
       { text: entry.dani || "—", sortValue: entry.dani || "" },
       { text: formatNumber(entry.skill), sortValue: entry.skill ?? -Infinity },
       { text: formatNumber(entry.ceiling), sortValue: entry.ceiling ?? -Infinity },
     ];
-    cells.forEach((cellData) => {
+    rest.forEach((cellData) => {
       const cell = document.createElement("td");
       cell.textContent = cellData.text;
       cell.dataset.sortValue = String(cellData.sortValue ?? "");

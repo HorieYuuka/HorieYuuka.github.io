@@ -144,8 +144,10 @@ def convert_user(csv_path: Path) -> list[dict]:
         dani    : Player dani rank string ('SP/DP' format) or None if missing/'-/-'
         skill   : Player quantitative skill (float, -inf filtered)
         ceiling : Player ceiling skill (float)
+        ir      : List of IR sources contributing records for the player
+                  (e.g. ["lr2"], ["lr2","tachi"]); empty list if none.
 
-    Player IDs and the diligence / contribution fields are intentionally
+    Player IDs and the diligence / contribution / peak fields are intentionally
     excluded — the table is meant for "where do I sit on the curve" lookup,
     not as a full data dump.
     """
@@ -160,12 +162,15 @@ def convert_user(csv_path: Path) -> list[dict]:
                 continue
             dani_raw = (row.get("Player dani rank") or "").strip()
             dani = dani_raw if dani_raw and dani_raw != "-/-" else None
+            ir_raw = (row.get("Player IR sources") or "").strip()
+            ir = [tag.strip() for tag in ir_raw.split(",") if tag.strip()]
             rows.append(
                 {
                     "nick": row.get("Player nickname") or "",
                     "dani": dani,
                     "skill": skill,
                     "ceiling": ceiling,
+                    "ir": ir,
                 }
             )
     return rows
