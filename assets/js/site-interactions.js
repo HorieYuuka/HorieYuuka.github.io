@@ -268,6 +268,8 @@
     return row;
   }
 
+  const PLAYER_PAGE_SIZE = 100;
+
   function initPlayerAnalyzer(root) {
     const tables = Array.from(root.querySelectorAll("[data-player-table]"));
     if (!tables.length) {
@@ -299,30 +301,100 @@
           entries.sort((a, b) => (b.skill ?? -Infinity) - (a.skill ?? -Infinity));
 
           const fragment = document.createDocumentFragment();
-          const records = entries.map((entry) => {
+          entries.forEach((entry) => {
             const row = buildPlayerRow(entry);
+            row.dataset.searchKey = (entry.nick || "").toLowerCase();
             fragment.appendChild(row);
-            return { row, nick: (entry.nick || "").toLowerCase() };
           });
           tbody.replaceChildren(fragment);
 
-          function applyFilter(query) {
-            const q = (query || "").trim().toLowerCase();
-            let visible = 0;
-            for (const r of records) {
-              const match = !q || r.nick.includes(q);
-              r.row.hidden = !match;
-              if (match) visible += 1;
+          const tableWrap = table.closest(".player-stats-table-wrap");
+          const pagination = document.createElement("div");
+          pagination.className = "player-pagination";
+          pagination.innerHTML = `
+            <span class="player-pagination-info"></span>
+            <button type="button" class="player-pagination-button" data-page-action="prev">← Prev</button>
+            <span class="player-pagination-page"></span>
+            <button type="button" class="player-pagination-button" data-page-action="next">Next →</button>
+          `;
+          if (tableWrap && tableWrap.parentNode) {
+            tableWrap.parentNode.insertBefore(pagination, tableWrap);
+          }
+          const infoEl = pagination.querySelector(".player-pagination-info");
+          const pageEl = pagination.querySelector(".player-pagination-page");
+          const prevBtn = pagination.querySelector('[data-page-action="prev"]');
+          const nextBtn = pagination.querySelector('[data-page-action="next"]');
+
+          let currentPage = 1;
+          let currentQuery = "";
+
+          function render() {
+            const rows = Array.from(tbody.rows);
+            const matched = [];
+            for (const row of rows) {
+              const ok = !currentQuery || (row.dataset.searchKey || "").includes(currentQuery);
+              if (ok) {
+                matched.push(row);
+              }
             }
+            const total = matched.length;
+            const totalPages = Math.max(1, Math.ceil(total / PLAYER_PAGE_SIZE));
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+            const start = (currentPage - 1) * PLAYER_PAGE_SIZE;
+            const end = Math.min(start + PLAYER_PAGE_SIZE, total);
+
+            for (const row of rows) {
+              row.hidden = true;
+            }
+            for (let i = start; i < end; i++) {
+              matched[i].hidden = false;
+            }
+
+            infoEl.textContent = total > 0
+              ? `${(start + 1).toLocaleString()}–${end.toLocaleString()} of ${total.toLocaleString()}`
+              : "0 results";
+            pageEl.textContent = `Page ${currentPage} / ${totalPages}`;
+            prevBtn.disabled = currentPage <= 1;
+            nextBtn.disabled = currentPage >= totalPages;
+
             if (countTarget) {
-              countTarget.textContent = q
-                ? `${visible.toLocaleString()} / ${records.length.toLocaleString()} players`
-                : `${records.length.toLocaleString()} players`;
+              countTarget.textContent = currentQuery
+                ? `${total.toLocaleString()} / ${entries.length.toLocaleString()} players`
+                : `${entries.length.toLocaleString()} players`;
             }
           }
 
+          function applyFilter(query) {
+            currentQuery = (query || "").trim().toLowerCase();
+            currentPage = 1;
+            render();
+          }
+
+          prevBtn.addEventListener("click", () => {
+            currentPage -= 1;
+            render();
+          });
+          nextBtn.addEventListener("click", () => {
+            currentPage += 1;
+            render();
+          });
+
           applyFilter("");
           initSortableTable(table);
+
+          // After a sort header is clicked (event bubbles up after initSortableTable's
+          // own button-level handler reorders DOM rows), reset to page 1 and re-render
+          // so pagination reflects the new top-of-list.
+          const headRow = table.tHead && table.tHead.rows[0];
+          if (headRow) {
+            headRow.addEventListener("click", (event) => {
+              if (event.target.closest(".sort-button")) {
+                currentPage = 1;
+                render();
+              }
+            });
+          }
 
           if (searchInput) {
             let timer = null;
