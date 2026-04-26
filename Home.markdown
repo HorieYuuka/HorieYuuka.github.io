@@ -133,7 +133,7 @@ DP
 
 [Torrent](https://drive.google.com/file/d/1Fn9raDo546GrH0gPW3Ogs3cQmqv_dYCY/view?usp=drive_link){: .btn .btn-blue }
 
-### Patch (2025-08-23 to 2025-12-14) : Patch for the previous distribution (21 GB)
+### Patch (2025-12-14 to 2026-04-26) : Patch for the previous distribution (10 GB)
 
 #### Compatible with :
 
@@ -144,15 +144,13 @@ SP
 >{: .label .label-blue }
 >stella
 >{: .label .label-blue }
->▼
->{: .label .label-blue }
->★★ (第三期)
->{: .label .label-blue }
->ディレイjoy
+>supernova
 >{: .label .label-blue }
 >solar
 >{: .label .label-blue }
->supernova
+>ディレイjoy
+>{: .label .label-blue }
+>Scramble
 >{: .label .label-blue }
 
 DP
@@ -165,4 +163,4 @@ DP
 
 #### Download Links :
 
-[Torrent](https://drive.google.com/file/d/1A35qocTsBJjpFJ7gvZiGg35-MvCb_a-d/view?usp=drive_link){: .btn .btn-blue }
+[Torrent](https://drive.google.com/file/d/1ZymTReyhwwni_494vJqyk2_nl5ajZVZO/view?usp=sharing){: .btn .btn-blue }
