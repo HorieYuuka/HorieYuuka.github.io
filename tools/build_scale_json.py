@@ -144,10 +144,12 @@ def convert_user(csv_path: Path) -> list[dict]:
         dani    : Player dani rank string ('SP/DP' format) or None if missing/'-/-'
         skill   : Player quantitative skill (float, -inf filtered)
         ceiling : Player ceiling skill (float)
+        peak    : Player peak skill (float); falls back to skill if missing,
+                  matching PL3's no-burst-evidence default.
         ir      : List of IR sources contributing records for the player
                   (e.g. ["lr2"], ["lr2","tachi"]); empty list if none.
 
-    Player IDs and the diligence / contribution / peak fields are intentionally
+    Player IDs and the diligence / contribution fields are intentionally
     excluded — the table is meant for "where do I sit on the curve" lookup,
     not as a full data dump.
     """
@@ -160,6 +162,10 @@ def convert_user(csv_path: Path) -> list[dict]:
                 ceiling = float(row["Player ceiling skill"])
             except (TypeError, ValueError, KeyError):
                 continue
+            try:
+                peak = float(row["Player peak skill"])
+            except (TypeError, ValueError, KeyError):
+                peak = skill
             dani_raw = (row.get("Player dani rank") or "").strip()
             dani = dani_raw if dani_raw and dani_raw != "-/-" else None
             ir_raw = (row.get("Player IR sources") or "").strip()
@@ -170,6 +176,7 @@ def convert_user(csv_path: Path) -> list[dict]:
                     "dani": dani,
                     "skill": skill,
                     "ceiling": ceiling,
+                    "peak": peak,
                     "ir": ir,
                 }
             )

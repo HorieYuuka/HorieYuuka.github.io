@@ -257,6 +257,7 @@
       { text: entry.dani || "—", sortValue: entry.dani || "" },
       { text: formatNumber(entry.skill), sortValue: entry.skill ?? -Infinity },
       { text: formatNumber(entry.ceiling), sortValue: entry.ceiling ?? -Infinity },
+      { text: formatNumber(entry.peak), sortValue: entry.peak ?? -Infinity },
     ];
     rest.forEach((cellData) => {
       const cell = document.createElement("td");
@@ -332,7 +333,7 @@
           }
         })
         .catch((error) => {
-          tbody.innerHTML = `<tr><td colspan="4">Failed to load player data.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5">Failed to load player data.</td></tr>`;
           console.error(error);
         });
     });
