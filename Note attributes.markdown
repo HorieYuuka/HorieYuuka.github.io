@@ -7,10 +7,10 @@ nav_order: 3.7
 
 ## Note Attributes
 
-Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stair / peak / distraction), with qualitative tags. Pick a chart on the left to see its octagon, sub-metrics, and (later) its ranking distribution.
+Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stair / peak / distraction). Pick a chart on the left to see its octagon, intensity colors, and pattern tags.
 
-* All axes are normalised to the [0, 1] range against per-mode references — **SP and DP are not directly comparable on raw axis values**.
-* Tags are heuristic descriptors (e.g. `chord_heavy`, `peak_intense`, `ln_dense`) thresholded against the same per-mode corpus.
+* Each axis carries an **intensity color** (green / yellow / red) derived from the active corpus distribution: `green` is the bottom third of nonzero charts on that axis, `yellow` the middle third, `red` the top third. Inactive axes (`null`) are gray. SP and DP are calibrated separately — **not directly comparable on raw axis values**.
+* **Pattern tags** are boolean flags for specific patterns the axis colors cannot capture: `visual_gimmick` (BPM-trick chart), `scratch_chord`, `long_scratch` / `complex_long_scratch`, `advanced_ln`, `flow_break`, `burst_focused` / `sustained` / `peak_outlier`, etc.
 * Detail data loads on demand from `Resource/NoteAttributes/attrs/`.
 
 <div class="note-attrs" data-note-attrs

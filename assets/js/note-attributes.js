@@ -5,31 +5,50 @@
   const AXES = ["chord", "stream", "scratch", "soft", "ln", "stair", "peak", "distraction"];
   const AXIS_LABELS = ["Chord", "Stream", "Scratch", "Soft", "LN", "Stair", "Peak", "Distraction"];
 
+  // Boolean pattern flags emitted by `assign_tags` (BMS.Tools/note_attributes.py).
+  // Per-axis strength tags (chord_heavy / stream_heavy / peak_intense /
+  // scratch_active / distraction_heavy / ln_chart / soflan / stair_focused)
+  // were removed 2026-04-26 — strength now lives in axis_intensities (see
+  // INTENSITY_COLORS below). Cross-axis composites (pure_stream /
+  // chord_stream / gimmick_soflan) and BPM descriptors (slow_chart /
+  // fast_chart) were also removed.
   const TAG_LABELS = {
+    advanced_ln: "Advanced LN",
     big_chord_burst: "Big Chord Burst",
     burst_focused: "Burst Focus",
-    chord_heavy: "Chord Density",
-    chord_stream: "Chord Stream",
+    complex_long_scratch: "Complex Long Scratch",
     dense_chart: "High Density",
-    distraction_heavy: "Distraction",
     extreme_burst: "Extreme Burst",
-    fast_chart: "Fast Tempo",
     flow_break: "Flow Break",
-    gimmick_soflan: "Gimmick Soflan",
     jack_chart: "Jack Pattern",
-    ln_chart: "Long Note",
-    peak_intense: "Peak Intensity",
+    long_scratch: "Long Scratch",
     peak_outlier: "Peak Outlier",
-    pure_stream: "Pure Stream",
-    scratch_active: "Scratch",
     scratch_burst: "Scratch Burst",
     scratch_chord: "Scratch Chord",
-    slow_chart: "Slow Tempo",
-    soflan: "Soflan",
-    stair_focused: "Stair Pattern",
-    stream_heavy: "Stream Density",
     sustained: "Sustained Density",
     visual_gimmick: "Visual Gimmick",
+  };
+
+  // 8-axis universal intensity scheme. Each chart's `axis_intensities`
+  // dict maps axis name to one of these levels; null means the axis is
+  // inactive on the chart (raw value 0).
+  const INTENSITY_COLORS = {
+    red: "#bb6f6f",      // top third of nonzero corpus
+    yellow: "#d4a017",   // middle third
+    green: "#6fb87f",    // bottom third
+    null: "#9ca3af",     // inactive (no axis activity)
+  };
+  const INTENSITY_FILLS = {
+    red: "rgba(187, 111, 111, 0.55)",
+    yellow: "rgba(212, 160, 23, 0.55)",
+    green: "rgba(111, 184, 127, 0.55)",
+    null: "rgba(156, 163, 175, 0.25)",
+  };
+  const INTENSITY_LABEL = {
+    red: "Strong",
+    yellow: "Notable",
+    green: "Slight",
+    null: "Inactive",
   };
 
   const SCALE_ORDER = ["sl", "st", "so", "sn", "DPsl", "DPst", "★", "★★"];
@@ -287,20 +306,30 @@
 
     const canvas = els.detail.querySelector("[data-na-radar]");
     const data = AXES.map((a) => row["x_" + a] || 0);
-    drawRadar(canvas, data);
-
+    const intensities = row.axis_intensities || {};
+    drawRadar(canvas, data, intensities);
   }
 
-  function drawRadar(canvas, data) {
+  function intensityKey(level) {
+    // Chart.js callback returns null/string; normalize to dict key.
+    return level == null ? "null" : level;
+  }
+
+  function drawRadar(canvas, data, intensities) {
     if (!window.Chart) {
       // Chart.js not yet loaded; retry shortly
-      setTimeout(() => drawRadar(canvas, data), 100);
+      setTimeout(() => drawRadar(canvas, data, intensities), 100);
       return;
     }
     if (state.chart) {
       state.chart.destroy();
       state.chart = null;
     }
+    // Per-axis colors derived from axis_intensities.
+    const pointColors = AXES.map((a) =>
+      INTENSITY_COLORS[intensityKey(intensities[a])]
+    );
+    const labelColors = pointColors;  // axis labels match point colors
     state.chart = new window.Chart(canvas, {
       type: "radar",
       data: {
@@ -310,23 +339,42 @@
             label: "axis",
             data,
             fill: true,
-            backgroundColor: "rgba(96, 165, 250, 0.25)",
-            borderColor: "rgba(59, 130, 246, 0.9)",
-            pointRadius: 0,
-            pointHoverRadius: 4,
+            backgroundColor: "rgba(96, 165, 250, 0.20)",
+            borderColor: "rgba(59, 130, 246, 0.7)",
+            borderWidth: 1.5,
+            pointBackgroundColor: pointColors,
+            pointBorderColor: pointColors,
+            pointRadius: 5,
+            pointHoverRadius: 7,
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: true,
-        plugins: { legend: { display: false } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const axis = AXES[ctx.dataIndex];
+                const v = ctx.parsed.r;
+                const lvl = intensities[axis];
+                const lvlLabel = INTENSITY_LABEL[intensityKey(lvl)];
+                return `${AXIS_LABELS[ctx.dataIndex]}: ${v.toFixed(3)} (${lvlLabel})`;
+              },
+            },
+          },
+        },
         scales: {
           r: {
             min: 0,
             max: 1,
             ticks: { stepSize: 0.2, backdropColor: "transparent" },
-            pointLabels: { font: { size: 12 } },
+            pointLabels: {
+              font: { size: 12, weight: "600" },
+              color: (ctx) => labelColors[ctx.index],
+            },
           },
         },
       },
