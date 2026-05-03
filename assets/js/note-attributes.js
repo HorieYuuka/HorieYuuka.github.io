@@ -324,11 +324,20 @@
       ? `<span class="note-attrs-tag note-attrs-tag--primary"
               title="Primary character archetype derived from dominant axis + submetrics. Presentation-only — does not contribute to predictive signal.">${escapeHtml(row.primary_character)}</span>`
       : "";
-    const saturatedBadge = row.framework_saturated
-      ? `<span class="note-attrs-tag note-attrs-tag--saturated"
-              title="≥5 axes are red — radar offers no directional signal; difficulty likely lives outside encoded mechanics (endurance, ceiling, sight-read).">Framework saturated</span>`
-      : "";
-    tagsRow.innerHTML = primaryBadge + saturatedBadge + (row.tags || [])
+    // Phase 1Q signal-status: 3-tier badge — saturated (≥5 red) /
+    // semi_saturated (4 red) / clear. Saturated keeps the prior strong
+    // warning copy; semi_saturated adds a yellow "weakening" badge so
+    // users near the cliff don't over-read the radar as directional.
+    const status = row.framework_signal_status || (row.framework_saturated ? "saturated" : "clear");
+    let signalBadge = "";
+    if (status === "saturated") {
+      signalBadge = `<span class="note-attrs-tag note-attrs-tag--saturated"
+              title="≥5 axes are red — radar offers no directional signal; difficulty likely lives outside encoded mechanics (endurance, ceiling, sight-read).">Framework saturated</span>`;
+    } else if (status === "semi_saturated") {
+      signalBadge = `<span class="note-attrs-tag note-attrs-tag--semi-saturated"
+              title="4 axes are red — framework signal weakening. Within-cohort rank discrimination is reduced; consult IRT for clear-difficulty rank.">Framework signal weakening</span>`;
+    }
+    tagsRow.innerHTML = primaryBadge + signalBadge + (row.tags || [])
       .map((t) => `<span class="note-attrs-tag">${escapeHtml(tagLabel(t))}</span>`)
       .join("");
     md5El.textContent = row.md5 || "(unknown)";
@@ -336,7 +345,7 @@
     const canvas = els.detail.querySelector("[data-na-radar]");
     const data = AXES.map((a) => row["x_" + a] || 0);
     const intensities = row.axis_intensities || {};
-    drawRadar(canvas, data, intensities, !!row.framework_saturated);
+    drawRadar(canvas, data, intensities, status);
   }
 
   function intensityKey(level) {
@@ -344,10 +353,10 @@
     return level == null ? "null" : level;
   }
 
-  function drawRadar(canvas, data, intensities, saturated) {
+  function drawRadar(canvas, data, intensities, signalStatus) {
     if (!window.Chart) {
       // Chart.js not yet loaded; retry shortly
-      setTimeout(() => drawRadar(canvas, data, intensities, saturated), 100);
+      setTimeout(() => drawRadar(canvas, data, intensities, signalStatus), 100);
       return;
     }
     if (state.chart) {
@@ -359,14 +368,20 @@
       INTENSITY_COLORS[intensityKey(intensities[a])]
     );
     const labelColors = pointColors;  // axis labels match point colors
-    // Phase 1N: dim the fill when ≥4 axes are red — the radar carries no
-    // directional signal so a vivid blue-fill polygon overstates its info.
-    const fillBg = saturated
-      ? "rgba(156, 163, 175, 0.18)"
-      : "rgba(96, 165, 250, 0.20)";
-    const fillBorder = saturated
-      ? "rgba(156, 163, 175, 0.6)"
-      : "rgba(59, 130, 246, 0.7)";
+    // Phase 1N + 1Q: 3-tier fill rendering. Saturated → gray (no signal);
+    // semi_saturated → muted blue (weakening but partial signal still
+    // there); clear → standard blue.
+    let fillBg, fillBorder;
+    if (signalStatus === "saturated") {
+      fillBg = "rgba(156, 163, 175, 0.18)";
+      fillBorder = "rgba(156, 163, 175, 0.6)";
+    } else if (signalStatus === "semi_saturated") {
+      fillBg = "rgba(96, 165, 250, 0.10)";
+      fillBorder = "rgba(59, 130, 246, 0.45)";
+    } else {
+      fillBg = "rgba(96, 165, 250, 0.20)";
+      fillBorder = "rgba(59, 130, 246, 0.7)";
+    }
     state.chart = new window.Chart(canvas, {
       type: "radar",
       data: {
