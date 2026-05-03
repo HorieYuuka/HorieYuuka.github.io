@@ -316,7 +316,11 @@
       npsStr,
     ].filter(Boolean);
     metaEl.textContent = metaParts.join(" · ");
-    tagsRow.innerHTML = (row.tags || [])
+    const saturatedBadge = row.framework_saturated
+      ? `<span class="note-attrs-tag note-attrs-tag--saturated"
+              title="≥4 axes are red — radar offers no directional signal; difficulty likely lives outside encoded mechanics (endurance, ceiling, sight-read).">Framework saturated</span>`
+      : "";
+    tagsRow.innerHTML = saturatedBadge + (row.tags || [])
       .map((t) => `<span class="note-attrs-tag">${escapeHtml(tagLabel(t))}</span>`)
       .join("");
     md5El.textContent = row.md5 || "(unknown)";
@@ -324,7 +328,7 @@
     const canvas = els.detail.querySelector("[data-na-radar]");
     const data = AXES.map((a) => row["x_" + a] || 0);
     const intensities = row.axis_intensities || {};
-    drawRadar(canvas, data, intensities);
+    drawRadar(canvas, data, intensities, !!row.framework_saturated);
   }
 
   function intensityKey(level) {
@@ -332,10 +336,10 @@
     return level == null ? "null" : level;
   }
 
-  function drawRadar(canvas, data, intensities) {
+  function drawRadar(canvas, data, intensities, saturated) {
     if (!window.Chart) {
       // Chart.js not yet loaded; retry shortly
-      setTimeout(() => drawRadar(canvas, data, intensities), 100);
+      setTimeout(() => drawRadar(canvas, data, intensities, saturated), 100);
       return;
     }
     if (state.chart) {
@@ -347,6 +351,14 @@
       INTENSITY_COLORS[intensityKey(intensities[a])]
     );
     const labelColors = pointColors;  // axis labels match point colors
+    // Phase 1N: dim the fill when ≥4 axes are red — the radar carries no
+    // directional signal so a vivid blue-fill polygon overstates its info.
+    const fillBg = saturated
+      ? "rgba(156, 163, 175, 0.18)"
+      : "rgba(96, 165, 250, 0.20)";
+    const fillBorder = saturated
+      ? "rgba(156, 163, 175, 0.6)"
+      : "rgba(59, 130, 246, 0.7)";
     state.chart = new window.Chart(canvas, {
       type: "radar",
       data: {
@@ -356,8 +368,8 @@
             label: "axis",
             data,
             fill: true,
-            backgroundColor: "rgba(96, 165, 250, 0.20)",
-            borderColor: "rgba(59, 130, 246, 0.7)",
+            backgroundColor: fillBg,
+            borderColor: fillBorder,
             borderWidth: 1.5,
             pointBackgroundColor: pointColors,
             pointBorderColor: pointColors,

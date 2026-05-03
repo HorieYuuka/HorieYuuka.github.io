@@ -970,6 +970,12 @@ fieldset.note-attrs-field {
   font-family: var(--mono-font, monospace);
 }
 
+.note-attrs-tag--saturated {
+  background: rgba(187, 111, 111, 0.18);
+  color: #8a3a3a;
+  font-weight: 600;
+}
+
 .note-attrs-radar-wrap {
   margin: 1rem auto;
   max-width: 360px;
