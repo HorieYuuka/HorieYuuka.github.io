@@ -316,11 +316,19 @@
       npsStr,
     ].filter(Boolean);
     metaEl.textContent = metaParts.join(" · ");
+    // Phase 1P primary_character: derived single-archetype label shown
+    // as a leading badge so users get the dominant chart type at a glance
+    // (chord-spam / stream-pure / LN-stamping etc.) without composing
+    // the radar mentally.
+    const primaryBadge = row.primary_character && row.primary_character !== "balanced"
+      ? `<span class="note-attrs-tag note-attrs-tag--primary"
+              title="Primary character archetype derived from dominant axis + submetrics. Presentation-only — does not contribute to predictive signal.">${escapeHtml(row.primary_character)}</span>`
+      : "";
     const saturatedBadge = row.framework_saturated
       ? `<span class="note-attrs-tag note-attrs-tag--saturated"
-              title="≥4 axes are red — radar offers no directional signal; difficulty likely lives outside encoded mechanics (endurance, ceiling, sight-read).">Framework saturated</span>`
+              title="≥5 axes are red — radar offers no directional signal; difficulty likely lives outside encoded mechanics (endurance, ceiling, sight-read).">Framework saturated</span>`
       : "";
-    tagsRow.innerHTML = saturatedBadge + (row.tags || [])
+    tagsRow.innerHTML = primaryBadge + saturatedBadge + (row.tags || [])
       .map((t) => `<span class="note-attrs-tag">${escapeHtml(tagLabel(t))}</span>`)
       .join("");
     md5El.textContent = row.md5 || "(unknown)";
