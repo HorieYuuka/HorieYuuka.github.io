@@ -43,14 +43,15 @@ Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stai
       <label class="note-attrs-field">
         <span>Sort by</span>
         <select data-na-sort>
-          <option value="sum:desc">Sum (high→low)</option>
+          <option value="density.nps:desc">NPS (high→low)</option>
+          <option value="density.total_events:desc">Events (high→low)</option>
           <option value="x_chord:desc">Chord (high→low)</option>
           <option value="x_stream:desc">Stream (high→low)</option>
+          <option value="x_peak:desc">Peak (high→low)</option>
+          <option value="x_stair:desc">Stair (high→low)</option>
           <option value="x_scratch:desc">Scratch (high→low)</option>
           <option value="x_soft:desc">Soft (high→low)</option>
           <option value="x_ln:desc">LN (high→low)</option>
-          <option value="x_stair:desc">Stair (high→low)</option>
-          <option value="x_peak:desc">Peak (high→low)</option>
           <option value="x_distraction:desc">Distraction (high→low)</option>
           <option value="header_bpm:desc">BPM (high→low)</option>
           <option value="title:asc">Title (A→Z)</option>

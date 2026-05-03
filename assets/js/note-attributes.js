@@ -231,8 +231,15 @@
 
     const [field, dir] = sortKey.split(":");
     const mul = dir === "asc" ? 1 : -1;
+    // Resolve dotted paths like "density.nps".
+    const lookup = (obj, path) =>
+      path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj);
     state.filtered.sort((a, b) => {
-      const va = a[field], vb = b[field];
+      const va = lookup(a, field), vb = lookup(b, field);
+      const aMissing = va == null, bMissing = vb == null;
+      if (aMissing && bMissing) return 0;
+      if (aMissing) return 1;   // missing always sorts last
+      if (bMissing) return -1;
       if (typeof va === "number" && typeof vb === "number") return (va - vb) * mul;
       return String(va).localeCompare(String(vb)) * mul;
     });
@@ -260,11 +267,16 @@
       const scaleTags = (r.scales || [])
         .map((s) => `<span class="note-attrs-scale-tag">${escapeHtml(s)}</span>`)
         .join("");
+      const familyBadge = r.family
+        ? `<span class="note-attrs-row-family">${escapeHtml(r.family)}</span>`
+        : "";
+      const nps = (r.density && r.density.nps) || 0;
       li.innerHTML = `
         <span class="note-attrs-row-mode note-attrs-row-mode--${r.mode.toLowerCase()}">${r.mode}</span>
         <span class="note-attrs-row-scales">${scaleTags}</span>
+        ${familyBadge}
         <span class="note-attrs-row-title">${escapeHtml(r.title || r.file)}</span>
-        <span class="note-attrs-row-sum">${(r.sum || 0).toFixed(2)}</span>
+        <span class="note-attrs-row-nps">${nps.toFixed(1)}/s</span>
       `;
       li.addEventListener("click", () => {
         state.selected = r.file;
@@ -291,12 +303,17 @@
     const md5El = els.detail.querySelector("[data-na-md5]");
 
     titleEl.textContent = row.title || row.file;
+    const density = row.density || {};
+    const npsStr = density.nps ? `${density.nps.toFixed(1)} notes/s` : null;
+    const totalEvents = density.total_events || row.total_notes || 0;
     const metaParts = [
       row.artist,
       row.mode,
+      row.family || null,
       (row.scales || []).join(" / "),
       `${row.header_bpm || row.effective_bpm || 0} BPM`,
-      `${row.total_notes || 0} notes`,
+      `${totalEvents} events`,
+      npsStr,
     ].filter(Boolean);
     metaEl.textContent = metaParts.join(" · ");
     tagsRow.innerHTML = (row.tags || [])
