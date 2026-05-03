@@ -21,6 +21,7 @@
     extreme_burst: "Extreme Burst",
     flow_break: "Flow Break",
     jack_chart: "Jack Pattern",
+    last_killing: "Last Killing",
     long_scratch: "Long Scratch",
     peak_outlier: "Peak Outlier",
     scratch_burst: "Scratch Burst",
