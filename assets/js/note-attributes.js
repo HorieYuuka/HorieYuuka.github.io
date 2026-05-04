@@ -323,7 +323,7 @@
     // the radar mentally.
     const primaryBadge = row.primary_character && row.primary_character !== "balanced"
       ? `<span class="note-attrs-tag note-attrs-tag--primary"
-              title="Primary character archetype derived from dominant axis + submetrics. Presentation-only — does not contribute to predictive signal.">${escapeHtml(row.primary_character)}</span>`
+              title="Primary character archetype — dominant axis + submetrics reducer. Presentation-only; same label does NOT imply same difficulty. Framework explains 'why character'; IRT (in scales data) explains 'how hard to clear'. Two charts with the same primary_character may still differ in IRT — that residual lives outside the framework's measurement scope.">${escapeHtml(row.primary_character)}</span>`
       : "";
     // Phase 1Q signal-status: 3-tier badge — saturated (≥5 red) /
     // semi_saturated (4 red) / clear. Saturated keeps the prior strong

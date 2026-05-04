@@ -86,6 +86,15 @@ Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stai
     <canvas data-na-radar width="360" height="360"></canvas>
   </div>
 
+  <p class="note-attrs-scope-note">
+    The radar shows <em>character</em> — what mechanics this chart leans on.
+    For <em>clear difficulty</em> (how hard to clear) consult the IRT values
+    in the scales data. Two charts with the same character profile can still
+    differ in IRT — that residual lives outside the framework's measurement
+    scope (specific technique combinations, sight-read complexity, fatigue
+    accumulation patterns).
+  </p>
+
   <details class="note-attrs-section">
     <summary>Ranking</summary>
     <p class="note-attrs-stub" data-na-ranking>

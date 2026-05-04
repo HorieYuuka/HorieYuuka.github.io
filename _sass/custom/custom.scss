@@ -988,6 +988,22 @@ fieldset.note-attrs-field {
   font-weight: 600;
 }
 
+.note-attrs-scope-note {
+  font-size: 0.85em;
+  color: #555;
+  background: rgba(180, 180, 180, 0.10);
+  border-left: 3px solid #aaa;
+  padding: 0.5em 0.8em;
+  margin: 0.8em 0;
+  line-height: 1.5;
+}
+
+.note-attrs-scope-note em {
+  color: #2c5282;
+  font-style: normal;
+  font-weight: 500;
+}
+
 .note-attrs-radar-wrap {
   margin: 1rem auto;
   max-width: 360px;
