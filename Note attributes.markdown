@@ -7,7 +7,7 @@ nav_order: 3.7
 
 ## Note Attributes
 
-Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stair / peak / distraction). Pick a chart on the left to see its octagon, intensity colors, and pattern tags.
+Per-chart fingerprint across 9 axes (chord / stream / scratch / soft / LN / stair / peak / distraction / jack). Pick a chart on the left to see its radar polygon, intensity colors, and pattern tags. The `peak` axis is a Hybrid composite of `jab` (multi-burst repetition) and `uppercut` (single-burst max severity); `jack` (Phase 1U, 2026-05-05) captures stream-disrupting same-lane jack character above a 20-pair floor.
 
 * Each axis carries an **intensity color** (green / yellow / red) derived from the active corpus distribution: `green` is the bottom third of nonzero charts on that axis, `yellow` the middle third, `red` the top third. Inactive axes (`null`) are gray. SP and DP are calibrated separately — **not directly comparable on raw axis values**.
 * **Pattern tags** are boolean flags for specific patterns the axis colors cannot capture: `visual_gimmick` (BPM-trick chart), `scratch_chord`, `long_scratch` / `complex_long_scratch`, `advanced_ln`, `flow_break`, `burst_focused` / `sustained` / `peak_outlier`, etc.
@@ -53,6 +53,7 @@ Per-chart fingerprint across 8 axes (chord / stream / scratch / soft / LN / stai
           <option value="x_soft:desc">Soft (high→low)</option>
           <option value="x_ln:desc">LN (high→low)</option>
           <option value="x_distraction:desc">Distraction (high→low)</option>
+          <option value="x_jack:desc">Jack (high→low)</option>
           <option value="header_bpm:desc">BPM (high→low)</option>
           <option value="title:asc">Title (A→Z)</option>
         </select>

@@ -2,8 +2,11 @@
   "use strict";
 
   const PAGE_SIZE = 50;
-  const AXES = ["chord", "stream", "scratch", "soft", "ln", "stair", "peak", "distraction"];
-  const AXIS_LABELS = ["Chord", "Stream", "Scratch", "Soft", "LN", "Stair", "Peak", "Distraction"];
+  // Phase 1U (2026-05-05): 9-axis radar — added `jack` for stream-disrupting
+  // jack character (gravitronic-class). `peak` semantic redesigned to
+  // Hybrid (peak_jab + peak_uppercut) — sub-features surface on detail row.
+  const AXES = ["chord", "stream", "scratch", "soft", "ln", "stair", "peak", "distraction", "jack"];
+  const AXIS_LABELS = ["Chord", "Stream", "Scratch", "Soft", "LN", "Stair", "Peak", "Distraction", "Jack"];
 
   // Boolean pattern flags emitted by `assign_tags` (BMS.Tools/note_attributes.py).
   // Per-axis strength tags (chord_heavy / stream_heavy / peak_intense /
@@ -22,7 +25,6 @@
     flow_break: "Flow Break",
     jack_chart: "Jack Pattern",
     last_killing: "Last Killing",
-    last_killing_extreme: "Last Killing — Extreme",
     long_scratch: "Long Scratch",
     peak_outlier: "Peak Outlier",
     scratch_burst: "Scratch Burst",
@@ -31,9 +33,11 @@
     visual_gimmick: "Visual Gimmick",
   };
 
-  // 8-axis universal intensity scheme. Each chart's `axis_intensities`
-  // dict maps axis name to one of these levels; null means the axis is
-  // inactive on the chart (raw value 0).
+  // 9-axis universal intensity scheme (Phase 1U: jack added). Each chart's
+  // `axis_intensities` dict maps axis name to one of these levels; null
+  // means the axis is inactive on the chart (raw value 0). Note that
+  // `jack` is zero-inflated (~80% SP / 52% DP) — most charts read null on
+  // jack since they don't pass the floor 20 jack_in_stream_pairs gate.
   const INTENSITY_COLORS = {
     red: "#bb6f6f",      // top third of nonzero corpus
     yellow: "#d4a017",   // middle third
@@ -326,18 +330,19 @@
       ? `<span class="note-attrs-tag note-attrs-tag--primary"
               title="Primary character archetype — dominant axis + submetrics reducer. Presentation-only; same label does NOT imply same difficulty. Framework explains 'why character'; IRT (in scales data) explains 'how hard to clear'. Two charts with the same primary_character may still differ in IRT — that residual lives outside the framework's measurement scope.">${escapeHtml(row.primary_character)}</span>`
       : "";
-    // Phase 1Q signal-status: 3-tier badge — saturated (≥5 red) /
-    // semi_saturated (4 red) / clear. Saturated keeps the prior strong
-    // warning copy; semi_saturated adds a yellow "weakening" badge so
-    // users near the cliff don't over-read the radar as directional.
+    // Phase 1Q signal-status (Phase 1U recalibrated to 9-axis): 3-tier
+    // badge — saturated (≥6 red of 9) / semi_saturated (==5 red of 9) /
+    // clear. Saturated keeps the prior strong warning copy; semi_saturated
+    // adds a yellow "weakening" badge so users near the cliff don't
+    // over-read the radar as directional.
     const status = row.framework_signal_status || (row.framework_saturated ? "saturated" : "clear");
     let signalBadge = "";
     if (status === "saturated") {
       signalBadge = `<span class="note-attrs-tag note-attrs-tag--saturated"
-              title="≥5 axes are red — radar offers no directional signal; difficulty likely lives outside encoded mechanics (endurance, ceiling, sight-read).">Framework saturated</span>`;
+              title="≥6 of 9 axes are red — radar offers no directional signal; difficulty likely lives outside encoded mechanics (endurance, ceiling, sight-read).">Framework saturated</span>`;
     } else if (status === "semi_saturated") {
       signalBadge = `<span class="note-attrs-tag note-attrs-tag--semi-saturated"
-              title="4 axes are red — framework signal weakening. Within-cohort rank discrimination is reduced; consult IRT for clear-difficulty rank.">Framework signal weakening</span>`;
+              title="5 of 9 axes are red — framework signal weakening. Within-cohort rank discrimination is reduced; consult IRT for clear-difficulty rank.">Framework signal weakening</span>`;
     }
     tagsRow.innerHTML = primaryBadge + signalBadge + (row.tags || [])
       .map((t) => `<span class="note-attrs-tag">${escapeHtml(tagLabel(t))}</span>`)
@@ -347,7 +352,7 @@
     const canvas = els.detail.querySelector("[data-na-radar]");
     const data = AXES.map((a) => row["x_" + a] || 0);
     const intensities = row.axis_intensities || {};
-    drawRadar(canvas, data, intensities, status);
+    drawRadar(canvas, data, intensities, status, row);
   }
 
   function intensityKey(level) {
@@ -355,10 +360,10 @@
     return level == null ? "null" : level;
   }
 
-  function drawRadar(canvas, data, intensities, signalStatus) {
+  function drawRadar(canvas, data, intensities, signalStatus, row) {
     if (!window.Chart) {
       // Chart.js not yet loaded; retry shortly
-      setTimeout(() => drawRadar(canvas, data, intensities, signalStatus), 100);
+      setTimeout(() => drawRadar(canvas, data, intensities, signalStatus, row), 100);
       return;
     }
     if (state.chart) {
@@ -415,7 +420,18 @@
                 const v = ctx.parsed.r;
                 const lvl = intensities[axis];
                 const lvlLabel = INTENSITY_LABEL[intensityKey(lvl)];
-                return `${AXIS_LABELS[ctx.dataIndex]}: ${v.toFixed(3)} (${lvlLabel})`;
+                const lines = [`${AXIS_LABELS[ctx.dataIndex]}: ${v.toFixed(3)} (${lvlLabel})`];
+                // Phase 1U: peak axis exposes Hybrid sub-features
+                // (peak_jab = multi-burst L², peak_uppercut = single-
+                // burst max). Show breakdown so users can read which
+                // peak character dominates.
+                if (axis === "peak" && row && (row.peak_jab != null || row.peak_uppercut != null)) {
+                  const jab = Number(row.peak_jab || 0);
+                  const upp = Number(row.peak_uppercut || 0);
+                  lines.push(`  jab (multi-burst): ${jab.toFixed(3)}`);
+                  lines.push(`  uppercut (single): ${upp.toFixed(3)}`);
+                }
+                return lines;
               },
             },
           },
