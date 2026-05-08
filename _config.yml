@@ -90,6 +90,7 @@ sass:
 #
 exclude:
   - .sass-cache/
+  - _handoffs/
 #   - .jekyll-cache/
 #   - gemfiles/
 #   - Gemfile
