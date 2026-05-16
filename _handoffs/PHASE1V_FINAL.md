@@ -24,6 +24,12 @@ Phase 1V audio FFT 가설 (user 2026-05-08):
 Empirical (post-regen 2026-05-16):
   AEζηκ baseline:  WF=5  ρ_h=0.8556  (pre-K3: WF=6 ρ=0.8529)
   → Pareto-strict: WF -1, ρ +0.003
+
+Phase 1V purity factor (2026-05-17, user adoption):
+  x_stair := x_stair_raw × (1 - 0.5 × x_chord)
+  User audit: Empress[フルマラソン]/Complex[さぼてんのとげザ－] (HIGH, x_chord ~0.27)
+  vs Icyxis[Mystery]/覚醒[DEATHER] (MEDIUM, x_chord ~0.48). Multiplier discriminates.
+  Post-regen baseline: AEζηκ WF=8 ρ_h=0.8653 (non-Pareto-strict: WF +3, ρ +0.010).
 ```
 
 ---
