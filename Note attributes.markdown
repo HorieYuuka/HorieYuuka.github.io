@@ -3,6 +3,7 @@ layout: scale_analyzer
 title: "Note attributes"
 permalink: /Note-attributes
 nav_order: 3.7
+has_children: true
 ---
 
 ## Note Attributes — Chart comparison
@@ -12,6 +13,10 @@ character + key metrics side by side. Open search (Ctrl+K or `/`) to pick
 charts; each chart lives in a card with a small radar + 1-sec density
 strip + tags, and the table below lines up NPS · Pos/s · the 7 character
 axes · Peak · BPM per column.
+
+> **Framework paper** — formal write-up of the 7-axis design, felt-time
+> normalization, calibration, validation, and limitations:
+> [Read here](/Note-attributes/Framework-paper)
 
 <details class="note-attrs-help" markdown="1">
 <summary><strong>What the table columns mean</strong> (click to expand)</summary>
@@ -75,14 +80,10 @@ together with curator labels, not NPS alone.
     <input type="search" class="note-attrs-search-input" data-na-search-input
            placeholder="title or artist" autocomplete="off"
            aria-label="Search title or artist">
-    <span class="note-attrs-search-modes">
-      <label><input type="checkbox" data-na-mode value="SP" checked> SP</label>
-      <label><input type="checkbox" data-na-mode value="DP" checked> DP</label>
-    </span>
     <button type="button" class="note-attrs-search-close" data-na-search-close
-            aria-label="Close search">&times;</button>
+            aria-label="Close search">Close</button>
   </form>
-  <ol class="note-attrs-search-results" data-na-search-results></ol>
+  <ul class="note-attrs-search-results" data-na-search-results></ul>
   <p class="note-attrs-search-hint">
     <kbd>↑</kbd> <kbd>↓</kbd> navigate
     · <kbd>Enter</kbd> select
