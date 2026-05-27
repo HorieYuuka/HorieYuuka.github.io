@@ -6,5 +6,7 @@ vendor
 scripts/
 AGENT/
 AGENTS/
+_handoffs/
 .playwright-mcp/
 .claude/
+*.stackdump

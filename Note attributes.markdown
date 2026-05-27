@@ -5,105 +5,90 @@ permalink: /Note-attributes
 nav_order: 3.7
 ---
 
-## Note Attributes
+## Note Attributes — Chart comparison
 
-Per-chart fingerprint across 9 axes (chord / stream / scratch / soft / LN / stair / peak / distraction / jack). Pick a chart on the left to see its radar polygon, intensity colors, and pattern tags. The `peak` axis is a Hybrid composite of `jab` (multi-burst repetition) and `uppercut` (single-burst max severity); `jack` (Phase 1U, 2026-05-05) captures stream-disrupting same-lane jack character above a 20-pair floor.
+Add up to **8 charts** to the comparison set and compare their radar
+character + key metrics side by side. Open search (Ctrl+K or `/`) to pick
+charts; each chart lives in a card with a small radar + 1-sec density
+strip + tags, and the table below lines up NPS · Pos/s · the 7 character
+axes · Peak · BPM per column.
 
-* Each axis carries an **intensity color** (green / yellow / red) derived from the active corpus distribution: `green` is the bottom third of nonzero charts on that axis, `yellow` the middle third, `red` the top third. Inactive axes (`null`) are gray. SP and DP are calibrated separately — **not directly comparable on raw axis values**.
-* **Pattern tags** are boolean flags for specific patterns the axis colors cannot capture: `visual_gimmick` (BPM-trick chart), `scratch_chord`, `long_scratch` / `complex_long_scratch`, `advanced_ln`, `flow_break`, `burst_focused` / `sustained` / `peak_outlier`, etc.
-* Detail data loads on demand from `Resource/NoteAttributes/attrs/`.
+<details class="note-attrs-help" markdown="1">
+<summary><strong>What the table columns mean</strong> (click to expand)</summary>
+
+**Density columns** — measured over the felt-time-corrected chart (BPM-trick
+charts are normalized first, see the [framework
+paper](https://github.com/HorieYuuka/HorieYuuka.github.io) for details).
+
+| Column | Meaning |
+|---|---|
+| **BPM** | Header BPM, or felt-BPM-corrected effective BPM |
+| **NPS min / mean / max** | **Raw note count** per second over aligned 1-sec felt-time buckets (active only). `max` matches the highest bar in the card's density strip. |
+| **Pos/s** | **Distinct timing positions** per second (a chord counts as 1). The decomposition is `NPS = Pos/s × avg_chord_size` — same NPS can come from a slow chord wall (low Pos/s, big chord) or fast varied stream (high Pos/s, small chord). |
+
+**Character axes** — 0–1 normalized via shape_v2 candidate ratios (event
+count for each axis divided by total events). Axes are *independent* —
+one event may count toward several axes, and the ratios do *not* sum to 1.
+
+| Axis | What it captures |
+|---|---|
+| **Chord** | Events at positions with ≥3 simultaneous lanes |
+| **Stream** | Sustained per-second density (±0.75-beat windowed NPS ≥ 8.0, scratch-excluded) |
+| **Scratch** | Share of events on the turntable lane |
+| **Soft** | Share of events on off-base BPM segments (soflan-with-notes) |
+| **LN** | Share of long-note (hold) events on KEY lanes |
+| **Stair** | Adjacent-lane chains (length ≥ 3, ±1 lane, tick gap [6,12]), p99-normalized, chord-purity adjusted |
+| **Distraction** | SP: scratch interfering with stream flow (v3 product-sum). DP: 3-component mean — hand-role transition + same-side S+far-key + same-side S+near-key. |
+| **Peak** | Peak burst severity (peak_jab + peak_uppercut, drill-down; not on the radar) |
+
+**Per-cell "top N%"** — the small line under each value is the chart's
+percentile *within the same mode (SP or DP) corpus*. "top 5 %" means the
+chart sits at or above the 95th percentile of the whole mode for that
+metric. Read together with the chart's curator family/tier (e.g. `st4`,
+`★★5`) to interpret.
+
+**Caveat — character is not difficulty**: the axes describe *what kind
+of chart this is*, not *how hard it is to clear*. Two charts with the
+same NPS may belong to very different tiers (see e.g. Skydive st4 vs
+FREEDOM DiVE [FOUR DIMENSIONS] st8/★★5). Use the radar + tags + Pos/s
+together with curator labels, not NPS alone.
+
+</details>
+
 
 <div class="note-attrs" data-note-attrs
      data-summary-url="/Resource/NoteAttributes/summary.json"
      data-attrs-base="/Resource/NoteAttributes/attrs/">
 
-  <aside class="note-attrs-side">
-    <div class="note-attrs-filters">
-      <label class="note-attrs-field">
-        <span>Search</span>
-        <input type="search" data-na-search placeholder="title or artist" autocomplete="off">
-      </label>
+  <button type="button" class="note-attrs-search-trigger" data-na-search-open>
+    <span class="note-attrs-search-trigger-label">Search by title or artist…</span>
+    <kbd class="note-attrs-search-trigger-kbd">Ctrl+K</kbd>
+  </button>
 
-      <fieldset class="note-attrs-field">
-        <legend>Mode</legend>
-        <label><input type="checkbox" data-na-mode value="SP" checked> SP</label>
-        <label><input type="checkbox" data-na-mode value="DP" checked> DP</label>
-      </fieldset>
+  <div class="note-attrs-compare-cards" data-na-compare-cards></div>
 
-      <fieldset class="note-attrs-field">
-        <legend>Scale</legend>
-        <div data-na-scales class="note-attrs-pillset">Loading…</div>
-      </fieldset>
-
-      <fieldset class="note-attrs-field">
-        <legend>Tags</legend>
-        <div data-na-tags class="note-attrs-pillset">Loading…</div>
-      </fieldset>
-
-      <label class="note-attrs-field">
-        <span>Sort by</span>
-        <select data-na-sort>
-          <option value="density.nps:desc">NPS (high→low)</option>
-          <option value="density.total_events:desc">Events (high→low)</option>
-          <option value="x_chord:desc">Chord (high→low)</option>
-          <option value="x_stream:desc">Stream (high→low)</option>
-          <option value="x_peak:desc">Peak (high→low)</option>
-          <option value="x_stair:desc">Stair (high→low)</option>
-          <option value="x_scratch:desc">Scratch (high→low)</option>
-          <option value="x_soft:desc">Soft (high→low)</option>
-          <option value="x_ln:desc">LN (high→low)</option>
-          <option value="x_distraction:desc">Distraction (high→low)</option>
-          <option value="x_jack:desc">Jack (high→low)</option>
-          <option value="header_bpm:desc">BPM (high→low)</option>
-          <option value="title:asc">Title (A→Z)</option>
-        </select>
-      </label>
-    </div>
-
-    <p class="note-attrs-count" data-na-count>Loading summary…</p>
-
-    <ol class="note-attrs-list" data-na-list></ol>
-
-    <div class="note-attrs-pager">
-      <button type="button" class="btn" data-na-prev>‹ prev</button>
-      <span data-na-page>—</span>
-      <button type="button" class="btn" data-na-next>next ›</button>
-    </div>
-  </aside>
-
-  <section class="note-attrs-detail" data-na-detail>
-    <p class="note-attrs-empty">Pick a chart from the list.</p>
-  </section>
+  <div class="note-attrs-compare-table-wrap" data-na-compare-table></div>
 </div>
 
-<template id="note-attrs-detail-tpl">
-  <header class="note-attrs-detail-head">
-    <p class="note-attrs-detail-title" data-na-title></p>
-    <p data-na-meta class="note-attrs-meta"></p>
-    <p data-na-tags-row class="note-attrs-tags-row"></p>
-  </header>
-
-  <div class="note-attrs-radar-wrap">
-    <canvas data-na-radar width="360" height="360"></canvas>
-  </div>
-
-  <p class="note-attrs-scope-note">
-    The radar shows <em>character</em> — what mechanics this chart leans on.
-    For <em>clear difficulty</em> (how hard to clear) consult the IRT values
-    in the scales data. Two charts with the same character profile can still
-    differ in IRT — that residual lives outside the framework's measurement
-    scope (specific technique combinations, sight-read complexity, fatigue
-    accumulation patterns).
+<dialog class="note-attrs-search-modal" data-na-search-modal aria-label="Search charts">
+  <form method="dialog" class="note-attrs-search-form" data-na-search-form>
+    <input type="search" class="note-attrs-search-input" data-na-search-input
+           placeholder="title or artist" autocomplete="off"
+           aria-label="Search title or artist">
+    <span class="note-attrs-search-modes">
+      <label><input type="checkbox" data-na-mode value="SP" checked> SP</label>
+      <label><input type="checkbox" data-na-mode value="DP" checked> DP</label>
+    </span>
+    <button type="button" class="note-attrs-search-close" data-na-search-close
+            aria-label="Close search">&times;</button>
+  </form>
+  <ol class="note-attrs-search-results" data-na-search-results></ol>
+  <p class="note-attrs-search-hint">
+    <kbd>↑</kbd> <kbd>↓</kbd> navigate
+    · <kbd>Enter</kbd> select
+    · <kbd>Esc</kbd> close
   </p>
-
-  <details class="note-attrs-section">
-    <summary>Ranking</summary>
-    <p class="note-attrs-stub" data-na-ranking>
-      Ranking integration is not wired yet. When the REST endpoint is available,
-      lamp / score / population data for md5 <code data-na-md5></code> will appear here.
-    </p>
-  </details>
-</template>
+</dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
 <script src="{{ '/assets/js/note-attributes.js' | relative_url }}" defer></script>

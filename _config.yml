@@ -91,6 +91,15 @@ sass:
 exclude:
   - .sass-cache/
   - _handoffs/
+  # Local-serve speed-up: skip the 8556 per-chart attrs JSON files during
+  # Jekyll scan/copy. They're already in _site from the last full build
+  # (or from `export_to_site.py` + a manual `cp -r`); paired with
+  # `keep_files` below so Jekyll won't wipe them on rebuild. Remove this
+  # line if you want a true clean build.
+  - Resource/NoteAttributes/attrs
+
+keep_files:
+  - Resource
 #   - .jekyll-cache/
 #   - gemfiles/
 #   - Gemfile
