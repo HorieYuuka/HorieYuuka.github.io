@@ -812,31 +812,43 @@
 }
 
 .note-attrs-search-close {
-  border: 0;
+  border: 1px solid var(--border-color, #d0d7de);
   background: transparent;
-  font-size: 1.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
   line-height: 1;
-  padding: 0.2rem 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 4px;
   cursor: pointer;
   color: inherit;
-  opacity: 0.6;
+  opacity: 0.75;
 }
 
 .note-attrs-search-close:hover {
   opacity: 1;
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .note-attrs-search-results {
   list-style: none;
   margin: 0;
-  padding: 0.25rem 0;
+  // Override `.main-content ul, .main-content ol { padding-left: 1.5em }`
+  // from just-the-docs that otherwise indents the whole result list.
+  padding: 0.25rem 0 !important;
   max-height: 50vh;
   overflow-y: auto;
 }
 
+// Just-the-docs draws bullets via `.main-content ul > li::before { content: "•" }`
+// and numbers via `.main-content ol > li::before { content: counter(...) }`.
+// Suppress both for our search result li so the modal stays a clean list.
+.note-attrs-search-results > li::before {
+  content: none !important;
+}
+
 .note-attrs-search-result {
   display: grid;
-  grid-template-columns: auto auto 1fr auto auto;
+  grid-template-columns: auto auto 1fr auto;
   align-items: center;
   gap: 0.5rem;
   padding: 0.4rem 0.75rem;
@@ -881,12 +893,6 @@
   max-width: 160px;
 }
 
-.note-attrs-search-nps {
-  font-family: var(--mono-font, monospace);
-  font-size: 0.78rem;
-  opacity: 0.8;
-}
-
 .note-attrs-search-hint {
   margin: 0;
   padding: 0.5rem 0.75rem;
@@ -906,33 +912,22 @@
   margin: 0 0.1rem;
 }
 
-// Phase 1Z-1G (2026-05-25): mode toggle lives inside the search dialog
-// form. Inline checkbox pair next to the search input.
-.note-attrs-search-modes {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0.8;
-}
-
-.note-attrs-search-modes label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  cursor: pointer;
-}
-
 // Mode badge inside search results — color tokens kept from the legacy
 // list row styling so SP / DP remain visually distinct.
 .note-attrs-row-mode--sp { background: #dbeafe; color: #1e3a8a; }
 .note-attrs-row-mode--dp { background: #fee2e2; color: #7f1d1d; }
 
 .note-attrs-empty {
-  opacity: 0.6;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  margin: 2rem 0;
+  min-height: 200px;
+  margin: 0;
+  opacity: 0.6;
+  line-height: 1.6;
 }
 
 // Phase 1Z-1G (2026-05-25): compare view — Row 2 (1×4 card row) + Row 3
@@ -1142,9 +1137,9 @@
   font-size: 0.82rem;
   font-family: var(--mono-font, monospace);
   font-variant-numeric: tabular-nums;
-  // Phase 1Z-1G (2026-05-25): title column has a fixed width; the 9
-  // metric columns split the remaining width evenly via table-layout:
-  // fixed, so the table never overflows .main-content horizontally.
+  // Phase 1Z-1N (2026-05-27): title now lives in a full-row banner above
+  // each chart's values row, so the table no longer has a fixed-width
+  // title column. Metric columns share 100% width evenly.
   width: 100%;
   table-layout: fixed;
 
@@ -1167,37 +1162,74 @@
     border-top: 1px solid var(--border-color, #d0d7de);
   }
 
-  tbody th {
-    border-left: 1px solid var(--border-color, #d0d7de);
+  // Phase 1Z-1N: thead is removed (per-chart blocks each have their own
+  // header row). Left-edge border is added explicitly on the leftmost cell
+  // of each row in the block-specific rules below.
+
+  // Override just-the-docs theme defaults that strip our edge borders:
+  //   `tbody tr:last-of-type th/td { border-bottom: 0 }`  → trims bottom
+  //   `th:first-of-type, td:first-of-type { border-left: 0 }` → trims left
+  // Both are designed for typical doc tables; ours wants explicit edges.
+  tbody tr:last-of-type th,
+  tbody tr:last-of-type td {
+    border-bottom: 1px solid var(--border-color, #d0d7de);
   }
-  thead th:first-child {
+  tbody tr:last-of-type td {
+    padding-bottom: 0.3rem; // restore standard padding (theme overrode to 0.75rem)
+  }
+  th:first-of-type,
+  td:first-of-type {
     border-left: 1px solid var(--border-color, #d0d7de);
   }
 }
 
-// Leftmost column (chart title) is sticky — stays pinned during
-// horizontal scroll so the title is always visible against the metric
-// columns on the right. Header-row title cell sticks at row 1 col 1.
-.note-attrs-compare-table .note-attrs-compare-rowlabel {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  text-align: left;
+// Per-chart block: title row (full-width banner spanning all metric
+// columns) followed by a values row. Each chart = 2 rows. Replaces the
+// prior "Title column" layout — removes ~300px of left-side fixed width
+// so metric columns spread evenly (NPS mean no longer clipped, IRT fits).
+.note-attrs-compare-titlerow {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.note-attrs-compare-titlecell {
+  text-align: left !important;
   font-weight: 600;
-  background: rgba(0, 0, 0, 0.03);
-  // Title column is fixed-width; metric columns share what's left.
-  // Iterations: 14rem → +20px → +120px per user feedback.
-  width: calc(14rem + 120px);
-  display: table-cell;
-  // The cell itself MUST allow children to overflow into ellipsis so the
-  // inner title span (not the mode badge) is what gets clipped.
-  overflow: hidden;
-  white-space: nowrap;
+  padding: 0.4rem 0.6rem !important;
+  border-top: 2px solid var(--border-color, #d0d7de) !important;
+  border-left: 1px solid var(--border-color, #d0d7de) !important;
 }
 
-.note-attrs-compare-table thead .note-attrs-compare-rowlabel {
-  z-index: 2;
+// Leftmost cell of header/value rows needs its own left border —
+// without a thead/sticky-left column, the table otherwise has no
+// left edge drawn.
+.note-attrs-compare-headerrow th:first-child,
+.note-attrs-compare-valuerow td:first-child {
+  border-left: 1px solid var(--border-color, #d0d7de);
+}
+
+.note-attrs-compare-family {
+  display: inline-block;
+  margin-left: 0.4rem;
+  font-size: 0.72rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 3px;
   background: rgba(0, 0, 0, 0.06);
+  opacity: 0.85;
+  vertical-align: middle;
+}
+
+// Per-chart repeated header row — same look as thead headers since
+// thead is gone (each block is self-contained).
+.note-attrs-compare-headerrow th {
+  background: rgba(0, 0, 0, 0.04);
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.note-attrs-compare-valuerow td {
+  // Values row inherits the .note-attrs-compare-td styling; no special
+  // override here. Border-bottom from th/td default closes the block.
 }
 
 // Sortable column headers — click to sort, click again to toggle dir.

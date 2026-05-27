@@ -90,12 +90,16 @@
     // Phase 1Z-1G (2026-05-25): mode checkboxes live inside the search
     // dialog now. The aside (with the paginated list / scale / tag / sort
     // filters) was removed — chart navigation is 100% via search.
-    modes: Array.from(document.querySelectorAll("[data-na-mode]")),
     compareCards: root.querySelector("[data-na-compare-cards]"),
     compareTable: root.querySelector("[data-na-compare-table]"),
   };
 
-  const SEARCH_MAX_RESULTS = 50;
+  // Unlimited search results — full corpus pass per query. Heaviest realistic
+  // case: empty/single-char query matches ~thousands → ~200-400ms render.
+  // Mitigated by SEARCH_INPUT_DEBOUNCE_MS so render only runs after typing
+  // stops, not on every keystroke.
+  const SEARCH_MAX_RESULTS = Infinity;
+  const SEARCH_INPUT_DEBOUNCE_MS = 80;
   const COMPARE_MAX = 8;
 
   // Phase 1Z-1G (2026-05-25): page is now a comparison view — up to 4
@@ -222,12 +226,6 @@
   }
 
   function bindEvents() {
-    els.modes.forEach((cb) =>
-      cb.addEventListener("change", () => {
-        state.searchActive = 0;
-        renderSearchResults();
-      })
-    );
     bindSearchModal();
   }
 
@@ -244,9 +242,11 @@
     els.searchModal.addEventListener("click", (e) => {
       if (e.target === els.searchModal) closeSearch();
     });
+    let searchInputTimer = null;
     els.searchInput.addEventListener("input", () => {
       state.searchActive = 0;
-      renderSearchResults();
+      clearTimeout(searchInputTimer);
+      searchInputTimer = setTimeout(renderSearchResults, SEARCH_INPUT_DEBOUNCE_MS);
     });
     els.searchInput.addEventListener("keydown", (e) => {
       const items = els.searchResults.querySelectorAll("li");
@@ -304,27 +304,27 @@
     const q = els.searchInput.value.trim().toLowerCase();
     els.searchResults.innerHTML = "";
     if (!q) return;
-    const modes = activeModes();
     const matches = [];
     for (const r of state.rows) {
-      if (!modes.has(r.mode)) continue;
       const hay = ((r.title || "") + " " + (r.artist || "")).toLowerCase();
       if (!hay.includes(q)) continue;
       matches.push(r);
       if (matches.length >= SEARCH_MAX_RESULTS) break;
     }
+    // Mode ordering: SP before DP (everything else last). Stable sort
+    // preserves the within-mode original order from state.rows.
+    const MODE_RANK = { SP: 0, DP: 1 };
+    matches.sort((a, b) => (MODE_RANK[a.mode] ?? 2) - (MODE_RANK[b.mode] ?? 2));
     matches.forEach((r, i) => {
       const li = document.createElement("li");
       li.className = "note-attrs-search-result";
       if (i === state.searchActive) li.classList.add("is-active");
-      const nps = (r.density && r.density.nps) || 0;
       const family = r.family ? `<span class="note-attrs-search-family">${escapeHtml(r.family)}</span>` : "";
       li.innerHTML = `
         <span class="note-attrs-search-mode note-attrs-row-mode--${r.mode.toLowerCase()}">${r.mode}</span>
         ${family}
         <span class="note-attrs-search-title">${escapeHtml(r.title || r.file)}</span>
         <span class="note-attrs-search-artist">${escapeHtml(r.artist || "")}</span>
-        <span class="note-attrs-search-nps">${nps.toFixed(1)}/s</span>
       `;
       li.addEventListener("click", () => {
         const added = addToCompare(r);
@@ -334,10 +334,6 @@
       });
       els.searchResults.appendChild(li);
     });
-  }
-
-  function activeModes() {
-    return new Set(els.modes.filter((cb) => cb.checked).map((cb) => cb.value));
   }
 
   // Phase 1Z-1G (2026-05-25): comparison set management.
@@ -465,7 +461,7 @@
     state.compareCharts.clear();
 
     if (!state.compareSet.length) {
-      els.compareCards.innerHTML = `<p class="note-attrs-empty">No charts yet — open search (Ctrl+K) to add up to ${COMPARE_MAX}.</p>`;
+      els.compareCards.innerHTML = `<p class="note-attrs-empty">No charts yet.<br>Open search (Ctrl+K) to add up to ${COMPARE_MAX}.</p>`;
       return;
     }
     els.compareCards.innerHTML = state.compareSet.map((r, i) => {
@@ -671,6 +667,10 @@
         const single = (r && r.header_bpm) || (r && r.effective_bpm) || v;
         return String(Math.round(single));
       } },
+    { key: "irt_easy", label: "EASY", get: (r) => (r.irt && typeof r.irt.easy === "number") ? r.irt.easy : null,
+      fmt: (v) => (v == null ? "—" : v.toFixed(2)) },
+    { key: "irt_hard", label: "HARD", get: (r) => (r.irt && typeof r.irt.hard === "number") ? r.irt.hard : null,
+      fmt: (v) => (v == null ? "—" : v.toFixed(2)) },
     // Phase 1Z-1G (2026-05-25): NPS split into min / mean / max — all
     // over aligned 1-sec felt-time buckets (active only). nps_mean
     // falls back to density.nps when measure_density wasn't recorded.
@@ -693,7 +693,7 @@
     { key: "soft",        label: "Soft",        axis: "soft",        get: (r) => r.x_soft || 0,        fmt: (v) => v.toFixed(3) },
     { key: "ln",          label: "LN",          axis: "ln",          get: (r) => r.x_ln || 0,          fmt: (v) => v.toFixed(3) },
     { key: "stair",       label: "Stair",       axis: "stair",       get: (r) => r.x_stair || 0,       fmt: (v) => v.toFixed(3) },
-    { key: "distraction", label: "Distraction", axis: "distraction", get: (r) => r.x_distraction || 0, fmt: (v) => v.toFixed(3) },
+    { key: "distraction", label: "Dist", axis: "distraction", get: (r) => r.x_distraction || 0, fmt: (v) => v.toFixed(3) },
     { key: "peak",        label: "Peak",        axis: "peak",        get: (r) => r.x_peak || 0,        fmt: (v) => v.toFixed(3) },
   ];
 
@@ -743,21 +743,28 @@
       els.compareTable.innerHTML = "";
       return;
     }
-    const titleHeader = `<th class="note-attrs-compare-rowlabel note-attrs-compare-sortable" data-na-sort="title">Title${sortIndicator("title")}</th>`;
     const headerCells = COMPARE_COLS
       .map((c) => `<th class="note-attrs-compare-sortable" data-na-sort="${escapeHtml(c.key)}">${escapeHtml(c.label)}${sortIndicator(c.key)}</th>`)
       .join("");
 
+    const colCount = COMPARE_COLS.length;
     const sorted = getSortedCompareSet();
+    // Per-chart block = title row (spans all metric columns) + header row
+    // (repeated for legibility while scrolling) + values row.
     const bodyRows = sorted.map((r) => {
       const modeCls = `note-attrs-row-mode--${r.mode.toLowerCase()}`;
-      const titleCell = `
-        <th class="note-attrs-compare-rowlabel" title="${escapeHtml(r.title || r.file)}">
-          <span class="note-attrs-compare-mode ${modeCls}">${r.mode}</span>
-          <span class="note-attrs-compare-rowtitle">${escapeHtml(r.title || r.file)}</span>
-        </th>
+      const familyBadge = r.family ? `<span class="note-attrs-compare-family">${escapeHtml(r.family)}</span>` : "";
+      const titleRow = `
+        <tr class="note-attrs-compare-titlerow">
+          <th colspan="${colCount}" class="note-attrs-compare-titlecell" title="${escapeHtml(r.title || r.file)}">
+            <span class="note-attrs-compare-mode ${modeCls}">${r.mode}</span>
+            ${familyBadge}
+            <span class="note-attrs-compare-rowtitle">${escapeHtml(r.title || r.file)}</span>
+          </th>
+        </tr>
       `;
-      const cells = COMPARE_COLS.map((c) => {
+      const headerRow = `<tr class="note-attrs-compare-headerrow">${headerCells}</tr>`;
+      const valueCells = COMPARE_COLS.map((c) => {
         const v = c.get(r);
         let cls = "note-attrs-compare-td";
         let style = "";
@@ -778,16 +785,19 @@
           ${pctLine}
         </td>`;
       }).join("");
-      return `<tr>${titleCell}${cells}</tr>`;
+      const valueRow = `<tr class="note-attrs-compare-valuerow">${valueCells}</tr>`;
+      return titleRow + headerRow + valueRow;
     }).join("");
 
     els.compareTable.innerHTML = `
       <table class="note-attrs-compare-table">
-        <thead><tr>${titleHeader}${headerCells}</tr></thead>
         <tbody>${bodyRows}</tbody>
       </table>
     `;
 
+    // Sort handlers bind to ALL header cells (each chart block has its
+    // own repeated header). Clicking any "BPM" header sorts the chart
+    // blocks globally; sort indicators show on every repetition.
     els.compareTable.querySelectorAll("[data-na-sort]").forEach((th) => {
       th.addEventListener("click", () => handleSort(th.dataset.naSort));
     });
