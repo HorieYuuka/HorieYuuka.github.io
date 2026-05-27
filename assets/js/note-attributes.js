@@ -29,6 +29,20 @@
   // for the boolean conditions is `assign_tags` in
   // BMS.Tools/scripts/note_attributes.py — keep these descriptions in
   // sync if a tag's firing rule changes.
+  // Phase 1Z-1O (2026-05-28): per-axis corpus p99 for radar normalization.
+  // raw `x_axis ∈ [0,1]` makes sparse axes (LN, scratch, soft) read tiny
+  // even at the red tier. radar maps each value to `min(x / p99, 1.0)` so
+  // 1.0 on the polar = "this axis's top 1 %". p99 (over p95) preserves
+  // within-red differentiation — a chart at the corpus 96-99 percentile
+  // sits ~0.5-1.0 on radar instead of all stacked at 1.0. Captured
+  // 2026-05-28 from the live summary; refresh on corpus shift.
+  const AXIS_RADAR_NORM = {
+    SP: { chord: 0.9147, stream: 0.9784, scratch: 0.6611, soft: 0.9645,
+          ln: 0.5916, stair: 0.4959, distraction: 0.5837 },
+    DP: { chord: 0.8453, stream: 0.9933, scratch: 0.1113, soft: 0.8005,
+          ln: 0.0875, stair: 0.3623, distraction: 0.8053 },
+  };
+
   const TAG_DESCRIPTIONS = {
     advanced_ln:           "LN technical-pattern composite — short-hold transitions, stacked LN chords, irregular scatter.",
     jack_chart:            "Pure-jack rate per second exceeds threshold (isolated same-lane jacks, not in streams).",
@@ -557,7 +571,16 @@
       setTimeout(() => drawCompareRadar(canvas, row), 100);
       return;
     }
-    const data = AXES.map((a) => row["x_" + a] || 0);
+    // Per-axis p95 normalization: `x_axis / p95_axis_per_mode` clipped at
+    // 1.0. Visual saturation tracks the red-tier intensity threshold so
+    // sparse axes (LN/scratch/soft) read with the same emphasis as dense
+    // axes (chord/stream). raw values still drive the table column.
+    const p95 = AXIS_RADAR_NORM[row.mode] || AXIS_RADAR_NORM.SP;
+    const rawData = AXES.map((a) => row["x_" + a] || 0);
+    const data = AXES.map((a, i) => {
+      const denom = p95[a] || 1;
+      return Math.min(rawData[i] / denom, 1.0);
+    });
     const intensities = row.axis_intensities || {};
     const pointColors = AXES.map((a) => INTENSITY_COLORS[intensities[a] == null ? "null" : intensities[a]]);
     const chart = new window.Chart(canvas, {
@@ -601,7 +624,9 @@
       },
     });
     state.compareCharts.set(row.file, chart);
-    attachRadarLabelTooltip(canvas, chart, data);
+    // Tooltip shows raw `x_axis` values (data passed to chart is per-axis
+    // p95-normalized; raw is what users expect to read out).
+    attachRadarLabelTooltip(canvas, chart, rawData);
   }
 
   // Phase 1Z-1G (2026-05-25): per-label hover tooltip for the compare
