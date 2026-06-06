@@ -14,9 +14,22 @@ charts; each chart lives in a card with a small radar + 1-sec density
 strip + tags, and the table below lines up NPS · Pos/s · the 7 character
 axes · Peak · BPM per column.
 
-> **Framework paper** — formal write-up of the 7-axis design, felt-time
-> normalization, calibration, validation, and limitations:
-> [Read here](/Note-attributes/Framework-paper)
+<div class="note-attrs-callout">
+  <div class="note-attrs-callout-body" markdown="1">
+**Framework paper** — formal write-up of the 7-axis design, felt-time normalization, calibration, validation, and limitations.
+  </div>
+  <a class="note-attrs-callout-btn" href="/Note-attributes/Framework-paper">Read paper</a>
+</div>
+
+<div class="note-attrs-callout">
+  <div class="note-attrs-callout-body" markdown="1">
+**Chart preview** — Tetris-style preview. Main panel scrolls notes IIDX-style toward the judgment line, queue holds the rest of the chart as a horizontal ribbon. Opens in a dialog so the queue gets the full viewport width. Keybindings + HID controllers configurable, input latency calibration built in.
+  </div>
+  <button type="button" class="note-attrs-callout-btn"
+          onclick="window.openChartPreview && window.openChartPreview()">
+    ▶ Open preview
+  </button>
+</div>
 
 <details class="note-attrs-help" markdown="1">
 <summary><strong>What the table columns mean</strong> (click to expand)</summary>

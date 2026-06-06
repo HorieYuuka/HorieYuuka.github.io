@@ -1,12 +1,9 @@
----
-layout: scale_analyzer
-title: "Chart preview (POC)"
-permalink: /Note-attributes/Chart-preview
-parent: "Note attributes"
-nav_exclude: true
-has_toc: false
----
+<!-- Chart-preview modal scaffold. Include via {% raw %}{% include chart-preview-modal.html %}{% endraw %} on any page that wants to open the preview programmatically:
 
+     window.openChartPreview(url, label)
+     window.openChartPreview(rowObjectFromSummaryJson)
+     window.openChartPreview()  // empty modal
+-->
 <!-- horieyuuka-file-api base URL. Audio playback only activates when this
      is set AND a chart's timeline JSON has an `audio` field. Remove this
      line (or leave content empty) to disable audio entirely. -->
@@ -1556,15 +1553,6 @@ dialog.cp-settings-modal::backdrop { background: rgba(0,0,0,0.25); }
 }
 .cp-gear:hover { background: var(--cp-panel-2) !important; }
 </style>
-
-# Chart preview (proof-of-concept)
-
-<div class="cp-page">
-  <div class="cp-hint">
-    Tetris-style preview — main panel scrolls notes IIDX-style toward the judgment line, queue holds the rest of the chart as a horizontal ribbon. Opens in a dialog so the queue gets the full viewport width.
-  </div>
-  <button type="button" data-cp-open>▶ Open preview</button>
-</div>
 
 <dialog class="cp-dialog" data-cp-dialog aria-label="Chart preview">
   <div class="cp-shell">

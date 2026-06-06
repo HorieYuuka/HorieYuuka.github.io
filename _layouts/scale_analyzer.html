@@ -43,5 +43,13 @@ layout: table_wrappers
   {% if site.mermaid %}
     {% include components/mermaid.html %}
   {% endif %}
+
+  {%- comment -%}
+    Chart preview modal — included globally so window.openChartPreview()
+    is available from any page using this layout. Pages MUST NOT include
+    chart-preview-modal.html again or duplicate `<dialog data-cp-dialog>`
+    elements will collide on querySelector.
+  {%- endcomment -%}
+  {% include chart-preview-modal.html %}
 </body>
 </html>

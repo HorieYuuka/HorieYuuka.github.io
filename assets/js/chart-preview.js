@@ -127,8 +127,8 @@
   });
 
   const dialog  = $("[data-cp-dialog]");
-  const openBtn = $("[data-cp-open]");
-  if (!dialog || !openBtn) return;
+  const openBtn = $("[data-cp-open]");   // optional — only present on pages with an inline launcher
+  if (!dialog) return;
 
   const titleEl   = $("[data-cp-title]",   dialog);
   const host      = $("[data-cp-host]",    dialog);
@@ -2239,7 +2239,7 @@
     el.addEventListener("click", openPicker);
   });
 
-  openBtn.addEventListener("click", function () {
+  function openDialogEmpty() {
     if (dialog.open) return;
     dialog.showModal();
     // Show the empty state (cp-empty has its own CTA) and let the user
@@ -2249,7 +2249,25 @@
       titleEl.textContent = "Chart preview";
       metaEl.textContent = "";
     }
-  });
+  }
+  if (openBtn) openBtn.addEventListener("click", openDialogEmpty);
+
+  // Public API — other pages on the site can include
+  // _includes/chart-preview-modal.html and call this to open the modal,
+  // optionally pre-loading a specific chart by URL or by a summary.json
+  // row object (carries md5/title/mode/family). No-arg call just opens
+  // the empty modal.
+  window.openChartPreview = function (target, label) {
+    openDialogEmpty();
+    if (typeof target === "string") {
+      return loadByUrl(target, label);
+    }
+    if (target && typeof target === "object" && target.md5) {
+      return loadByRow(target);
+    }
+    return Promise.resolve();
+  };
+
   closeBtn.addEventListener("click", function () { dialog.close(); });
   dialog.addEventListener("close", function () {
     teardownView();

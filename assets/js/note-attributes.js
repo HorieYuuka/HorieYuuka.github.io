@@ -127,7 +127,6 @@
     // per chart. file -> { dense: number[], maxNps: number } | "loading"
     // | "error". Densified to a [0..maxM] array with 0 for silent seconds.
     compareMeasures: new Map(),
-    searchActive: 0,         // active highlight index in modal result list
     // Phase 1Z-1G (2026-05-25): compare table sort. null = input order;
     // otherwise { key, dir }. key matches a COMPARE_COLS.key or "title".
     // Cards stay in input order regardless — sort affects the table only.
@@ -239,115 +238,30 @@
     return `top ${p.toFixed(0)}%`;
   }
 
+  // Search modal — behavior lives in assets/js/chart-search.js. The factory
+  // owns the modal's open/close/render lifecycle; this page wires the
+  // trigger button and the on-select action (add to compare).
+  let searchController = null;
   function bindEvents() {
-    bindSearchModal();
-  }
-
-  function bindSearchModal() {
-    if (!els.searchModal) return;
-    els.searchTrigger.addEventListener("click", openSearch);
-    els.searchClose.addEventListener("click", closeSearch);
-    els.searchModal.addEventListener("close", () => {
-      els.searchInput.value = "";
-      els.searchResults.innerHTML = "";
-      state.searchActive = 0;
+    if (!els.searchModal || !window.ChartSearch) return;
+    searchController = window.ChartSearch.create({
+      modal: els.searchModal,
+      input: els.searchInput,
+      results: els.searchResults,
+      close: els.searchClose,
+      rows: state.rows,
+      maxResults: SEARCH_MAX_RESULTS,
+      debounceMs: SEARCH_INPUT_DEBOUNCE_MS,
+      kbShortcuts: true,
+      onSelect: (row) => {
+        // Add policy B2: when full, keep modal open so the user can free a
+        // slot. flashFullCue is the in-modal visual ping.
+        return addToCompare(row);
+      },
     });
-    // Backdrop click — close.
-    els.searchModal.addEventListener("click", (e) => {
-      if (e.target === els.searchModal) closeSearch();
-    });
-    let searchInputTimer = null;
-    els.searchInput.addEventListener("input", () => {
-      state.searchActive = 0;
-      clearTimeout(searchInputTimer);
-      searchInputTimer = setTimeout(renderSearchResults, SEARCH_INPUT_DEBOUNCE_MS);
-    });
-    els.searchInput.addEventListener("keydown", (e) => {
-      const items = els.searchResults.querySelectorAll("li");
-      if (!items.length) return;
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        state.searchActive = Math.min(state.searchActive + 1, items.length - 1);
-        highlightActive(items);
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        state.searchActive = Math.max(state.searchActive - 1, 0);
-        highlightActive(items);
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        items[state.searchActive]?.click();
-      }
-    });
-    // Global hotkeys: Ctrl+K (Cmd+K) or `/` opens search.
-    document.addEventListener("keydown", (e) => {
-      const k = e.key.toLowerCase();
-      const ctrl = e.ctrlKey || e.metaKey;
-      const target = e.target;
-      const inField = target && (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
-      );
-      if (ctrl && k === "k") {
-        e.preventDefault();
-        openSearch();
-      } else if (k === "/" && !inField && !els.searchModal.open) {
-        e.preventDefault();
-        openSearch();
-      }
-    });
-  }
-
-  function openSearch() {
-    if (!els.searchModal || els.searchModal.open) return;
-    els.searchModal.showModal();
-    els.searchInput.focus();
-    renderSearchResults();
-  }
-
-  function closeSearch() {
-    if (els.searchModal && els.searchModal.open) els.searchModal.close();
-  }
-
-  function highlightActive(items) {
-    items.forEach((li, i) => li.classList.toggle("is-active", i === state.searchActive));
-    items[state.searchActive]?.scrollIntoView({ block: "nearest" });
-  }
-
-  function renderSearchResults() {
-    const q = els.searchInput.value.trim().toLowerCase();
-    els.searchResults.innerHTML = "";
-    if (!q) return;
-    const matches = [];
-    for (const r of state.rows) {
-      const hay = ((r.title || "") + " " + (r.artist || "")).toLowerCase();
-      if (!hay.includes(q)) continue;
-      matches.push(r);
-      if (matches.length >= SEARCH_MAX_RESULTS) break;
+    if (els.searchTrigger) {
+      els.searchTrigger.addEventListener("click", () => searchController?.open());
     }
-    // Mode ordering: SP before DP (everything else last). Stable sort
-    // preserves the within-mode original order from state.rows.
-    const MODE_RANK = { SP: 0, DP: 1 };
-    matches.sort((a, b) => (MODE_RANK[a.mode] ?? 2) - (MODE_RANK[b.mode] ?? 2));
-    matches.forEach((r, i) => {
-      const li = document.createElement("li");
-      li.className = "note-attrs-search-result";
-      if (i === state.searchActive) li.classList.add("is-active");
-      const family = r.family ? `<span class="note-attrs-search-family">${escapeHtml(r.family)}</span>` : "";
-      li.innerHTML = `
-        <span class="note-attrs-search-mode note-attrs-row-mode--${r.mode.toLowerCase()}">${r.mode}</span>
-        ${family}
-        <span class="note-attrs-search-title">${escapeHtml(r.title || r.file)}</span>
-        <span class="note-attrs-search-artist">${escapeHtml(r.artist || "")}</span>
-      `;
-      li.addEventListener("click", () => {
-        const added = addToCompare(r);
-        if (added) closeSearch();
-        // else: card grid is full — leave the modal open so the user can
-        // remove a card and try again. visual cue rendered by renderCompare.
-      });
-      els.searchResults.appendChild(li);
-    });
   }
 
   // Phase 1Z-1G (2026-05-25): comparison set management.
@@ -498,6 +412,10 @@
           <div class="note-attrs-compare-card-head">
             <span class="note-attrs-compare-mode ${modeCls}">${r.mode}</span>
             ${family}
+            <button type="button" class="note-attrs-compare-preview"
+                    data-na-compare-preview="${escapeHtml(r.file)}"
+                    title="Open in chart preview"
+                    aria-label="Preview chart">▶</button>
             <button type="button" class="note-attrs-compare-close"
                     data-na-compare-remove="${escapeHtml(r.file)}"
                     aria-label="Remove from comparison">&times;</button>
@@ -517,6 +435,17 @@
     // Wire close buttons.
     els.compareCards.querySelectorAll("[data-na-compare-remove]").forEach((btn) => {
       btn.addEventListener("click", () => removeFromCompare(btn.dataset.naCompareRemove));
+    });
+
+    // Wire preview buttons — open the chart-preview modal with this row.
+    // Falls back silently if the modal partial isn't included on this page
+    // (window.openChartPreview undefined).
+    els.compareCards.querySelectorAll("[data-na-compare-preview]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (typeof window.openChartPreview !== "function") return;
+        const row = state.compareSet.find((r) => r.file === btn.dataset.naComparePreview);
+        if (row) window.openChartPreview(row);
+      });
     });
 
     // Render radars after the canvases are in the DOM.
