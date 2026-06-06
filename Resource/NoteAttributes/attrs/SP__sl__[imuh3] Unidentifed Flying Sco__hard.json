@@ -1,1 +1,1144 @@
-{"md5":"29660c8adbe99a6132ecc9962d1bebc7","headers":{"title":"Unidentifed Flying Scotsman","artist":"imuh3","genre":"OpenTTD","playlevel":"0","base_bpm":200.0,"total":300.0},"mode":"SP","scope":"playable_only","scaling_mode":"p99_linear","params":{"stream_window_ticks":48,"stream_density_threshold_per_beat":4.0,"peak_window_ticks":192,"peak_l2_top_k":5,"peak_min_window_notes":4,"peak_min_window_sec":0.05,"stream_min_window_sec":0.0125,"chart_seconds_max_single_stop_sec":60.0,"chart_seconds_stop_pathology_ratio":10.0,"felt_bpm_trigger_eff_bpm":500.0,"felt_bpm_trigger_peak_per_sec":200.0,"felt_bpm_target_peak_per_sec":50.0,"felt_bpm_floor":30.0,"class_d_scale_exposure_min":0.05,"class_d_bpm_lo":500.0,"class_d_bpm_hi":1000.0,"class_d_cap_threshold":70.0,"class_d_cap_scale":40.0,"stream_distinct_per_sec_threshold":14.0,"stream_smooth_qual_lo":0.5,"stream_smooth_qual_hi":1.0,"chord_shape_variety_alpha":0.7,"truth_bpm_plausible_lo":30.0,"truth_bpm_plausible_hi":1500.0,"truth_bpm_diverge_ratio":5.0,"truth_bpm_eff_min":1000.0,"truth_bpm_share_min":0.85,"jack_window_ticks":24,"soft_burst_ref":8.0,"soft_freq_ref":0.1,"soft_burst_exp":1.5,"soft_freq_exp":1.5,"chord_time_threshold_ms":16.67,"stair_target_pace_per_sec":8.0,"stair_max_step":1,"sp_distraction_min_scratches":3,"sp_distraction_bin_sec":0.25,"sp_distraction_t_key":2,"sp_distraction_gap_bins":2,"dp_distraction_window_sec_min":0.1,"dp_distraction_window_sec_max":0.4,"stream_density_ref_per_sec":40.0,"peak_density_ref_per_sec":70.0,"chord_size_ref":3.5,"ln_simultaneity_ref":0.05,"scratch_density_ref_per_sec":1.5,"scratch_ratio_ref":0.1,"distraction_density_ref":2.0,"distraction_event_ref":0.15},"raw_axes":{"chord":23.58272726199628,"stream":0.5536819018849186,"scratch_per_sec":0.32919552842740557,"scratch_burst_max_per_sec":3.0,"scratch_max_run_sec":0.3000000000000007,"soft":0.0,"stair":0.0,"peak":22.110831935702667,"ln_m1_short_rate_rt":0.0,"ln_m2_density_rt":0.0,"ln_m2_burst_max_rt":0.0,"ln_m3_density_rt":0.0,"ln_m_concurrent_rt":0.9249999999999973,"adv_hand_imb":0.5,"adv_rel_pressure_1beat":0.5,"adv_ln_hold_min_beats":3.5,"adv_ln_chord_big_rate":0.0,"adv_ln_scatter_cv":0.0,"distraction":0.3072491598655785},"x_chord":0.9147,"x_stair":0.0,"x_ln":0.0017,"x_stream":0.9112,"x_peak":0.3773823508397792,"peak_jab":0.3773823508397792,"peak_uppercut":0.44048012333443454,"x_jack":0.0,"x_scratch":0.0104,"x_soft":0.0,"x_distraction":0.010217529978567414,"distraction_base":0.009288663616879465,"distraction_intensity_factor":0.10000000000000024,"ln_advanced_score":0.0,"submetrics":{"chord":{"chord_rate":0.8533568904593639,"avg_chord_size":5.77639751552795,"chord_positions":483,"total_positions":566,"chord_pace_per_sec":5.300048007681229,"chord_burden_per_sec":23.58272726199628,"chord_event_count":2195.692755118574,"total_event_count":2278.692755118574,"chord_event_count_raw":2790,"total_event_count_raw":2873,"chord_character_ratio":0.5428167769989701,"chord_burden_per_sec_raw":30.615184143748717,"chord_shape_variety":0.0740115789550617,"chord_eff_avg_size":4.449530877421942,"chord_shape_variety_per_size":{"3":{"n_positions":42,"n_distinct_shapes":13,"H_norm":0.5908,"burden_share":0.0452},"2":{"n_positions":81,"n_distinct_shapes":16,"H_norm":0.7607,"burden_share":0.0581},"4":{"n_positions":6,"n_distinct_shapes":5,"H_norm":0.3674,"burden_share":0.0086},"8":{"n_positions":3,"n_distinct_shapes":1,"H_norm":0.0,"burden_share":0.0086},"7":{"n_positions":349,"n_distinct_shapes":1,"H_norm":0.0,"burden_share":0.8756},"5":{"n_positions":1,"n_distinct_shapes":1,"H_norm":0.0,"burden_share":0.0018},"6":{"n_positions":1,"n_distinct_shapes":1,"H_norm":0.0,"burden_share":0.0022}},"chord_size_histogram":{"1":83,"3":42,"2":81,"4":6,"8":3,"7":349,"5":1,"6":1},"big_to_mid":7.375},"stream":{"stream_coverage":0.0253253605346465,"stream_density_mean":6.5588235294117645,"stream_density_mean_per_sec":21.862745098039216,"stream_windows":1,"notes_in_stream":72,"total_notes":2843,"intervals":[[8424,8868]],"intervals_abs":[[8424.0,8868.0]],"sustained_density":0.1569012706647907,"sustained_density_no_gate":0.9033151600422089,"sustained_band_coverage":{"12":0.1630539922616954,"14":0.1630539922616954,"16":0.16211967991558213,"18":0.16157008441786844,"20":0.1611304080196975,"22":0.15376582835033414,"24":0.14742349630671825,"26":0.14309268378473444}},"scratch":{"scratch_ratio":0.010442046641141664,"scratch_positions_ratio":0.053003533568904596,"scratch_with_key_chord_rate":0.8666666666666667,"scratch_per_sec":0.32919552842740557,"scratch_burst_max_per_sec":3.0,"scratch_burst_window_sec":1.0,"scratch_max_run_sec":0.3000000000000007,"ls_count":1,"ls_per_sec":0.010973184280913519,"ls_complexity_mean":1,"scratch_notes":30,"scratch_positions":30,"total_notes":2873,"total_positions":566,"chart_seconds":91.13125},"soft":{"base_bpm":200.0,"intensity":0.0,"up_intensity":0.0,"down_intensity":0.0,"max_intensity":0.0,"max_up_intensity":0.0,"max_down_intensity":0.0,"step_frequency":0.0,"ramp_frequency":0.0,"continuity_beats":0.0,"off_base_note_ratio":0.0,"off_base_note_count":0,"gimmick_burst_score":0.0,"max_off_base_density_per_beat":0.0,"base_mean_density_per_beat":9.458436213991769,"base_density_source":"on_base","distinct_off_base_bpm_count":0,"bpm_change_events":0,"measure_count":75},"ln":{"ln_ratio":0.0013922728854855553,"ln_hold_time_mean_beats":4.8125,"ln_simultaneity_rate":0.0,"ln_simultaneity_weighted":0.0,"ln_count":4,"ln_count_raw":4,"ln_positions":2,"ln_active_event_count":8,"ln_character_ratio":0.0027845457709711106,"total_notes":2873,"m1_short_count_rt":0,"m1_short_rate_rt":0.0,"m2_long_count_rt":4,"m2_density_rt":0.0,"m2_burst_max_rt":0.0,"m3_density_rt":0.0,"m_concurrent_rt":0.9249999999999973,"total_long_sec":5.774999999999999,"long_active_sec":3.0000000000000036,"long_hold_sec_mean":1.4437499999999996,"long_hold_sec_max":1.7249999999999979,"adv_hand_imb":0.5,"adv_rel_pressure_1beat":0.5,"adv_ln_hold_min_beats":3.5,"adv_ln_chord_big_rate":0.0,"adv_ln_scatter_cv":0.0},"stair":{"stair_index":0.04634581105169341,"stair_transitions":26,"eligible_transitions":561,"stair_burden_per_sec":0.0,"stair_l2":0.0,"stair_chains":0,"stair_max_chain_length":0,"stair_event_count":0,"stair_unique_event_count":0,"stair_outside_burden_per_sec":0.0,"stair_in_stream_burden_per_sec":0.0,"stair_outside_chains":0,"stair_in_stream_chains":0},"peak":{"peak_local_max_density_per_sec":22.110831935702667,"peak_local_max_density":4.0,"peak_distinct_per_sec_max":13.333333333333334,"peak_distinct_per_sec_l2":22.110831935702667,"peak_distinct_above_threshold_count":5,"peak_top_k_selected_windows":[{"grid_tick":468,"per_sec":6.667},{"grid_tick":852,"per_sec":6.667},{"grid_tick":1236,"per_sec":6.667},{"grid_tick":8448,"per_sec":13.333},{"grid_tick":8640,"per_sec":13.333}],"peak_max_chord_size":7,"peak_concentration":0.92191347168484,"peak_event_count":2621,"total_notes":2843,"spike_density":0.2148258881463243,"spike_band_coverage":{"1.5":0.8593035525852972,"2.0":0.0,"2.5":0.0,"3.0":0.0},"intervals":[[468,672],[852,1056],[1236,1440],[1620,1944],[2196,5424],[8124,14352]]},"jack":{"jack_pairs":36,"jack_in_stream_pairs":0,"jack_outside_pairs":36,"pure_jack_per_sec":0.40744146565749456,"flow_break_per_stream_sec":0.0,"stream_seconds":2.7749999999999986,"non_stream_seconds":88.35624999999999,"chart_seconds":91.13125,"window_ticks":24,"min_region_sec":10.0,"j12_in_stream":0,"rapid_repeat_share":0.0,"rapid_pair_count_total":32,"rapid_pair_count_same_lane":0,"rapid_gap_max_ticks":12,"same_keysound_rapid_pairs":0,"keysound_match_share":0.0,"weighted_jack_score":0,"rapid_chain_len_max":1,"rapid_chain_len_max_strict":1,"double_tab_chain_count":0,"triple_tab_chain_count":0},"distraction":{"mode_formulation":"SP","v3_score":0.3072491598655785,"qualifying_intervals":3,"qualifying_flow_sec":41.75,"qualifying_scratches":16,"scratch_chord_pair_count":34,"distraction_unique_event_count":16,"distraction_key_events_in_active":28,"chord_time_threshold_sec":0.01667,"min_scratches":3,"bin_sec":0.25,"t_key":2,"gap_bins":2},"last_killing":{"qbin_densities":[7.461765311021192,7.461765311021192,22.385295933063574,46.08737397983678,46.08737397983678,47.62361977916466,39.503463411288664,7.6812289966394625,12.070502709004868,11.412111652150058,16.240312735752006,32.700089157122285,46.08737397983678,47.62361977916466,46.08737397983678,47.62361977916466,46.08737397983678,46.08737397983678,45.42898292298196,2.1946368561827034],"back_max_idx":13,"back_spike_ratio":1.5265564544495251,"drop_factor":0.8172043010752689,"cross_half_ratio":1.0,"is_type1":false,"is_type2":false,"is_last_killing":false},"variance":{"density_cv":0.5134114027853528,"burst_pct":0.0,"calm_pct":0.35365853658536583,"max_burst_run":0,"mean_nps":33.51219512195122,"std_nps":17.205543107977434,"active_bins":82},"measure_density":{"measures":[{"m":0,"nps":1.0,"events":1},{"m":1,"nps":8.0,"events":8},{"m":2,"nps":9.0,"events":9},{"m":3,"nps":11.0,"events":11},{"m":4,"nps":7.0,"events":7},{"m":5,"nps":9.0,"events":9},{"m":6,"nps":10.0,"events":10},{"m":7,"nps":8.0,"events":8},{"m":8,"nps":10.0,"events":10},{"m":9,"nps":10.0,"events":10},{"m":10,"nps":9.0,"events":9},{"m":11,"nps":2.0,"events":2},{"m":12,"nps":11.0,"events":11},{"m":13,"nps":46.0,"events":46},{"m":14,"nps":42.0,"events":42},{"m":15,"nps":49.0,"events":49},{"m":16,"nps":49.0,"events":49},{"m":17,"nps":42.0,"events":42},{"m":18,"nps":49.0,"events":49},{"m":19,"nps":49.0,"events":49},{"m":20,"nps":42.0,"events":42},{"m":21,"nps":49.0,"events":49},{"m":22,"nps":50.0,"events":50},{"m":23,"nps":42.0,"events":42},{"m":24,"nps":49.0,"events":49},{"m":25,"nps":49.0,"events":49},{"m":26,"nps":42.0,"events":42},{"m":27,"nps":49.0,"events":49},{"m":28,"nps":49.0,"events":49},{"m":29,"nps":42.0,"events":42},{"m":30,"nps":49.0,"events":49},{"m":31,"nps":49.0,"events":49},{"m":32,"nps":18.0,"events":18},{"m":33,"nps":7.0,"events":7},{"m":34,"nps":8.0,"events":8},{"m":35,"nps":7.0,"events":7},{"m":36,"nps":6.0,"events":6},{"m":37,"nps":12.0,"events":12},{"m":38,"nps":12.0,"events":12},{"m":39,"nps":11.0,"events":11},{"m":40,"nps":14.0,"events":14},{"m":41,"nps":14.0,"events":14},{"m":42,"nps":9.0,"events":9},{"m":43,"nps":12.0,"events":12},{"m":44,"nps":13.0,"events":13},{"m":45,"nps":10.0,"events":10},{"m":46,"nps":18.0,"events":18},{"m":47,"nps":15.0,"events":15},{"m":48,"nps":13.0,"events":13},{"m":49,"nps":17.0,"events":17},{"m":50,"nps":16.0,"events":16},{"m":51,"nps":23.0,"events":23},{"m":52,"nps":22.0,"events":22},{"m":53,"nps":28.0,"events":28},{"m":54,"nps":42.0,"events":42},{"m":55,"nps":49.0,"events":49},{"m":56,"nps":42.0,"events":42},{"m":57,"nps":49.0,"events":49},{"m":58,"nps":49.0,"events":49},{"m":59,"nps":49.0,"events":49},{"m":60,"nps":42.0,"events":42},{"m":61,"nps":49.0,"events":49},{"m":62,"nps":49.0,"events":49},{"m":63,"nps":42.0,"events":42},{"m":64,"nps":49.0,"events":49},{"m":65,"nps":42.0,"events":42},{"m":66,"nps":49.0,"events":49},{"m":67,"nps":49.0,"events":49},{"m":68,"nps":49.0,"events":49},{"m":69,"nps":42.0,"events":42},{"m":70,"nps":49.0,"events":49},{"m":71,"nps":42.0,"events":42},{"m":72,"nps":49.0,"events":49},{"m":73,"nps":49.0,"events":49},{"m":74,"nps":49.0,"events":49},{"m":75,"nps":42.0,"events":42},{"m":76,"nps":49.0,"events":49},{"m":77,"nps":49.0,"events":49},{"m":78,"nps":42.0,"events":42},{"m":79,"nps":49.0,"events":49},{"m":80,"nps":42.0,"events":42},{"m":81,"nps":49.0,"events":49},{"m":82,"nps":49.0,"events":49},{"m":83,"nps":49.0,"events":49},{"m":84,"nps":42.0,"events":42},{"m":85,"nps":49.0,"events":49},{"m":86,"nps":42.0,"events":42},{"m":87,"nps":34.0,"events":34},{"m":88,"nps":9.0,"events":9}],"nps_min":1.0,"nps_mean":32.281,"nps_max":50.0,"measure_count":89,"active_measure_count":89},"shape_v2":{"ratios":{"chord":0.9147,"stair":0.0,"ln":0.0017,"soft":0.0,"stream":0.9112,"scratch":0.0104},"owned_counts":{"scratch":30,"stair":0,"chord":2608,"ln":2,"soft":0,"stream":97},"candidate_counts":{"scratch":30,"stair":0,"chord":2628,"ln":5,"soft":0,"stream":2618},"overlap_matrix":{"scratch":{"scratch":30,"stair":0,"chord":20,"ln":1,"soft":0,"stream":0},"stair":{"scratch":0,"stair":0,"chord":0,"ln":0,"soft":0,"stream":0},"chord":{"scratch":20,"stair":0,"chord":2628,"ln":2,"soft":0,"stream":2521},"ln":{"scratch":1,"stair":0,"chord":2,"ln":5,"soft":0,"stream":0},"soft":{"scratch":0,"stair":0,"chord":0,"ln":0,"soft":0,"stream":0},"stream":{"scratch":0,"stair":0,"chord":2521,"ln":0,"soft":0,"stream":2618}},"total_events":2873,"priority_order":["scratch","stair","chord","ln","soft"]}},"warnings":[],"density":{"nps":25.004515521498654,"distinct_per_sec":6.210822302997052,"total_events":2278.692755118574,"distinct_positions":566,"chart_seconds":91.13125,"avg_chord_size":5.77639751552795,"max_chord_size":7,"effective_bpm":200.0,"bpm_min_musical":200.0,"bpm_max_musical":200.0},"axis_intensities":{"chord":"red","scratch":"green","soft":null,"ln":"green","stair":null,"stream":"red","distraction":"green"},"framework_saturated":false,"framework_signal_status":"clear","aezhk":{"total":5.8699,"total_corpus_p90":6.167588916072902,"terms":[{"key":"sum5","label":"axes (5-sum)","value":2.2033,"kind":"axis-sum","corpus_p90":2.6247832999308462},{"key":"cb_gate","label":"chord × stream","value":0.7372,"kind":"cross","corpus_p90":0.732768575611563},{"key":"bs_x1_5","label":"back-spike ×1.5","value":1.1486,"kind":"peak","corpus_p90":1.3861714012128947},{"key":"run_17","label":"back-end run","value":0.0,"kind":"stream","corpus_p90":0.125},{"key":"main_05","label":"main NPS","value":0.5,"kind":"stream","corpus_p90":0.4597407443941555},{"key":"bm_x_top4","label":"bimodal penalty","value":-0.0,"kind":"subtract","corpus_p90":-0.0},{"key":"ac_x_bs","label":"chord × peak","value":0.3829,"kind":"cross","corpus_p90":0.362691358878395},{"key":"eI","label":"stream × BPM","value":0.6948,"kind":"cross","corpus_p90":0.779915902743077},{"key":"zeta","label":"variance × peak","value":0.1606,"kind":"peak","corpus_p90":0.3781378128187684},{"key":"eta","label":"in-stream jack","value":0.0,"kind":"jack","corpus_p90":0.12954545454545455},{"key":"kappa","label":"gauge (TOTAL)","value":0.0,"kind":"gauge","corpus_p90":0.0},{"key":"jack_pres","label":"jack presence","value":0.0426,"kind":"jack","corpus_p90":0.12}],"refs_present":true},"tags":["big_chord_burst","burst_focused","dense_chart"],"primary_character":"chord-spam","icons":[{"key":"chord","category":"character","family":"sl","axis_value":0.915,"family_p25":0.383,"family_p75":0.624,"polarity":"strong"},{"key":"stream","category":"character","family":"sl","axis_value":0.911,"family_p25":0.695,"family_p75":0.852,"polarity":"strong"},{"key":"high_BPM_fast","category":"modifier","extras":{"bpm":200.0,"nps":25.004515521498654}},{"key":"variance_burst","category":"modifier","extras":{"cv":0.513,"burst_pct":0.0}},{"key":"bimodal","category":"modifier","extras":{"big_to_mid":7.375}},{"key":"stair","category":"character","family":"sl","axis_value":0.0,"family_p25":0.082,"family_p75":0.249,"polarity":"lighter"},{"key":"scratch","category":"character","family":"sl","axis_value":0.01,"family_p25":0.017,"family_p75":0.045,"polarity":"lighter"}],"scales":["sl"]}
+{
+  "source": "C:\\Repos\\BMS.Tools\\samples\\SP__sl__[imuh3] Unidentifed Flying Sco__hard.bms",
+  "md5": "29660c8adbe99a6132ecc9962d1bebc7",
+  "headers": {
+    "title": "Unidentifed Flying Scotsman",
+    "artist": "imuh3",
+    "genre": "OpenTTD",
+    "playlevel": "0",
+    "base_bpm": 200.0,
+    "total": 300.0
+  },
+  "mode": "SP",
+  "scope": "playable_only",
+  "scaling_mode": "p99_linear",
+  "params": {
+    "stream_window_ticks": 48,
+    "stream_density_threshold_per_beat": 4.0,
+    "peak_window_ticks": 192,
+    "peak_l2_top_k": 5,
+    "peak_min_window_notes": 4,
+    "peak_min_window_sec": 0.05,
+    "stream_min_window_sec": 0.0125,
+    "chart_seconds_max_single_stop_sec": 60.0,
+    "chart_seconds_stop_pathology_ratio": 10.0,
+    "felt_bpm_trigger_eff_bpm": 500.0,
+    "felt_bpm_trigger_peak_per_sec": 200.0,
+    "felt_bpm_target_peak_per_sec": 50.0,
+    "felt_bpm_floor": 30.0,
+    "class_d_scale_exposure_min": 0.05,
+    "class_d_bpm_lo": 500.0,
+    "class_d_bpm_hi": 1000.0,
+    "class_d_cap_threshold": 70.0,
+    "class_d_cap_scale": 40.0,
+    "stream_distinct_per_sec_threshold": 14.0,
+    "stream_smooth_qual_lo": 0.5,
+    "stream_smooth_qual_hi": 1.0,
+    "chord_shape_variety_alpha": 0.7,
+    "truth_bpm_plausible_lo": 30.0,
+    "truth_bpm_plausible_hi": 1500.0,
+    "truth_bpm_diverge_ratio": 5.0,
+    "truth_bpm_eff_min": 1000.0,
+    "truth_bpm_share_min": 0.85,
+    "jack_window_ticks": 24,
+    "soft_burst_ref": 8.0,
+    "soft_freq_ref": 0.1,
+    "soft_burst_exp": 1.5,
+    "soft_freq_exp": 1.5,
+    "chord_time_threshold_ms": 16.67,
+    "stair_target_pace_per_sec": 8.0,
+    "stair_max_step": 1,
+    "sp_distraction_min_scratches": 3,
+    "sp_distraction_bin_sec": 0.25,
+    "sp_distraction_t_key": 2,
+    "sp_distraction_gap_bins": 2,
+    "dp_distraction_window_sec_min": 0.1,
+    "dp_distraction_window_sec_max": 0.4,
+    "stream_density_ref_per_sec": 40.0,
+    "peak_density_ref_per_sec": 70.0,
+    "chord_size_ref": 3.5,
+    "ln_simultaneity_ref": 0.05,
+    "scratch_density_ref_per_sec": 1.5,
+    "scratch_ratio_ref": 0.1,
+    "distraction_density_ref": 2.0,
+    "distraction_event_ref": 0.15
+  },
+  "raw_axes": {
+    "chord": 18.831699232917657,
+    "stream": 0.6967838530419511,
+    "scratch_per_sec": 0.32919552842740557,
+    "scratch_burst_max_per_sec": 3.0,
+    "scratch_max_run_sec": 0.3000000000000007,
+    "soft": 0.0,
+    "stair": 0.0,
+    "peak": 22.110831935702667,
+    "ln_m1_short_rate_rt": 0.0,
+    "ln_m2_density_rt": 0.0,
+    "ln_m2_burst_max_rt": 0.0,
+    "ln_m3_density_rt": 0.0,
+    "ln_m_concurrent_rt": 0.9249999999999973,
+    "adv_hand_imb": 0.5,
+    "adv_rel_pressure_1beat": 0.5,
+    "adv_ln_hold_min_beats": 3.5,
+    "adv_ln_chord_big_rate": 0.0,
+    "adv_ln_scatter_cv": 0.0,
+    "distraction": 0.3072491598655785
+  },
+  "x_chord": 0.8606,
+  "x_stair": 0.0,
+  "x_ln": 0.0024,
+  "x_stream": 0.876,
+  "x_peak": 0.3773823508397792,
+  "peak_jab": 0.3773823508397792,
+  "peak_uppercut": 0.44048012333443454,
+  "x_jack": 0.0,
+  "x_scratch": 0.0145,
+  "x_soft": 0.0,
+  "x_distraction": 0.012499891853453217,
+  "distraction_base": 0.01136353804859383,
+  "distraction_intensity_factor": 0.10000000000000024,
+  "ln_advanced_score": 0.0,
+  "submetrics": {
+    "chord": {
+      "chord_rate": 0.7756183745583038,
+      "avg_chord_size": 4.432801822323462,
+      "chord_positions": 439,
+      "total_positions": 566,
+      "chord_pace_per_sec": 4.8172278993210345,
+      "chord_burden_per_sec": 18.831699232917657,
+      "chord_event_count": 1735.6250379067365,
+      "total_event_count": 1862.6250379067365,
+      "chord_event_count_raw": 1946,
+      "total_event_count_raw": 2073,
+      "chord_character_ratio": 0.5899561891196905,
+      "chord_burden_per_sec_raw": 21.353816610657706,
+      "chord_shape_variety": 0.4916086943592728,
+      "chord_eff_avg_size": 3.9092398421863943,
+      "chord_shape_variety_per_size": {
+        "3": {
+          "n_positions": 52,
+          "n_distinct_shapes": 21,
+          "H_norm": 0.693,
+          "burden_share": 0.0802
+        },
+        "2": {
+          "n_positions": 81,
+          "n_distinct_shapes": 16,
+          "H_norm": 0.7607,
+          "burden_share": 0.0832
+        },
+        "4": {
+          "n_positions": 98,
+          "n_distinct_shapes": 35,
+          "H_norm": 0.8014,
+          "burden_share": 0.2014
+        },
+        "8": {
+          "n_positions": 3,
+          "n_distinct_shapes": 1,
+          "H_norm": 0.0,
+          "burden_share": 0.0123
+        },
+        "7": {
+          "n_positions": 93,
+          "n_distinct_shapes": 1,
+          "H_norm": 0.0,
+          "burden_share": 0.3345
+        },
+        "5": {
+          "n_positions": 111,
+          "n_distinct_shapes": 22,
+          "H_norm": 0.7408,
+          "burden_share": 0.2852
+        },
+        "6": {
+          "n_positions": 1,
+          "n_distinct_shapes": 1,
+          "H_norm": 0.0,
+          "burden_share": 0.0031
+        }
+      },
+      "chord_size_histogram": {
+        "1": 127,
+        "3": 52,
+        "2": 81,
+        "4": 98,
+        "8": 3,
+        "7": 93,
+        "5": 111,
+        "6": 1
+      },
+      "big_to_mid": 1.3866666666666667
+    },
+    "stream": {
+      "stream_coverage": 0.032305433186490456,
+      "stream_density_mean": 6.470588235294118,
+      "stream_density_mean_per_sec": 21.568627450980394,
+      "stream_windows": 1,
+      "notes_in_stream": 66,
+      "total_notes": 2043,
+      "intervals": [
+        [
+          8424,
+          8868
+        ]
+      ],
+      "intervals_abs": [
+        [
+          8424.0,
+          8868.0
+        ]
+      ],
+      "sustained_density": 0.15362097711698483,
+      "sustained_density_no_gate": 0.8563999021047479,
+      "sustained_band_coverage": {
+        "12": 0.16369921683798336,
+        "14": 0.16369921683798336,
+        "16": 0.16239904552129222,
+        "18": 0.16148127753303965,
+        "20": 0.16086943220753794,
+        "22": 0.1504680616740088,
+        "24": 0.13901125795398922,
+        "26": 0.12734030837004406
+      }
+    },
+    "scratch": {
+      "scratch_ratio": 0.01447178002894356,
+      "scratch_positions_ratio": 0.053003533568904596,
+      "scratch_with_key_chord_rate": 0.8666666666666667,
+      "scratch_per_sec": 0.32919552842740557,
+      "scratch_burst_max_per_sec": 3.0,
+      "scratch_burst_window_sec": 1.0,
+      "scratch_max_run_sec": 0.3000000000000007,
+      "ls_count": 1,
+      "ls_per_sec": 0.010973184280913519,
+      "ls_complexity_mean": 1,
+      "scratch_notes": 30,
+      "scratch_positions": 30,
+      "total_notes": 2073,
+      "total_positions": 566,
+      "chart_seconds": 91.13125
+    },
+    "soft": {
+      "base_bpm": 200.0,
+      "intensity": 0.0,
+      "up_intensity": 0.0,
+      "down_intensity": 0.0,
+      "max_intensity": 0.0,
+      "max_up_intensity": 0.0,
+      "max_down_intensity": 0.0,
+      "step_frequency": 0.0,
+      "ramp_frequency": 0.0,
+      "continuity_beats": 0.0,
+      "off_base_note_ratio": 0.0,
+      "off_base_note_count": 0,
+      "gimmick_burst_score": 0.0,
+      "max_off_base_density_per_beat": 0.0,
+      "base_mean_density_per_beat": 6.824691358024691,
+      "base_density_source": "on_base",
+      "distinct_off_base_bpm_count": 0,
+      "bpm_change_events": 0,
+      "measure_count": 75
+    },
+    "ln": {
+      "ln_ratio": 0.001929570670525808,
+      "ln_hold_time_mean_beats": 4.8125,
+      "ln_simultaneity_rate": 0.0,
+      "ln_simultaneity_weighted": 0.0,
+      "ln_count": 4,
+      "ln_count_raw": 4,
+      "ln_positions": 2,
+      "ln_active_event_count": 8,
+      "ln_character_ratio": 0.003859141341051616,
+      "total_notes": 2073,
+      "m1_short_count_rt": 0,
+      "m1_short_rate_rt": 0.0,
+      "m2_long_count_rt": 4,
+      "m2_density_rt": 0.0,
+      "m2_burst_max_rt": 0.0,
+      "m3_density_rt": 0.0,
+      "m_concurrent_rt": 0.9249999999999973,
+      "total_long_sec": 5.774999999999999,
+      "long_active_sec": 3.0000000000000036,
+      "long_hold_sec_mean": 1.4437499999999996,
+      "long_hold_sec_max": 1.7249999999999979,
+      "adv_hand_imb": 0.5,
+      "adv_rel_pressure_1beat": 0.5,
+      "adv_ln_hold_min_beats": 3.5,
+      "adv_ln_chord_big_rate": 0.0,
+      "adv_ln_scatter_cv": 0.0
+    },
+    "stair": {
+      "stair_index": 0.19786096256684493,
+      "stair_transitions": 111,
+      "eligible_transitions": 561,
+      "stair_burden_per_sec": 0.0,
+      "stair_l2": 0.0,
+      "stair_chains": 0,
+      "stair_max_chain_length": 0,
+      "stair_event_count": 0,
+      "stair_unique_event_count": 0,
+      "stair_outside_burden_per_sec": 0.0,
+      "stair_in_stream_burden_per_sec": 0.0,
+      "stair_outside_chains": 0,
+      "stair_in_stream_chains": 0
+    },
+    "peak": {
+      "peak_local_max_density_per_sec": 22.110831935702667,
+      "peak_local_max_density": 4.0,
+      "peak_distinct_per_sec_max": 13.333333333333334,
+      "peak_distinct_per_sec_l2": 22.110831935702667,
+      "peak_distinct_above_threshold_count": 5,
+      "peak_top_k_selected_windows": [
+        {
+          "grid_tick": 468,
+          "per_sec": 6.667
+        },
+        {
+          "grid_tick": 852,
+          "per_sec": 6.667
+        },
+        {
+          "grid_tick": 1236,
+          "per_sec": 6.667
+        },
+        {
+          "grid_tick": 8448,
+          "per_sec": 13.333
+        },
+        {
+          "grid_tick": 8640,
+          "per_sec": 13.333
+        }
+      ],
+      "peak_max_chord_size": 7,
+      "peak_concentration": 0.8913362701908958,
+      "peak_event_count": 1821,
+      "total_notes": 2043,
+      "spike_density": 0.20986294664708763,
+      "spike_band_coverage": {
+        "1.5": 0.6206558981889378,
+        "2.0": 0.21536955457660303,
+        "2.5": 0.0034263338228095936,
+        "3.0": 0.0
+      },
+      "intervals": [
+        [
+          468,
+          672
+        ],
+        [
+          852,
+          1056
+        ],
+        [
+          1236,
+          1440
+        ],
+        [
+          1620,
+          1944
+        ],
+        [
+          2196,
+          5424
+        ],
+        [
+          8124,
+          14352
+        ]
+      ]
+    },
+    "jack": {
+      "jack_pairs": 52,
+      "jack_in_stream_pairs": 0,
+      "jack_outside_pairs": 52,
+      "pure_jack_per_sec": 0.5885265615052699,
+      "flow_break_per_stream_sec": 0.0,
+      "stream_seconds": 2.7749999999999986,
+      "non_stream_seconds": 88.35624999999999,
+      "chart_seconds": 91.13125,
+      "window_ticks": 24,
+      "min_region_sec": 10.0,
+      "j12_in_stream": 0,
+      "rapid_repeat_share": 0.0,
+      "rapid_pair_count_total": 32,
+      "rapid_pair_count_same_lane": 0,
+      "rapid_gap_max_ticks": 12,
+      "same_keysound_rapid_pairs": 0,
+      "keysound_match_share": 0.0,
+      "weighted_jack_score": 0,
+      "rapid_chain_len_max": 1,
+      "rapid_chain_len_max_strict": 1,
+      "double_tab_chain_count": 0,
+      "triple_tab_chain_count": 0
+    },
+    "distraction": {
+      "mode_formulation": "SP",
+      "v3_score": 0.3072491598655785,
+      "qualifying_intervals": 3,
+      "qualifying_flow_sec": 41.75,
+      "qualifying_scratches": 16,
+      "scratch_chord_pair_count": 34,
+      "distraction_unique_event_count": 16,
+      "distraction_key_events_in_active": 28,
+      "chord_time_threshold_sec": 0.01667,
+      "min_scratches": 3,
+      "bin_sec": 0.25,
+      "t_key": 2,
+      "gap_bins": 2
+    },
+    "last_killing": {
+      "qbin_densities": [
+        7.461765311021192,
+        7.461765311021192,
+        15.362457993278925,
+        29.627597558466498,
+        30.94437967217612,
+        30.72491598655785,
+        28.310815444756877,
+        7.6812289966394625,
+        12.070502709004868,
+        11.412111652150058,
+        16.240312735752006,
+        27.652424387902062,
+        31.60277072903093,
+        31.60277072903093,
+        31.60277072903093,
+        31.163843357794388,
+        32.04169810026747,
+        31.163843357794388,
+        32.04169810026747,
+        2.1946368561827034
+      ],
+      "back_max_idx": 16,
+      "back_spike_ratio": 1.429270680372002,
+      "drop_factor": 0.680365296803653,
+      "cross_half_ratio": 1.0354609929078014,
+      "is_type1": false,
+      "is_type2": false,
+      "is_last_killing": false
+    },
+    "variance": {
+      "density_cv": 0.4336090612996056,
+      "burst_pct": 0.07317073170731707,
+      "calm_pct": 0.3170731707317073,
+      "max_burst_run": 1,
+      "mean_nps": 24.024390243902438,
+      "std_nps": 10.417193301953938,
+      "active_bins": 82
+    },
+    "measure_density": {
+      "measures": [
+        {
+          "m": 0,
+          "nps": 1.0,
+          "events": 1
+        },
+        {
+          "m": 1,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 2,
+          "nps": 9.0,
+          "events": 9
+        },
+        {
+          "m": 3,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 4,
+          "nps": 7.0,
+          "events": 7
+        },
+        {
+          "m": 5,
+          "nps": 9.0,
+          "events": 9
+        },
+        {
+          "m": 6,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 7,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 8,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 9,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 10,
+          "nps": 9.0,
+          "events": 9
+        },
+        {
+          "m": 11,
+          "nps": 2.0,
+          "events": 2
+        },
+        {
+          "m": 12,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 13,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 14,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 15,
+          "nps": 32.0,
+          "events": 32
+        },
+        {
+          "m": 16,
+          "nps": 31.0,
+          "events": 31
+        },
+        {
+          "m": 17,
+          "nps": 29.0,
+          "events": 29
+        },
+        {
+          "m": 18,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 19,
+          "nps": 35.0,
+          "events": 35
+        },
+        {
+          "m": 20,
+          "nps": 22.0,
+          "events": 22
+        },
+        {
+          "m": 21,
+          "nps": 35.0,
+          "events": 35
+        },
+        {
+          "m": 22,
+          "nps": 41.0,
+          "events": 41
+        },
+        {
+          "m": 23,
+          "nps": 24.0,
+          "events": 24
+        },
+        {
+          "m": 24,
+          "nps": 36.0,
+          "events": 36
+        },
+        {
+          "m": 25,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 26,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 27,
+          "nps": 32.0,
+          "events": 32
+        },
+        {
+          "m": 28,
+          "nps": 31.0,
+          "events": 31
+        },
+        {
+          "m": 29,
+          "nps": 29.0,
+          "events": 29
+        },
+        {
+          "m": 30,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 31,
+          "nps": 38.0,
+          "events": 38
+        },
+        {
+          "m": 32,
+          "nps": 18.0,
+          "events": 18
+        },
+        {
+          "m": 33,
+          "nps": 7.0,
+          "events": 7
+        },
+        {
+          "m": 34,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 35,
+          "nps": 7.0,
+          "events": 7
+        },
+        {
+          "m": 36,
+          "nps": 6.0,
+          "events": 6
+        },
+        {
+          "m": 37,
+          "nps": 12.0,
+          "events": 12
+        },
+        {
+          "m": 38,
+          "nps": 12.0,
+          "events": 12
+        },
+        {
+          "m": 39,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 40,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 41,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 42,
+          "nps": 9.0,
+          "events": 9
+        },
+        {
+          "m": 43,
+          "nps": 12.0,
+          "events": 12
+        },
+        {
+          "m": 44,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 45,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 46,
+          "nps": 18.0,
+          "events": 18
+        },
+        {
+          "m": 47,
+          "nps": 15.0,
+          "events": 15
+        },
+        {
+          "m": 48,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 49,
+          "nps": 17.0,
+          "events": 17
+        },
+        {
+          "m": 50,
+          "nps": 16.0,
+          "events": 16
+        },
+        {
+          "m": 51,
+          "nps": 23.0,
+          "events": 23
+        },
+        {
+          "m": 52,
+          "nps": 22.0,
+          "events": 22
+        },
+        {
+          "m": 53,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 54,
+          "nps": 27.0,
+          "events": 27
+        },
+        {
+          "m": 55,
+          "nps": 39.0,
+          "events": 39
+        },
+        {
+          "m": 56,
+          "nps": 24.0,
+          "events": 24
+        },
+        {
+          "m": 57,
+          "nps": 39.0,
+          "events": 39
+        },
+        {
+          "m": 58,
+          "nps": 31.0,
+          "events": 31
+        },
+        {
+          "m": 59,
+          "nps": 35.0,
+          "events": 35
+        },
+        {
+          "m": 60,
+          "nps": 30.0,
+          "events": 30
+        },
+        {
+          "m": 61,
+          "nps": 30.0,
+          "events": 30
+        },
+        {
+          "m": 62,
+          "nps": 38.0,
+          "events": 38
+        },
+        {
+          "m": 63,
+          "nps": 22.0,
+          "events": 22
+        },
+        {
+          "m": 64,
+          "nps": 34.0,
+          "events": 34
+        },
+        {
+          "m": 65,
+          "nps": 32.0,
+          "events": 32
+        },
+        {
+          "m": 66,
+          "nps": 31.0,
+          "events": 31
+        },
+        {
+          "m": 67,
+          "nps": 37.0,
+          "events": 37
+        },
+        {
+          "m": 68,
+          "nps": 29.0,
+          "events": 29
+        },
+        {
+          "m": 69,
+          "nps": 32.0,
+          "events": 32
+        },
+        {
+          "m": 70,
+          "nps": 32.0,
+          "events": 32
+        },
+        {
+          "m": 71,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 72,
+          "nps": 32.0,
+          "events": 32
+        },
+        {
+          "m": 73,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 74,
+          "nps": 39.0,
+          "events": 39
+        },
+        {
+          "m": 75,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 76,
+          "nps": 35.0,
+          "events": 35
+        },
+        {
+          "m": 77,
+          "nps": 35.0,
+          "events": 35
+        },
+        {
+          "m": 78,
+          "nps": 24.0,
+          "events": 24
+        },
+        {
+          "m": 79,
+          "nps": 38.0,
+          "events": 38
+        },
+        {
+          "m": 80,
+          "nps": 22.0,
+          "events": 22
+        },
+        {
+          "m": 81,
+          "nps": 39.0,
+          "events": 39
+        },
+        {
+          "m": 82,
+          "nps": 28.0,
+          "events": 28
+        },
+        {
+          "m": 83,
+          "nps": 34.0,
+          "events": 34
+        },
+        {
+          "m": 84,
+          "nps": 32.0,
+          "events": 32
+        },
+        {
+          "m": 85,
+          "nps": 31.0,
+          "events": 31
+        },
+        {
+          "m": 86,
+          "nps": 31.0,
+          "events": 31
+        },
+        {
+          "m": 87,
+          "nps": 25.0,
+          "events": 25
+        },
+        {
+          "m": 88,
+          "nps": 9.0,
+          "events": 9
+        }
+      ],
+      "nps_min": 1.0,
+      "nps_mean": 23.292,
+      "nps_max": 41.0,
+      "measure_count": 89,
+      "active_measure_count": 89
+    },
+    "shape_v2": {
+      "ratios": {
+        "chord": 0.8606,
+        "stair": 0.0,
+        "ln": 0.0024,
+        "soft": 0.0,
+        "stream": 0.876,
+        "scratch": 0.0145
+      },
+      "owned_counts": {
+        "scratch": 30,
+        "stair": 0,
+        "chord": 1764,
+        "ln": 2,
+        "soft": 0,
+        "stream": 139
+      },
+      "candidate_counts": {
+        "scratch": 30,
+        "stair": 0,
+        "chord": 1784,
+        "ln": 5,
+        "soft": 0,
+        "stream": 1816
+      },
+      "overlap_matrix": {
+        "scratch": {
+          "scratch": 30,
+          "stair": 0,
+          "chord": 20,
+          "ln": 1,
+          "soft": 0,
+          "stream": 0
+        },
+        "stair": {
+          "scratch": 0,
+          "stair": 0,
+          "chord": 0,
+          "ln": 0,
+          "soft": 0,
+          "stream": 0
+        },
+        "chord": {
+          "scratch": 20,
+          "stair": 0,
+          "chord": 1784,
+          "ln": 2,
+          "soft": 0,
+          "stream": 1677
+        },
+        "ln": {
+          "scratch": 1,
+          "stair": 0,
+          "chord": 2,
+          "ln": 5,
+          "soft": 0,
+          "stream": 0
+        },
+        "soft": {
+          "scratch": 0,
+          "stair": 0,
+          "chord": 0,
+          "ln": 0,
+          "soft": 0,
+          "stream": 0
+        },
+        "stream": {
+          "scratch": 0,
+          "stair": 0,
+          "chord": 1677,
+          "ln": 0,
+          "soft": 0,
+          "stream": 1816
+        }
+      },
+      "total_events": 2073,
+      "priority_order": [
+        "scratch",
+        "stair",
+        "chord",
+        "ln",
+        "soft"
+      ]
+    }
+  },
+  "warnings": [],
+  "density": {
+    "nps": 20.438927787194146,
+    "distinct_per_sec": 6.210822302997052,
+    "total_events": 1862.6250379067365,
+    "distinct_positions": 566,
+    "chart_seconds": 91.13125,
+    "avg_chord_size": 4.432801822323462,
+    "max_chord_size": 7,
+    "effective_bpm": 200.0,
+    "bpm_min_musical": 200.0,
+    "bpm_max_musical": 200.0
+  },
+  "axis_intensities": {
+    "chord": "red",
+    "scratch": "green",
+    "soft": null,
+    "ln": "green",
+    "stair": null,
+    "stream": "red",
+    "distraction": "green"
+  },
+  "framework_saturated": false,
+  "framework_signal_status": "clear",
+  "aezhk": {
+    "total": 4.8121,
+    "total_corpus_p90": 6.167588916072902,
+    "terms": [
+      {
+        "key": "sum5",
+        "label": "axes (5-sum)",
+        "value": 2.114,
+        "kind": "axis-sum",
+        "corpus_p90": 2.6247832999308462
+      },
+      {
+        "key": "cb_gate",
+        "label": "chord × stream",
+        "value": 0.3445,
+        "kind": "cross",
+        "corpus_p90": 0.732768575611563
+      },
+      {
+        "key": "bs_x1_5",
+        "label": "back-spike ×1.5",
+        "value": 1.0754,
+        "kind": "peak",
+        "corpus_p90": 1.3861714012128947
+      },
+      {
+        "key": "run_17",
+        "label": "back-end run",
+        "value": 0.0,
+        "kind": "stream",
+        "corpus_p90": 0.125
+      },
+      {
+        "key": "main_05",
+        "label": "main NPS",
+        "value": 0.415,
+        "kind": "stream",
+        "corpus_p90": 0.4597407443941555
+      },
+      {
+        "key": "bm_x_top4",
+        "label": "bimodal penalty",
+        "value": -0.1664,
+        "kind": "subtract",
+        "corpus_p90": -0.0
+      },
+      {
+        "key": "ac_x_bs",
+        "label": "chord × peak",
+        "value": 0.3585,
+        "kind": "cross",
+        "corpus_p90": 0.362691358878395
+      },
+      {
+        "key": "eI",
+        "label": "stream × BPM",
+        "value": 0.4509,
+        "kind": "cross",
+        "corpus_p90": 0.779915902743077
+      },
+      {
+        "key": "zeta",
+        "label": "variance × peak",
+        "value": 0.1704,
+        "kind": "peak",
+        "corpus_p90": 0.3781378128187684
+      },
+      {
+        "key": "eta",
+        "label": "in-stream jack",
+        "value": 0.0,
+        "kind": "jack",
+        "corpus_p90": 0.12954545454545455
+      },
+      {
+        "key": "kappa",
+        "label": "gauge (TOTAL)",
+        "value": 0.0,
+        "kind": "gauge",
+        "corpus_p90": 0.0
+      },
+      {
+        "key": "jack_pres",
+        "label": "jack presence",
+        "value": 0.05,
+        "kind": "jack",
+        "corpus_p90": 0.12
+      }
+    ],
+    "refs_present": true
+  },
+  "tags": [
+    "big_chord_burst",
+    "burst_focused",
+    "dense_chart"
+  ],
+  "primary_character": "chord-shape",
+  "icons": [
+    {
+      "key": "chord",
+      "category": "character",
+      "family": "sl",
+      "axis_value": 0.861,
+      "family_p25": 0.383,
+      "family_p75": 0.624,
+      "polarity": "strong"
+    },
+    {
+      "key": "stream",
+      "category": "character",
+      "family": "sl",
+      "axis_value": 0.876,
+      "family_p25": 0.695,
+      "family_p75": 0.852,
+      "polarity": "strong"
+    },
+    {
+      "key": "high_BPM_fast",
+      "category": "modifier",
+      "extras": {
+        "bpm": 200.0,
+        "nps": 20.438927787194146
+      }
+    },
+    {
+      "key": "bimodal",
+      "category": "modifier",
+      "extras": {
+        "big_to_mid": 1.387
+      }
+    },
+    {
+      "key": "stair",
+      "category": "character",
+      "family": "sl",
+      "axis_value": 0.0,
+      "family_p25": 0.082,
+      "family_p75": 0.249,
+      "polarity": "lighter"
+    },
+    {
+      "key": "scratch",
+      "category": "character",
+      "family": "sl",
+      "axis_value": 0.015,
+      "family_p25": 0.017,
+      "family_p75": 0.045,
+      "polarity": "lighter"
+    }
+  ]
+}

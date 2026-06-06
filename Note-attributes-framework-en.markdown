@@ -331,18 +331,33 @@ The comparison tool's table sits below the cards (radar + density bar) and prese
 
 $$\text{NPS} = \text{Pos/s} \times \overline{\text{chord_size}}$$
 
+This shorthand assumes nearly every position is a chord (`chord_rate ≈ 1`). For mixed charts where some positions are single notes the precise form is:
+
+$$\text{NPS} = \text{Pos/s} \times \left[ r_{\text{chord}} \cdot \overline{\text{chord_size}} + (1 - r_{\text{chord}}) \right]$$
+
+where `r_chord` (`chord_rate`) is the fraction of positions that are chord events. The bracketed factor is the average number of notes per position. The shorthand and the precise form agree once `chord_rate > ~0.85`; stream-heavy charts need the full expression (see §7.4a for a worked κανων example where the shorthand overshoots by 45 %).
+
 The same NPS can arise from very different mechanisms:
+
+> **[2026-06-06 revision]** Skydive numbers below were based on a
+> `BMS.Tools/scripts/bms_parser.py` bug that ignored BMS §11 `#RANDOM/#IF`
+> blocks (every alternative branch was flattened together). The struck-through
+> rows reflect that inflated data; the corrected row follows. See §7.4 for
+> the full meta-discussion.
 
 | Pattern | Pos/s | avg chord | NPS | Burden type |
 |---|---:|---:|---:|---|
-| Chord wall (e.g. Skydive st4, 120 BPM, 7-key chords on every 16th) | 7 | 6.7 | 47 | endurance (same pattern repeating) |
+| ~~Chord wall (e.g. Skydive st4, 120 BPM, 7-key chords on every 16th)~~ | ~~7~~ | ~~6.7~~ | ~~47~~ | ~~endurance (same pattern repeating)~~ |
+| Chord wall (Skydive st4, **corrected**: 120 BPM, mixed 4-chord patterns) | 7 | 4.3 | 29 | endurance (same pattern repeating) |
 | Varied chord-stream (e.g. FD [FOUR DIMENSIONS], 222 BPM, 3-4 chords with fast positional change) | 12 | 3.3 | 40 | pattern + speed (chasing positional shift) |
 
-Looking at NPS alone, they are similar (~50 NPS) — Skydive is even slightly higher. But the underlying mechanics differ completely, and so does perceived difficulty (Skydive st4 vs FD st8/★★5).
+~~Looking at NPS alone, they are similar (~50 NPS) — Skydive is even slightly higher. But the underlying mechanics differ completely, and so does perceived difficulty (Skydive st4 vs FD st8/★★5).~~
+
+**Corrected (post-bms_parser fix)**: Skydive's NPS drops below FD's (29 vs 40) once the spurious `#RANDOM` branches are removed. The example as originally written — "same NPS, opposite tier" — was a parser-bug artefact. The underlying point still holds: at any given NPS, mechanism (chord-wall endurance vs positional-shift speed) is the dominant difficulty driver, and the Pos/s decomposition surfaces it.
 
 **Role of the Pos/s column**: the user reads Pos/s alongside NPS to directly judge *"is this chart big chords played slowly (low Pos/s + high NPS) vs fast positional shift with smaller chords (high Pos/s + moderate NPS)?"*. The mechanism information NPS alone loses is decomposed and surfaced.
 
-The radar's `chord` axis exposes the same information in a different form (Skydive chord 0.99 vs FD 0.73), but if you want the *arithmetic decomposition of NPS itself*, Pos/s is the most direct read.
+The radar's `chord` axis exposes the same information in a different form (~~Skydive chord 0.99~~ corrected ~0.985 — saturated either way, vs FD 0.73), but if you want the *arithmetic decomposition of NPS itself*, Pos/s is the most direct read.
 
 #### Limitation — within-chart uniformity assumption
 
@@ -1106,43 +1121,119 @@ Each case: (chart / family / radar / key tags / time-axis shape / commentary).
 
 ### 7.4 Skydive (st4) vs FREEDOM DiVE [FOUR DIMENSIONS] (st8/★★5) — density-vs-difficulty divergence
 
-The most intuitive illustration of the framework's *"axes ≠ difficulty"* principle (§2.4). Raw table values for the two charts:
+> **[2026-06-06 revision]** This section's original Skydive numbers were
+> derived from a `BMS.Tools/scripts/bms_parser.py` defect — the parser
+> ignored BMS spec §11 `#RANDOM / #IF / #ENDIF` control flow, so every
+> alternative branch in the Skydive source was included as if it had fired.
+> Skydive's `.bms` source uses 138 × `#RANDOM 21` + 126 × `#RANDOM 35`
+> sister-branch blocks on the playable channels (one of many staff-roll
+> "troll" patterns); the broken parser inflated its note count from
+> 1,877 (the real, LR2-rendered figure) to 2,891.
+>
+> The original example below is preserved with strikethrough as record;
+> the corrected analysis follows. The strike-through tier comparison
+> ("Skydive NPS > FD NPS") was a parser-bug artefact and no longer holds.
 
-| | Skydive | FREEDOM DiVE [FOUR DIMENSIONS] |
+~~The most intuitive illustration of the framework's *"axes ≠ difficulty"* principle (§2.4). Raw table values for the two charts:~~
+
+| | Skydive ~~(original)~~ | Skydive **(corrected)** | FREEDOM DiVE [FOUR DIMENSIONS] |
+|---|---:|---:|---:|
+| **Curator family** | **st4** | **st4** | **st8 / ★25 / ★★5** |
+| BPM | 120 | 120 | 222 |
+| Chart length | 67 sec | 67 sec | 138 sec |
+| NPS mean | ~~**44.5**~~ | **28.9** | 33.0 |
+| NPS max | ~~57~~ | (recomputed downward) | 56 |
+| **Pos/s** | ~~**7.0**~~ | **7.0** | **12.0** |
+| avg chord size | ~~6.67~~ | **4.30** | 3.33 |
+| x_chord | ~~0.99~~ | 0.985 (basically unchanged — saturated) | 0.73 |
+| x_stream | ~~0.96~~ | 0.96 (unchanged) | 0.85 |
+| x_peak | 0.31 | 0.31 | 0.64 |
+| primary_character | ~~**chord-spam**~~ | **chord-shape** (re-categorised) | **chord-shape** |
+
+#### ~~The trap of reading the table alone~~
+
+> ~~Looking only at NPS mean: Skydive (44.5) > FD (33.0). Max is similar. *If a user treats NPS as a difficulty proxy*, the perception "Skydive is harder!" arises. But the curator tier says the opposite (st4 vs ★★5, ~4–5 tier gap).~~
+
+**Corrected**: with the proper data, Skydive's NPS (28.9) is now *lower* than FD's (33.0). The original "high-NPS-but-low-tier paradox" was an artefact of the parser bug, not a real characteristic of the chart. The §2.4 *"axes ≠ difficulty"* principle is not invalidated — it just needs a different illustration.
+
+#### ~~Decomposing reveals the difference~~
+
+~~Using `NPS = Pos/s × avg_chord_size` (§3.5):~~
+
+- ~~**Skydive**: 7.0 positions/sec × 6.67 chord ≈ 47 NPS. A *chord wall* — full 7-chord on nearly every 16th note at 120 BPM (8 pos/sec). Single pattern, endurance chart.~~
+- ~~**FD [FOUR DIMENSIONS]**: 12.0 positions/sec × 3.33 chord ≈ 40 NPS. Rapid positional shift at 222 BPM, with varied 3–4 lane chords. A pattern + speed chart.~~
+
+~~Same ~50-NPS class, completely different mechanics.~~
+
+**Corrected decomposition**: Skydive is now 7.0 × 4.30 ≈ 30 NPS (chord-wall with smaller chords than originally measured); FD remains 12.0 × 3.33 ≈ 40 NPS (positional shift). The Pos/s split still reveals the mechanism difference (endurance vs speed) — the lesson the §3.5 column was designed to teach. Only the raw NPS comparison loses its narrative weight.
+
+#### ~~The radar distinguishes them correctly~~
+
+~~The framework's *radar* expresses the two mechanisms distinctly:~~
+
+- ~~Skydive: chord 0.99 (saturated) + peak 0.31 (no variety) + tag `chord-spam`~~
+- ~~FD: chord 0.73 + peak 0.64 (variety) + tag `chord-shape`~~
+
+~~So the framework's character snapshot describes the two as *different characters* accurately, but the *raw NPS alone* hides the mechanism difference. The Pos/s column (added in Phase 1Z-1L) surfaces the NPS decomposition inside the table so the user sees the compositeness directly.~~
+
+**Corrected** — under clean data both charts now classify as `chord-shape` (chord 0.985 vs 0.73, both with similar peak), so the original "two characters are distinct" claim does not hold for this pair. The category drift from `chord-spam` → `chord-shape` happened because removing the 35 % phantom note inflation moved the chord-shape-variety sub-metric across its threshold. This is the *expected* behaviour of the axis system under data corrections, not a framework failure.
+
+#### Meta-lesson — data integrity precedes axis interpretation
+
+The section is retained as a worked example of what happens when a parser bug feeds the axes corrupted data:
+
+1. The cosmetically-inflated NPS produced a *misleadingly clean* example of "axes ≠ difficulty" (high NPS, low tier).
+2. The chord axis saturated either way (0.985 vs 0.99) — the saturation hid the underlying difference.
+3. The primary-character classifier changed category after correction — a *useful diagnostic*: when re-running the pipeline produces a category flip, suspect a data-layer issue.
+
+**A clean replacement illustration of §2.4 should use a chart pair whose tier vs NPS divergence persists after data validation.** The replacement below was selected by a corpus filter (`SP, both within `st` scale, chord-wall vs varied-chord-shift, post-fix metrics`).
+
+### 7.4a Replacement illustration — Sampling Satan (st3) vs κανων (st12)
+
+After the data integrity fix, a corpus sweep of SP charts (5,575 with tier labels) surfaced a pair that exhibits the §2.4 paradox without depending on parser artefacts. The mechanism contrast here is **chord-wall vs stream-pure** — a different texture than the original Skydive vs FD framing (which was chord-wall vs varied chord-shift, both inside the `chord-shape` category). The new pair crosses category boundaries: framework primary character is `chord-shape` for Satan, `stream-pure` for κανων. Neither chart uses `#RANDOM`, so the values are deterministic across re-runs.
+
+| | Sampling Satan | κανων |
 |---|---:|---:|
-| **Curator family** | **st4** | **st8 / ★25 / ★★5** |
-| BPM | 120 | 222 |
-| Chart length | 67 sec | 138 sec |
-| NPS mean | **44.5** | 33.0 |
-| NPS max | 57 | 56 |
-| **Pos/s** | **7.0** | **12.0** |
-| avg chord size | 6.67 | 3.33 |
-| x_chord | 0.99 | 0.73 |
-| x_stream | 0.96 | 0.85 |
-| x_peak | 0.31 | 0.64 |
-| primary_character | **chord-spam** | **chord-shape** |
+| **Curator family** | **st3** | **st12** |
+| BPM | 200 | 175 |
+| Chart length | 87 sec | 140 sec |
+| Total notes | 2,835 | 3,422 |
+| NPS mean | **33.57** | **26.95** |
+| NPS max | 46 | 54 |
+| **Pos/s** | **6.19** | **15.17** |
+| avg chord size (within chord windows) | **5.61** | **2.58** |
+| chord_rate (fraction of positions that are chords) | **0.944** | **0.396** |
+| x_chord | 0.970 | 0.351 |
+| x_stream | 0.852 | 0.927 |
+| x_peak | 0.261 | **1.000** |
+| primary_character | chord-shape | **stream-pure** |
+| IRT (easy / hard) | 1.35 / 1.75 | — (low-confidence) |
 
-#### The trap of reading the table alone
+#### The paradox restored
 
-Looking only at NPS mean: Skydive (44.5) > FD (33.0). Max is similar. *If a user treats NPS as a difficulty proxy*, the perception "Skydive is harder!" arises. But the curator tier says the opposite (st4 vs ★★5, ~4–5 tier gap).
+Reading NPS mean alone, Sampling Satan (33.57) > κανων (26.95). A naïve "NPS = difficulty" reader would expect Satan to be harder. The curator labels say the opposite: Satan sits at st3 (low-intermediate satellite), κανων at st12 (top of the satellite scale, 9 tier levels above). The available IRT signal corroborates: Satan's hard-clear difficulty is ≈ 1.75, while κανων's clear data is too sparse for stable IRT — a separate hint that very few players are reaching the clear bar on it.
 
-#### Decomposing reveals the difference
+#### Decomposition — using the general form of §3.5
 
-Using `NPS = Pos/s × avg_chord_size` (§3.5):
+The shorthand `NPS ≈ Pos/s × avg_chord_size` only holds when nearly every position is a chord (i.e. `chord_rate → 1`). For mixed charts the precise form is:
 
-- **Skydive**: 7.0 positions/sec × 6.67 chord ≈ 47 NPS. A *chord wall* — full 7-chord on nearly every 16th note at 120 BPM (8 pos/sec). Single pattern, endurance chart.
-- **FD [FOUR DIMENSIONS]**: 12.0 positions/sec × 3.33 chord ≈ 40 NPS. Rapid positional shift at 222 BPM, with varied 3–4 lane chords. A pattern + speed chart.
+`NPS ≈ Pos/s × [chord_rate × avg_chord_size + (1 − chord_rate)]`
 
-Same ~50-NPS class, completely different mechanics.
+— the bracketed factor is the *average number of notes per position*, weighting chord positions by their size and single-note positions by 1.
+
+- **Sampling Satan**: `chord_rate = 0.944`, `avg_chord = 5.61` → factor = 0.944 × 5.61 + 0.056 = **5.35**. NPS ≈ 6.19 × 5.35 = **33.1**, matches measured 33.6. A chord wall — chord events on 94% of positions, average chord size 5.6 of 7 keys. Single rhythmic vector at 200 BPM, sustained over 87 seconds. *Endurance-class chord mash*.
+- **κανων**: `chord_rate = 0.396`, `avg_chord = 2.58` → factor = 0.396 × 2.58 + 0.604 = **1.63**. NPS ≈ 15.17 × 1.63 = **24.7**, matches measured 27.0 within 9 %. A stream-pure chart — 60 % of positions are *single notes*, the remaining 40 % are 2-3 key clusters, all firing at 15 positions/sec at 175 BPM with peak burst saturation. *Sight-read / finger-discipline class*.
+
+The short form `Pos/s × avg_chord_size` would have given **39.1** for κανων (45 % overshoot) by treating every position as a chord — a useful cautionary case for the §3.5 row order and a reason the full formula matters when `chord_rate < ~0.85`.
 
 #### The radar distinguishes them correctly
 
-The framework's *radar* expresses the two mechanisms distinctly:
+- **Sampling Satan**: x_chord 0.97 + x_peak 0.26 + primary `chord-shape` + tag `big_chord_burst` — a saturated, non-bursty chord wall.
+- **κανων**: x_chord 0.35 + x_peak 1.00 + primary `stream-pure` + tag `jack_present` — a stream with sparse mid-size chord punctuation, max burst saturation.
 
-- Skydive: chord 0.99 (saturated) + peak 0.31 (no variety) + tag `chord-spam`
-- FD: chord 0.73 + peak 0.64 (variety) + tag `chord-shape`
+The two characters cross category boundaries (chord-shape vs stream-pure), x_chord differs by 0.62, x_peak by 0.74, while their NPS values invert the tier rank. This is the §2.4 principle in its honest form: *which* events are producing the density — chord depth or positional frequency — matters more than *how many* events there are.
 
-So the framework's character snapshot describes the two as *different characters* accurately, but the *raw NPS alone* hides the mechanism difference. The Pos/s column (added in Phase 1Z-1L) surfaces the NPS decomposition inside the table so the user sees the compositeness directly.
+Note that this pair is a stronger mechanism contrast than the original Skydive vs FD framing (which compared two `chord-shape` textures). The downside is that the §3.5 chord-stream row no longer has a chart-pair tie-in within this section; κανων sits on a different row of §3.5 (the *stream* archetype, not *varied chord-stream*).
 
 #### Lesson
 

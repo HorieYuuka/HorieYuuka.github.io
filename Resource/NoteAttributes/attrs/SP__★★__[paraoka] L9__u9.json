@@ -1,1 +1,1163 @@
-{"md5":"799e7598d530456cb394c663dd88f590","headers":{"title":"U9","artist":"paraoka / futher","genre":"プログレスィブロック","playlevel":"U2","base_bpm":123.0,"total":null},"mode":"SP","scope":"playable_only","scaling_mode":"p99_linear","params":{"stream_window_ticks":48,"stream_density_threshold_per_beat":4.0,"peak_window_ticks":192,"peak_l2_top_k":5,"peak_min_window_notes":4,"peak_min_window_sec":0.05,"stream_min_window_sec":0.0125,"chart_seconds_max_single_stop_sec":60.0,"chart_seconds_stop_pathology_ratio":10.0,"felt_bpm_trigger_eff_bpm":500.0,"felt_bpm_trigger_peak_per_sec":200.0,"felt_bpm_target_peak_per_sec":50.0,"felt_bpm_floor":30.0,"class_d_scale_exposure_min":0.05,"class_d_bpm_lo":500.0,"class_d_bpm_hi":1000.0,"class_d_cap_threshold":70.0,"class_d_cap_scale":40.0,"stream_distinct_per_sec_threshold":14.0,"stream_smooth_qual_lo":0.5,"stream_smooth_qual_hi":1.0,"chord_shape_variety_alpha":0.7,"truth_bpm_plausible_lo":30.0,"truth_bpm_plausible_hi":1500.0,"truth_bpm_diverge_ratio":5.0,"truth_bpm_eff_min":1000.0,"truth_bpm_share_min":0.85,"jack_window_ticks":24,"soft_burst_ref":8.0,"soft_freq_ref":0.1,"soft_burst_exp":1.5,"soft_freq_exp":1.5,"chord_time_threshold_ms":16.67,"stair_target_pace_per_sec":8.0,"stair_max_step":1,"sp_distraction_min_scratches":3,"sp_distraction_bin_sec":0.25,"sp_distraction_t_key":2,"sp_distraction_gap_bins":2,"dp_distraction_window_sec_min":0.1,"dp_distraction_window_sec_max":0.4,"stream_density_ref_per_sec":40.0,"peak_density_ref_per_sec":70.0,"chord_size_ref":3.5,"ln_simultaneity_ref":0.05,"scratch_density_ref_per_sec":1.5,"scratch_ratio_ref":0.1,"distraction_density_ref":2.0,"distraction_event_ref":0.15},"raw_axes":{"chord":5.510458014725141,"stream":14.569437171540873,"scratch_per_sec":0.4114894512696927,"scratch_burst_max_per_sec":10.0,"scratch_max_run_sec":1.8292682926829293,"soft":1.6908446915259085,"stair":0.3384690184877977,"peak":108.24898398844067,"ln_m1_short_rate_rt":0.053934571175950484,"ln_m2_density_rt":0.0,"ln_m2_burst_max_rt":0.0,"ln_m3_density_rt":0.0,"ln_m_concurrent_rt":0.0,"adv_hand_imb":0.14754098360655737,"adv_rel_pressure_1beat":0.06557377049180328,"adv_ln_hold_min_beats":0.125,"adv_ln_chord_big_rate":0.0,"adv_ln_scatter_cv":0.40048319373007407,"distraction":1.177317041132732},"x_chord":0.1706,"x_stair":0.1919,"x_ln":0.0557,"x_stream":0.7913,"x_peak":1.0,"peak_jab":1.0,"peak_uppercut":1.0,"x_jack":0.15482695810564662,"x_scratch":0.0318,"x_soft":0.0831,"x_distraction":0.06263175038163908,"distraction_base":0.03890760250980607,"distraction_intensity_factor":0.6097560975609765,"ln_advanced_score":0.0,"submetrics":{"chord":{"chord_rate":0.32299741602067183,"avg_chord_size":2.428,"chord_positions":250,"total_positions":774,"chord_pace_per_sec":2.4523054616281406,"chord_burden_per_sec":5.510458014725141,"chord_event_count":582.974168451037,"total_event_count":1106.974168451037,"chord_event_count_raw":607,"total_event_count_raw":1131,"chord_character_ratio":0.2626814649117788,"chord_burden_per_sec_raw":5.954197660833125,"chord_shape_variety":0.5776191642823615,"chord_eff_avg_size":2.2470520499785636,"chord_shape_variety_per_size":{"2":{"n_positions":207,"n_distinct_shapes":24,"H_norm":0.7705,"burden_share":0.682},"3":{"n_positions":21,"n_distinct_shapes":9,"H_norm":0.455,"burden_share":0.1038},"4":{"n_positions":9,"n_distinct_shapes":2,"H_norm":0.0821,"burden_share":0.0593},"8":{"n_positions":3,"n_distinct_shapes":1,"H_norm":0.0,"burden_share":0.0395},"7":{"n_positions":10,"n_distinct_shapes":1,"H_norm":0.0,"burden_share":0.1153}},"chord_size_histogram":{"1":524,"2":207,"3":21,"4":9,"8":3,"7":10},"big_to_mid":0.43333333333333335},"stream":{"stream_coverage":0.9662100456621004,"stream_density_mean":5.007964718501918,"stream_density_mean_per_sec":15.078954350507804,"stream_windows":9,"notes_in_stream":1058,"total_notes":1095,"intervals":[[168,4044],[4248,4548],[4608,4740],[4752,4932],[4944,5208],[5220,5400],[5604,5808],[5916,7524],[7728,10056]],"intervals_abs":[[168.0,3417.0],[3570.0,3828.0],[3888.0,4020.0],[4032.0,4212.0],[4224.0,4476.0],[4482.0,4569.0],[4650.0,4746.0],[4786.5,6276.0],[6480.0,8427.0]],"sustained_density":0.3617686929223744,"sustained_density_no_gate":0.3964611872146119,"sustained_band_coverage":{"12":0.641324200913242,"14":0.5645833333333333,"16":0.4529109589041096,"18":0.2946917808219178,"20":0.2502283105022831,"22":0.2465753424657534,"24":0.2328767123287671,"26":0.21095890410958903}},"scratch":{"scratch_ratio":0.03183023872679045,"scratch_positions_ratio":0.046511627906976744,"scratch_with_key_chord_rate":0.6388888888888888,"scratch_per_sec":0.4114894512696927,"scratch_burst_max_per_sec":10.0,"scratch_burst_window_sec":1.0,"scratch_max_run_sec":1.8292682926829293,"ls_count":2,"ls_per_sec":0.022860525070538484,"ls_complexity_mean":0,"scratch_notes":36,"scratch_positions":36,"total_notes":1131,"total_positions":774,"chart_seconds":87.48705437993203},"soft":{"base_bpm":165.0238726790451,"intensity":0.34999604637956194,"up_intensity":0.34640184598132456,"down_intensity":0.003594200398237404,"max_intensity":6.382113821138211,"max_up_intensity":6.382113821138211,"max_down_intensity":0.967479674796748,"step_frequency":0.3018867924528302,"ramp_frequency":0.2641509433962264,"continuity_beats":17.9375,"off_base_note_ratio":0.07957559681697612,"off_base_note_count":90,"gimmick_burst_score":5.6009230406795725,"max_off_base_density_per_beat":8.0,"base_mean_density_per_beat":6.571089108910891,"base_density_source":"on_base","distinct_off_base_bpm_count":6,"bpm_change_events":16,"measure_count":53,"declared_base_bpm":123.0},"ln":{"ln_ratio":0.053934571175950484,"ln_hold_time_mean_beats":0.125,"ln_simultaneity_rate":0.0,"ln_simultaneity_weighted":0.0,"ln_count":61,"ln_count_raw":61,"ln_positions":53,"ln_active_event_count":63,"ln_character_ratio":0.05570291777188329,"total_notes":1131,"m1_short_count_rt":61,"m1_short_rate_rt":0.053934571175950484,"m2_long_count_rt":0,"m2_density_rt":0.0,"m2_burst_max_rt":0.0,"m3_density_rt":0.0,"m_concurrent_rt":0.0,"total_long_sec":0,"long_active_sec":0.0,"long_hold_sec_mean":0.0,"long_hold_sec_max":0.0,"adv_hand_imb":0.14754098360655737,"adv_rel_pressure_1beat":0.06557377049180328,"adv_ln_hold_min_beats":0.125,"adv_ln_chord_big_rate":0.0,"adv_ln_scatter_cv":0.40048319373007407},"stair":{"stair_index":0.12894736842105264,"stair_transitions":98,"eligible_transitions":760,"stair_burden_per_sec":0.3384690184877977,"stair_l2":34.50518540450101,"stair_chains":58,"stair_max_chain_length":7,"stair_event_count":232,"stair_unique_event_count":224,"stair_outside_burden_per_sec":0.0,"stair_in_stream_burden_per_sec":0.3384690184877977,"stair_outside_chains":0,"stair_in_stream_chains":58},"peak":{"peak_local_max_density_per_sec":108.24898398844067,"peak_local_max_density":8.0,"peak_distinct_per_sec_max":60.53333333333334,"peak_distinct_per_sec_l2":108.24898398844067,"peak_distinct_above_threshold_count":4,"peak_top_k_selected_windows":[{"grid_tick":8628,"per_sec":17.404},{"grid_tick":9324,"per_sec":60.533},{"grid_tick":9516,"per_sec":60.533},{"grid_tick":9708,"per_sec":50.444},{"grid_tick":9900,"per_sec":39.265}],"peak_max_chord_size":7,"peak_concentration":0.4273972602739726,"peak_event_count":468,"total_notes":1095,"spike_density":0.18378995433789955,"spike_band_coverage":{"1.5":0.2557077625570776,"2.0":0.20273972602739726,"2.5":0.13881278538812786,"3.0":0.13789954337899543},"intervals":[[192,768],[2436,3132],[4920,5232],[8136,9036]]},"jack":{"jack_pairs":100,"jack_in_stream_pairs":100,"jack_outside_pairs":0,"pure_jack_per_sec":0.0,"flow_break_per_stream_sec":1.2864493247627262,"stream_seconds":77.73333785879524,"non_stream_seconds":9.753716521136795,"chart_seconds":87.48705437993203,"window_ticks":24,"min_region_sec":10.0,"j12_in_stream":46,"rapid_repeat_share":0.15482695810564662,"rapid_pair_count_total":549,"rapid_pair_count_same_lane":85,"rapid_gap_max_ticks":12,"same_keysound_rapid_pairs":84,"keysound_match_share":0.9882352941176471,"weighted_jack_score":169,"rapid_chain_len_max":7,"rapid_chain_len_max_strict":7,"double_tab_chain_count":10,"triple_tab_chain_count":6},"distraction":{"mode_formulation":"SP","v3_score":1.177317041132732,"qualifying_intervals":2,"qualifying_flow_sec":46.75,"qualifying_scratches":35,"scratch_chord_pair_count":36,"distraction_unique_event_count":35,"distraction_key_events_in_active":53,"chord_time_threshold_sec":0.01667,"min_scratches":3,"bin_sec":0.25,"t_key":2,"gap_bins":2},"last_killing":{"qbin_densities":[16.91678855219848,14.402130794439245,12.801894039501551,13.25910454091232,13.487709791617705,15.316551797260784,12.801894039501551,10.515841532447702,11.201657284563858,16.688183301493094,5.715131267634621,8.915604777510008,2.0574472563484636,4.343499763402312,6.858157521161545,5.943736518340006,8.915604777510008,15.316551797260784,37.034050614272346,17.831209555020017],"back_max_idx":18,"back_spike_ratio":2.9589041095890414,"drop_factor":0.48148148148148145,"cross_half_ratio":2.189189189189189,"is_type1":true,"is_type2":false,"is_last_killing":true},"variance":{"density_cv":0.49467832180964716,"burst_pct":0.1038961038961039,"calm_pct":0.2597402597402597,"max_burst_run":3,"mean_nps":11.480519480519481,"std_nps":5.679164110126339,"active_bins":77},"measure_density":{"measures":[{"m":0,"nps":17.0,"events":17},{"m":1,"nps":16.0,"events":16},{"m":2,"nps":19.0,"events":19},{"m":3,"nps":19.0,"events":19},{"m":4,"nps":14.0,"events":14},{"m":5,"nps":18.0,"events":18},{"m":6,"nps":14.0,"events":14},{"m":7,"nps":12.0,"events":12},{"m":8,"nps":14.0,"events":14},{"m":9,"nps":12.0,"events":12},{"m":10,"nps":15.0,"events":15},{"m":11,"nps":13.0,"events":13},{"m":12,"nps":10.0,"events":10},{"m":13,"nps":16.0,"events":16},{"m":14,"nps":15.0,"events":15},{"m":15,"nps":13.0,"events":13},{"m":16,"nps":13.0,"events":13},{"m":17,"nps":13.0,"events":13},{"m":18,"nps":13.0,"events":13},{"m":19,"nps":12.0,"events":12},{"m":20,"nps":16.0,"events":16},{"m":21,"nps":14.0,"events":14},{"m":22,"nps":13.0,"events":13},{"m":23,"nps":15.0,"events":15},{"m":24,"nps":16.0,"events":16},{"m":25,"nps":17.0,"events":17},{"m":26,"nps":15.0,"events":15},{"m":27,"nps":17.0,"events":17},{"m":28,"nps":19.0,"events":19},{"m":29,"nps":15.0,"events":15},{"m":30,"nps":18.0,"events":18},{"m":31,"nps":6.0,"events":6},{"m":32,"nps":8.0,"events":8},{"m":33,"nps":11.0,"events":11},{"m":34,"nps":14.0,"events":14},{"m":35,"nps":8.0,"events":8},{"m":36,"nps":14.0,"events":14},{"m":37,"nps":9.0,"events":9},{"m":38,"nps":14.0,"events":14},{"m":39,"nps":14.0,"events":14},{"m":40,"nps":31.0,"events":31},{"m":41,"nps":21.0,"events":21},{"m":42,"nps":9.0,"events":9},{"m":43,"nps":2.0,"events":2},{"m":44,"nps":8.0,"events":8},{"m":45,"nps":4.0,"events":4},{"m":46,"nps":2.0,"events":2},{"m":47,"nps":10.0,"events":10},{"m":48,"nps":10.0,"events":10},{"m":49,"nps":10.0,"events":10},{"m":50,"nps":8.0,"events":8},{"m":51,"nps":8.0,"events":8},{"m":52,"nps":8.0,"events":8},{"m":53,"nps":2.0,"events":2},{"m":54,"nps":0.0,"events":0},{"m":55,"nps":3.0,"events":3},{"m":56,"nps":0.0,"events":0},{"m":57,"nps":4.0,"events":4},{"m":58,"nps":1.0,"events":1},{"m":59,"nps":5.0,"events":5},{"m":60,"nps":7.0,"events":7},{"m":61,"nps":7.0,"events":7},{"m":62,"nps":6.0,"events":6},{"m":63,"nps":6.0,"events":6},{"m":64,"nps":8.0,"events":8},{"m":65,"nps":7.0,"events":7},{"m":66,"nps":6.0,"events":6},{"m":67,"nps":8.0,"events":8},{"m":68,"nps":5.0,"events":5},{"m":69,"nps":7.0,"events":7},{"m":70,"nps":9.0,"events":9},{"m":71,"nps":9.0,"events":9},{"m":72,"nps":8.0,"events":8},{"m":73,"nps":8.0,"events":8},{"m":74,"nps":11.0,"events":11},{"m":75,"nps":16.0,"events":16},{"m":76,"nps":17.0,"events":17},{"m":77,"nps":16.0,"events":16},{"m":78,"nps":18.0,"events":18},{"m":79,"nps":25.0,"events":25},{"m":80,"nps":25.0,"events":25},{"m":81,"nps":104.0,"events":104},{"m":82,"nps":11.0,"events":11},{"m":83,"nps":10.0,"events":10},{"m":84,"nps":31.0,"events":31},{"m":85,"nps":39.0,"events":39}],"nps_min":1.0,"nps_mean":13.464,"nps_max":104.0,"measure_count":86,"active_measure_count":84},"shape_v2":{"ratios":{"chord":0.1706,"stair":0.1919,"ln":0.0557,"soft":0.0831,"stream":0.7913,"scratch":0.0318},"owned_counts":{"scratch":36,"stair":217,"chord":171,"ln":54,"soft":61,"stream":488},"candidate_counts":{"scratch":36,"stair":217,"chord":193,"ln":63,"soft":94,"stream":895},"overlap_matrix":{"scratch":{"scratch":36,"stair":0,"chord":12,"ln":2,"soft":2,"stream":0},"stair":{"scratch":0,"stair":217,"chord":10,"ln":5,"soft":19,"stream":191},"chord":{"scratch":12,"stair":10,"chord":193,"ln":3,"soft":13,"stream":138},"ln":{"scratch":2,"stair":5,"chord":3,"ln":63,"soft":0,"stream":31},"soft":{"scratch":2,"stair":19,"chord":13,"ln":0,"soft":94,"stream":84},"stream":{"scratch":0,"stair":191,"chord":138,"ln":31,"soft":84,"stream":895}},"total_events":1131,"priority_order":["scratch","stair","chord","ln","soft"]}},"warnings":["Non-positive BPM value for BPM03: '-45'","ch09 references undefined STOP table entry 'FD' in m52; ignoring"],"felt_bpm":{"applied":false,"method":"scale_troll_h1_block","declared_eff_bpm":165.0238726790451,"felt_eff_bpm":165.0238726790451,"scale_exposure":0.14827577250409432,"n_distinct_bpms":7,"n_scaled_measures":23},"density":{"nps":10.858555196694988,"distinct_per_sec":7.592337709200723,"total_events":1106.974168451037,"distinct_positions":774,"chart_seconds":101.94488570523323,"avg_chord_size":2.428,"max_chord_size":7,"effective_bpm":165.0238726790451,"bpm_min_musical":83.0,"bpm_max_musical":908.0},"axis_intensities":{"chord":"green","scratch":"yellow","soft":"yellow","ln":"yellow","stair":"yellow","stream":"yellow","distraction":"yellow"},"framework_saturated":false,"framework_signal_status":"clear","aezhk":{"total":5.1871,"total_corpus_p90":6.167588916072902,"terms":[{"key":"sum5","label":"axes (5-sum)","value":2.3086,"kind":"axis-sum","corpus_p90":2.6247832999308462},{"key":"cb_gate","label":"chord × stream","value":0.0,"kind":"cross","corpus_p90":0.732768575611563},{"key":"bs_x1_5","label":"back-spike ×1.5","value":1.5,"kind":"peak","corpus_p90":1.3861714012128947},{"key":"run_17","label":"back-end run","value":0.125,"kind":"stream","corpus_p90":0.125},{"key":"main_05","label":"main NPS","value":0.2276,"kind":"stream","corpus_p90":0.4597407443941555},{"key":"bm_x_top4","label":"bimodal penalty","value":-0.0,"kind":"subtract","corpus_p90":-0.0},{"key":"ac_x_bs","label":"chord × peak","value":0.3179,"kind":"cross","corpus_p90":0.362691358878395},{"key":"eI","label":"stream × BPM","value":0.0,"kind":"cross","corpus_p90":0.779915902743077},{"key":"zeta","label":"variance × peak","value":0.288,"kind":"peak","corpus_p90":0.3781378128187684},{"key":"eta","label":"in-stream jack","value":0.3,"kind":"jack","corpus_p90":0.12954545454545455},{"key":"kappa","label":"gauge (TOTAL)","value":0.0,"kind":"gauge","corpus_p90":0.0},{"key":"jack_pres","label":"jack presence","value":0.12,"kind":"jack","corpus_p90":0.12}],"refs_present":true},"tags":["flow_break","jack_present","double_tab","triple_tab","scratch_burst","visual_gimmick","big_chord_burst","last_killing"],"primary_character":"soflan-trick","icons":[{"key":"ln","category":"character","family":"★★","axis_value":0.056,"family_p25":0.0,"family_p75":0.005,"polarity":"strong"},{"key":"last_killing","category":"modifier"},{"key":"chord","category":"character","family":"★★","axis_value":0.171,"family_p25":0.487,"family_p75":0.693,"polarity":"lighter"}],"scales":["★★"]}
+{
+  "source": "C:\\Repos\\BMS.Tools\\samples\\SP__★★__[paraoka] L9__u9.bml",
+  "md5": "799e7598d530456cb394c663dd88f590",
+  "headers": {
+    "title": "U9",
+    "artist": "paraoka / futher",
+    "genre": "プログレスィブロック",
+    "playlevel": "U2",
+    "base_bpm": 123.0,
+    "total": null
+  },
+  "mode": "SP",
+  "scope": "playable_only",
+  "scaling_mode": "p99_linear",
+  "params": {
+    "stream_window_ticks": 48,
+    "stream_density_threshold_per_beat": 4.0,
+    "peak_window_ticks": 192,
+    "peak_l2_top_k": 5,
+    "peak_min_window_notes": 4,
+    "peak_min_window_sec": 0.05,
+    "stream_min_window_sec": 0.0125,
+    "chart_seconds_max_single_stop_sec": 60.0,
+    "chart_seconds_stop_pathology_ratio": 10.0,
+    "felt_bpm_trigger_eff_bpm": 500.0,
+    "felt_bpm_trigger_peak_per_sec": 200.0,
+    "felt_bpm_target_peak_per_sec": 50.0,
+    "felt_bpm_floor": 30.0,
+    "class_d_scale_exposure_min": 0.05,
+    "class_d_bpm_lo": 500.0,
+    "class_d_bpm_hi": 1000.0,
+    "class_d_cap_threshold": 70.0,
+    "class_d_cap_scale": 40.0,
+    "stream_distinct_per_sec_threshold": 14.0,
+    "stream_smooth_qual_lo": 0.5,
+    "stream_smooth_qual_hi": 1.0,
+    "chord_shape_variety_alpha": 0.7,
+    "truth_bpm_plausible_lo": 30.0,
+    "truth_bpm_plausible_hi": 1500.0,
+    "truth_bpm_diverge_ratio": 5.0,
+    "truth_bpm_eff_min": 1000.0,
+    "truth_bpm_share_min": 0.85,
+    "jack_window_ticks": 24,
+    "soft_burst_ref": 8.0,
+    "soft_freq_ref": 0.1,
+    "soft_burst_exp": 1.5,
+    "soft_freq_exp": 1.5,
+    "chord_time_threshold_ms": 16.67,
+    "stair_target_pace_per_sec": 8.0,
+    "stair_max_step": 1,
+    "sp_distraction_min_scratches": 3,
+    "sp_distraction_bin_sec": 0.25,
+    "sp_distraction_t_key": 2,
+    "sp_distraction_gap_bins": 2,
+    "dp_distraction_window_sec_min": 0.1,
+    "dp_distraction_window_sec_max": 0.4,
+    "stream_density_ref_per_sec": 40.0,
+    "peak_density_ref_per_sec": 70.0,
+    "chord_size_ref": 3.5,
+    "ln_simultaneity_ref": 0.05,
+    "scratch_density_ref_per_sec": 1.5,
+    "scratch_ratio_ref": 0.1,
+    "distraction_density_ref": 2.0,
+    "distraction_event_ref": 0.15
+  },
+  "raw_axes": {
+    "chord": 5.544347309143992,
+    "stream": 10.271297010954441,
+    "scratch_per_sec": 0.4278466313643487,
+    "scratch_burst_max_per_sec": 10.0,
+    "scratch_max_run_sec": 1.8292682926829293,
+    "soft": 14.47664136359139,
+    "stair": 0.3572573367190816,
+    "peak": 34.67243366494484,
+    "ln_m1_short_rate_rt": 0.053934571175950484,
+    "ln_m2_density_rt": 0.0,
+    "ln_m2_burst_max_rt": 0.0,
+    "ln_m3_density_rt": 0.0,
+    "ln_m_concurrent_rt": 0.0,
+    "adv_hand_imb": 0.14754098360655737,
+    "adv_rel_pressure_1beat": 0.06557377049180328,
+    "adv_ln_hold_min_beats": 0.125,
+    "adv_ln_chord_big_rate": 0.0,
+    "adv_ln_scatter_cv": 0.40048319373007407,
+    "distraction": 1.1765782362519588
+  },
+  "x_chord": 0.1706,
+  "x_stair": 0.2157,
+  "x_ln": 0.0557,
+  "x_stream": 0.8002,
+  "x_peak": 0.5917807418492036,
+  "peak_jab": 0.5917807418492036,
+  "peak_uppercut": 0.5417905517013546,
+  "x_jack": 0.15482695810564662,
+  "x_scratch": 0.0318,
+  "x_soft": 0.0292,
+  "x_distraction": 0.059355380137842736,
+  "distraction_base": 0.03687228160078107,
+  "distraction_intensity_factor": 0.6097560975609765,
+  "ln_advanced_score": 0.0,
+  "submetrics": {
+    "chord": {
+      "chord_rate": 0.32299741602067183,
+      "avg_chord_size": 2.428,
+      "chord_positions": 250,
+      "total_positions": 774,
+      "chord_pace_per_sec": 2.4673871302611277,
+      "chord_burden_per_sec": 5.544347309143992,
+      "chord_event_count": 582.974168451037,
+      "total_event_count": 1106.974168451037,
+      "chord_event_count_raw": 607,
+      "total_event_count_raw": 1131,
+      "chord_character_ratio": 0.2626814649117788,
+      "chord_burden_per_sec_raw": 5.990815952274017,
+      "chord_shape_variety": 0.5776191642823615,
+      "chord_eff_avg_size": 2.2470520499785636,
+      "chord_shape_variety_per_size": {
+        "2": {
+          "n_positions": 207,
+          "n_distinct_shapes": 24,
+          "H_norm": 0.7705,
+          "burden_share": 0.682
+        },
+        "3": {
+          "n_positions": 21,
+          "n_distinct_shapes": 9,
+          "H_norm": 0.455,
+          "burden_share": 0.1038
+        },
+        "4": {
+          "n_positions": 9,
+          "n_distinct_shapes": 2,
+          "H_norm": 0.0821,
+          "burden_share": 0.0593
+        },
+        "8": {
+          "n_positions": 3,
+          "n_distinct_shapes": 1,
+          "H_norm": 0.0,
+          "burden_share": 0.0395
+        },
+        "7": {
+          "n_positions": 10,
+          "n_distinct_shapes": 1,
+          "H_norm": 0.0,
+          "burden_share": 0.1153
+        }
+      },
+      "chord_size_histogram": {
+        "1": 524,
+        "2": 207,
+        "3": 21,
+        "4": 9,
+        "8": 3,
+        "7": 10
+      },
+      "big_to_mid": 0.43333333333333335
+    },
+    "stream": {
+      "stream_coverage": 0.9662100456621004,
+      "stream_density_mean": 5.007964718501918,
+      "stream_density_mean_per_sec": 10.63050115973073,
+      "stream_windows": 9,
+      "notes_in_stream": 1058,
+      "total_notes": 1095,
+      "intervals": [
+        [
+          168,
+          4044
+        ],
+        [
+          4248,
+          4548
+        ],
+        [
+          4608,
+          4740
+        ],
+        [
+          4752,
+          4932
+        ],
+        [
+          4944,
+          5208
+        ],
+        [
+          5220,
+          5400
+        ],
+        [
+          5604,
+          5808
+        ],
+        [
+          5916,
+          7524
+        ],
+        [
+          7728,
+          10056
+        ]
+      ],
+      "intervals_abs": [
+        [
+          168.0,
+          3417.0
+        ],
+        [
+          3570.0,
+          3828.0
+        ],
+        [
+          3888.0,
+          4020.0
+        ],
+        [
+          4032.0,
+          4212.0
+        ],
+        [
+          4224.0,
+          4476.0
+        ],
+        [
+          4482.0,
+          4569.0
+        ],
+        [
+          4650.0,
+          4746.0
+        ],
+        [
+          4786.5,
+          6276.0
+        ],
+        [
+          6480.0,
+          8427.0
+        ]
+      ],
+      "sustained_density": 0.36351669520547947,
+      "sustained_density_no_gate": 0.39817351598173517,
+      "sustained_band_coverage": {
+        "12": 0.6416095890410959,
+        "14": 0.5664098173515981,
+        "16": 0.45473744292237445,
+        "18": 0.2965182648401826,
+        "20": 0.25205479452054796,
+        "22": 0.24840182648401826,
+        "24": 0.23470319634703196,
+        "26": 0.2136986301369863
+      }
+    },
+    "scratch": {
+      "scratch_ratio": 0.03183023872679045,
+      "scratch_positions_ratio": 0.046511627906976744,
+      "scratch_with_key_chord_rate": 0.6388888888888888,
+      "scratch_per_sec": 0.4278466313643487,
+      "scratch_burst_max_per_sec": 10.0,
+      "scratch_burst_window_sec": 1.0,
+      "scratch_max_run_sec": 1.8292682926829293,
+      "ls_count": 2,
+      "ls_per_sec": 0.02376925729801937,
+      "ls_complexity_mean": 0,
+      "scratch_notes": 36,
+      "scratch_positions": 36,
+      "total_notes": 1131,
+      "total_positions": 774,
+      "chart_seconds": 84.14230091096093
+    },
+    "soft": {
+      "base_bpm": 125.868258178603,
+      "intensity": 26.830188407984874,
+      "up_intensity": 26.826594207586638,
+      "down_intensity": 0.003594200398237404,
+      "max_intensity": 531.8048780487804,
+      "max_up_intensity": 531.8048780487804,
+      "max_down_intensity": 0.967479674796748,
+      "step_frequency": 0.3018867924528302,
+      "ramp_frequency": 0.2641509433962264,
+      "continuity_beats": 17.9375,
+      "off_base_note_ratio": 0.07957559681697612,
+      "off_base_note_count": 90,
+      "gimmick_burst_score": 47.953874516896484,
+      "max_off_base_density_per_beat": 8.0,
+      "base_mean_density_per_beat": 6.571089108910891,
+      "base_density_source": "on_base",
+      "distinct_off_base_bpm_count": 6,
+      "bpm_change_events": 16,
+      "measure_count": 53,
+      "declared_base_bpm": 123.0
+    },
+    "ln": {
+      "ln_ratio": 0.053934571175950484,
+      "ln_hold_time_mean_beats": 0.125,
+      "ln_simultaneity_rate": 0.0,
+      "ln_simultaneity_weighted": 0.0,
+      "ln_count": 61,
+      "ln_count_raw": 61,
+      "ln_positions": 53,
+      "ln_active_event_count": 63,
+      "ln_character_ratio": 0.05570291777188329,
+      "total_notes": 1131,
+      "m1_short_count_rt": 61,
+      "m1_short_rate_rt": 0.053934571175950484,
+      "m2_long_count_rt": 0,
+      "m2_density_rt": 0.0,
+      "m2_burst_max_rt": 0.0,
+      "m3_density_rt": 0.0,
+      "m_concurrent_rt": 0.0,
+      "total_long_sec": 0,
+      "long_active_sec": 0.0,
+      "long_hold_sec_mean": 0.0,
+      "long_hold_sec_max": 0.0,
+      "adv_hand_imb": 0.14754098360655737,
+      "adv_rel_pressure_1beat": 0.06557377049180328,
+      "adv_ln_hold_min_beats": 0.125,
+      "adv_ln_chord_big_rate": 0.0,
+      "adv_ln_scatter_cv": 0.40048319373007407
+    },
+    "stair": {
+      "stair_index": 0.12894736842105264,
+      "stair_transitions": 98,
+      "eligible_transitions": 760,
+      "stair_burden_per_sec": 0.3572573367190816,
+      "stair_l2": 36.197941167958554,
+      "stair_chains": 65,
+      "stair_max_chain_length": 7,
+      "stair_event_count": 260,
+      "stair_unique_event_count": 251,
+      "stair_outside_burden_per_sec": 0.0,
+      "stair_in_stream_burden_per_sec": 0.3572573367190816,
+      "stair_outside_chains": 0,
+      "stair_in_stream_chains": 65
+    },
+    "peak": {
+      "peak_local_max_density_per_sec": 34.67243366494484,
+      "peak_local_max_density": 8.0,
+      "peak_distinct_per_sec_max": 16.400000000000002,
+      "peak_distinct_per_sec_l2": 34.67243366494484,
+      "peak_distinct_above_threshold_count": 5,
+      "peak_top_k_selected_windows": [
+        {
+          "grid_tick": 2496,
+          "per_sec": 14.35
+        },
+        {
+          "grid_tick": 2868,
+          "per_sec": 14.35
+        },
+        {
+          "grid_tick": 4980,
+          "per_sec": 15.888
+        },
+        {
+          "grid_tick": 8256,
+          "per_sec": 16.4
+        },
+        {
+          "grid_tick": 8448,
+          "per_sec": 16.4
+        }
+      ],
+      "peak_max_chord_size": 7,
+      "peak_concentration": 0.4273972602739726,
+      "peak_event_count": 468,
+      "total_notes": 1095,
+      "spike_density": 0.1863013698630137,
+      "spike_band_coverage": {
+        "1.5": 0.2557077625570776,
+        "2.0": 0.2054794520547945,
+        "2.5": 0.14246575342465753,
+        "3.0": 0.1415525114155251
+      },
+      "intervals": [
+        [
+          192,
+          768
+        ],
+        [
+          2436,
+          3132
+        ],
+        [
+          4920,
+          5232
+        ],
+        [
+          8136,
+          9036
+        ]
+      ]
+    },
+    "jack": {
+      "jack_pairs": 100,
+      "jack_in_stream_pairs": 100,
+      "jack_outside_pairs": 0,
+      "pure_jack_per_sec": 0.0,
+      "flow_break_per_stream_sec": 1.3070709253057744,
+      "stream_seconds": 76.5069424037614,
+      "non_stream_seconds": 7.635358507199527,
+      "chart_seconds": 84.14230091096093,
+      "window_ticks": 24,
+      "min_region_sec": 10.0,
+      "j12_in_stream": 46,
+      "rapid_repeat_share": 0.15482695810564662,
+      "rapid_pair_count_total": 549,
+      "rapid_pair_count_same_lane": 85,
+      "rapid_gap_max_ticks": 12,
+      "same_keysound_rapid_pairs": 84,
+      "keysound_match_share": 0.9882352941176471,
+      "weighted_jack_score": 169,
+      "rapid_chain_len_max": 7,
+      "rapid_chain_len_max_strict": 7,
+      "double_tab_chain_count": 10,
+      "triple_tab_chain_count": 6
+    },
+    "distraction": {
+      "mode_formulation": "SP",
+      "v3_score": 1.1765782362519588,
+      "qualifying_intervals": 2,
+      "qualifying_flow_sec": 49.75,
+      "qualifying_scratches": 34,
+      "scratch_chord_pair_count": 36,
+      "distraction_unique_event_count": 34,
+      "distraction_key_events_in_active": 49,
+      "chord_time_threshold_sec": 0.01667,
+      "min_scratches": 3,
+      "bin_sec": 0.25,
+      "t_key": 2,
+      "gap_bins": 2
+    },
+    "last_killing": {
+      "qbin_densities": [
+        16.876172681593754,
+        14.261554378811624,
+        13.073091513910654,
+        13.548476659871042,
+        13.310784086890848,
+        14.499246951791816,
+        13.073091513910654,
+        10.933858357088912,
+        11.646936076029492,
+        19.015405838415496,
+        9.270010346227556,
+        8.794625200267168,
+        7.606162335366199,
+        6.893084616425618,
+        6.41769947046523,
+        8.794625200267168,
+        15.687709816692786,
+        38.03081167683099,
+        11.409243503049298,
+        7.130777189405812
+      ],
+      "back_max_idx": 17,
+      "back_spike_ratio": 2.9223744292237437,
+      "drop_factor": 0.24375,
+      "cross_half_ratio": 2.0,
+      "is_type1": true,
+      "is_type2": false,
+      "is_last_killing": true
+    },
+    "variance": {
+      "density_cv": 0.6693119818370419,
+      "burst_pct": 0.09333333333333334,
+      "calm_pct": 0.3333333333333333,
+      "max_burst_run": 4,
+      "mean_nps": 13.693333333333333,
+      "std_nps": 9.16511207128856,
+      "active_bins": 75
+    },
+    "measure_density": {
+      "measures": [
+        {
+          "m": 0,
+          "nps": 17.0,
+          "events": 17
+        },
+        {
+          "m": 1,
+          "nps": 16.0,
+          "events": 16
+        },
+        {
+          "m": 2,
+          "nps": 19.0,
+          "events": 19
+        },
+        {
+          "m": 3,
+          "nps": 19.0,
+          "events": 19
+        },
+        {
+          "m": 4,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 5,
+          "nps": 18.0,
+          "events": 18
+        },
+        {
+          "m": 6,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 7,
+          "nps": 12.0,
+          "events": 12
+        },
+        {
+          "m": 8,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 9,
+          "nps": 12.0,
+          "events": 12
+        },
+        {
+          "m": 10,
+          "nps": 15.0,
+          "events": 15
+        },
+        {
+          "m": 11,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 12,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 13,
+          "nps": 16.0,
+          "events": 16
+        },
+        {
+          "m": 14,
+          "nps": 15.0,
+          "events": 15
+        },
+        {
+          "m": 15,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 16,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 17,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 18,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 19,
+          "nps": 12.0,
+          "events": 12
+        },
+        {
+          "m": 20,
+          "nps": 16.0,
+          "events": 16
+        },
+        {
+          "m": 21,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 22,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 23,
+          "nps": 15.0,
+          "events": 15
+        },
+        {
+          "m": 24,
+          "nps": 16.0,
+          "events": 16
+        },
+        {
+          "m": 25,
+          "nps": 17.0,
+          "events": 17
+        },
+        {
+          "m": 26,
+          "nps": 15.0,
+          "events": 15
+        },
+        {
+          "m": 27,
+          "nps": 17.0,
+          "events": 17
+        },
+        {
+          "m": 28,
+          "nps": 19.0,
+          "events": 19
+        },
+        {
+          "m": 29,
+          "nps": 15.0,
+          "events": 15
+        },
+        {
+          "m": 30,
+          "nps": 18.0,
+          "events": 18
+        },
+        {
+          "m": 31,
+          "nps": 6.0,
+          "events": 6
+        },
+        {
+          "m": 32,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 33,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 34,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 35,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 36,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 37,
+          "nps": 9.0,
+          "events": 9
+        },
+        {
+          "m": 38,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 39,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 40,
+          "nps": 31.0,
+          "events": 31
+        },
+        {
+          "m": 41,
+          "nps": 21.0,
+          "events": 21
+        },
+        {
+          "m": 42,
+          "nps": 9.0,
+          "events": 9
+        },
+        {
+          "m": 43,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 44,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 45,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 46,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 47,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 48,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 49,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 50,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 51,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 52,
+          "nps": 7.0,
+          "events": 7
+        },
+        {
+          "m": 53,
+          "nps": 7.0,
+          "events": 7
+        },
+        {
+          "m": 54,
+          "nps": 7.0,
+          "events": 7
+        },
+        {
+          "m": 55,
+          "nps": 6.0,
+          "events": 6
+        },
+        {
+          "m": 56,
+          "nps": 6.0,
+          "events": 6
+        },
+        {
+          "m": 57,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 58,
+          "nps": 6.0,
+          "events": 6
+        },
+        {
+          "m": 59,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 60,
+          "nps": 6.0,
+          "events": 6
+        },
+        {
+          "m": 61,
+          "nps": 5.0,
+          "events": 5
+        },
+        {
+          "m": 62,
+          "nps": 9.0,
+          "events": 9
+        },
+        {
+          "m": 63,
+          "nps": 9.0,
+          "events": 9
+        },
+        {
+          "m": 64,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 65,
+          "nps": 8.0,
+          "events": 8
+        },
+        {
+          "m": 66,
+          "nps": 10.0,
+          "events": 10
+        },
+        {
+          "m": 67,
+          "nps": 12.0,
+          "events": 12
+        },
+        {
+          "m": 68,
+          "nps": 17.0,
+          "events": 17
+        },
+        {
+          "m": 69,
+          "nps": 16.0,
+          "events": 16
+        },
+        {
+          "m": 70,
+          "nps": 16.0,
+          "events": 16
+        },
+        {
+          "m": 71,
+          "nps": 20.0,
+          "events": 20
+        },
+        {
+          "m": 72,
+          "nps": 26.0,
+          "events": 26
+        },
+        {
+          "m": 73,
+          "nps": 58.0,
+          "events": 58
+        },
+        {
+          "m": 74,
+          "nps": 66.0,
+          "events": 66
+        },
+        {
+          "m": 75,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 76,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 77,
+          "nps": 13.0,
+          "events": 13
+        },
+        {
+          "m": 78,
+          "nps": 12.0,
+          "events": 12
+        },
+        {
+          "m": 79,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 80,
+          "nps": 11.0,
+          "events": 11
+        },
+        {
+          "m": 81,
+          "nps": 14.0,
+          "events": 14
+        },
+        {
+          "m": 82,
+          "nps": 4.0,
+          "events": 4
+        }
+      ],
+      "nps_min": 4.0,
+      "nps_mean": 13.627,
+      "nps_max": 66.0,
+      "measure_count": 83,
+      "active_measure_count": 83
+    },
+    "shape_v2": {
+      "ratios": {
+        "chord": 0.1706,
+        "stair": 0.2157,
+        "ln": 0.0557,
+        "soft": 0.0292,
+        "stream": 0.8002,
+        "scratch": 0.0318
+      },
+      "owned_counts": {
+        "scratch": 36,
+        "stair": 244,
+        "chord": 171,
+        "ln": 54,
+        "soft": 12,
+        "stream": 525
+      },
+      "candidate_counts": {
+        "scratch": 36,
+        "stair": 244,
+        "chord": 193,
+        "ln": 63,
+        "soft": 33,
+        "stream": 905
+      },
+      "overlap_matrix": {
+        "scratch": {
+          "scratch": 36,
+          "stair": 0,
+          "chord": 12,
+          "ln": 2,
+          "soft": 2,
+          "stream": 0
+        },
+        "stair": {
+          "scratch": 0,
+          "stair": 244,
+          "chord": 10,
+          "ln": 5,
+          "soft": 16,
+          "stream": 215
+        },
+        "chord": {
+          "scratch": 12,
+          "stair": 10,
+          "chord": 193,
+          "ln": 3,
+          "soft": 4,
+          "stream": 135
+        },
+        "ln": {
+          "scratch": 2,
+          "stair": 5,
+          "chord": 3,
+          "ln": 63,
+          "soft": 0,
+          "stream": 30
+        },
+        "soft": {
+          "scratch": 2,
+          "stair": 16,
+          "chord": 4,
+          "ln": 0,
+          "soft": 33,
+          "stream": 27
+        },
+        "stream": {
+          "scratch": 0,
+          "stair": 215,
+          "chord": 135,
+          "ln": 30,
+          "soft": 27,
+          "stream": 905
+        }
+      },
+      "total_events": 1131,
+      "priority_order": [
+        "scratch",
+        "stair",
+        "chord",
+        "ln",
+        "soft"
+      ]
+    }
+  },
+  "warnings": [
+    "Non-positive BPM value for BPM03: '-45'",
+    "ch09 references undefined STOP table entry 'FD' in m52; ignoring"
+  ],
+  "felt_bpm": {
+    "applied": true,
+    "method": "duration_weighted_truth",
+    "declared_eff_bpm": 3422.0875331564985,
+    "truth_bpm": 123.0,
+    "truth_share": 0.8862333407702591,
+    "n_segments_total": 17,
+    "n_segments_pinned": 6,
+    "felt_eff_bpm": 125.868258178603
+  },
+  "density": {
+    "nps": 10.92533526707041,
+    "distinct_per_sec": 7.639030555288452,
+    "total_events": 1106.974168451037,
+    "distinct_positions": 774,
+    "chart_seconds": 101.32175730913457,
+    "avg_chord_size": 2.428,
+    "max_chord_size": 7,
+    "effective_bpm": 125.868258178603,
+    "bpm_min_musical": 83.0,
+    "bpm_max_musical": 246.0
+  },
+  "axis_intensities": {
+    "chord": "green",
+    "scratch": "yellow",
+    "soft": "green",
+    "ln": "yellow",
+    "stair": "red",
+    "stream": "yellow",
+    "distraction": "yellow"
+  },
+  "framework_saturated": false,
+  "framework_signal_status": "clear",
+  "aezhk": {
+    "total": 4.8326,
+    "total_corpus_p90": 6.167588916072902,
+    "terms": [
+      {
+        "key": "sum5",
+        "label": "axes (5-sum)",
+        "value": 1.9331,
+        "kind": "axis-sum",
+        "corpus_p90": 2.6247832999308462
+      },
+      {
+        "key": "cb_gate",
+        "label": "chord × stream",
+        "value": 0.0,
+        "kind": "cross",
+        "corpus_p90": 0.732768575611563
+      },
+      {
+        "key": "bs_x1_5",
+        "label": "back-spike ×1.5",
+        "value": 1.5,
+        "kind": "peak",
+        "corpus_p90": 1.3861714012128947
+      },
+      {
+        "key": "run_17",
+        "label": "back-end run",
+        "value": 0.125,
+        "kind": "stream",
+        "corpus_p90": 0.125
+      },
+      {
+        "key": "main_05",
+        "label": "main NPS",
+        "value": 0.2095,
+        "kind": "stream",
+        "corpus_p90": 0.4597407443941555
+      },
+      {
+        "key": "bm_x_top4",
+        "label": "bimodal penalty",
+        "value": -0.0,
+        "kind": "subtract",
+        "corpus_p90": -0.0
+      },
+      {
+        "key": "ac_x_bs",
+        "label": "chord × peak",
+        "value": 0.3179,
+        "kind": "cross",
+        "corpus_p90": 0.362691358878395
+      },
+      {
+        "key": "eI",
+        "label": "stream × BPM",
+        "value": 0.0,
+        "kind": "cross",
+        "corpus_p90": 0.779915902743077
+      },
+      {
+        "key": "zeta",
+        "label": "variance × peak",
+        "value": 0.3271,
+        "kind": "peak",
+        "corpus_p90": 0.3781378128187684
+      },
+      {
+        "key": "eta",
+        "label": "in-stream jack",
+        "value": 0.3,
+        "kind": "jack",
+        "corpus_p90": 0.12954545454545455
+      },
+      {
+        "key": "kappa",
+        "label": "gauge (TOTAL)",
+        "value": 0.0,
+        "kind": "gauge",
+        "corpus_p90": 0.0
+      },
+      {
+        "key": "jack_pres",
+        "label": "jack presence",
+        "value": 0.12,
+        "kind": "jack",
+        "corpus_p90": 0.12
+      }
+    ],
+    "refs_present": true
+  },
+  "tags": [
+    "flow_break",
+    "jack_present",
+    "double_tab",
+    "triple_tab",
+    "scratch_burst",
+    "visual_gimmick",
+    "big_chord_burst",
+    "last_killing"
+  ],
+  "primary_character": "soflan-trick",
+  "icons": [
+    {
+      "key": "ln",
+      "category": "character",
+      "family": "★★",
+      "axis_value": 0.056,
+      "family_p25": 0.0,
+      "family_p75": 0.005,
+      "polarity": "strong"
+    },
+    {
+      "key": "stair",
+      "category": "character",
+      "family": "★★",
+      "axis_value": 0.216,
+      "family_p25": 0.071,
+      "family_p75": 0.214,
+      "polarity": "strong"
+    },
+    {
+      "key": "last_killing",
+      "category": "modifier"
+    },
+    {
+      "key": "variance_burst",
+      "category": "modifier",
+      "extras": {
+        "cv": 0.669,
+        "burst_pct": 0.093
+      }
+    },
+    {
+      "key": "chord",
+      "category": "character",
+      "family": "★★",
+      "axis_value": 0.171,
+      "family_p25": 0.487,
+      "family_p75": 0.693,
+      "polarity": "lighter"
+    }
+  ]
+}

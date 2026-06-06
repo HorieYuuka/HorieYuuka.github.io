@@ -53,10 +53,17 @@ metric. Read together with the chart's curator family/tier (e.g. `st4`,
 `★★5`) to interpret.
 
 **Caveat — character is not difficulty**: the axes describe *what kind
-of chart this is*, not *how hard it is to clear*. Two charts with the
-same NPS may belong to very different tiers (see e.g. Skydive st4 vs
-FREEDOM DiVE [FOUR DIMENSIONS] st8/★★5). Use the radar + tags + Pos/s
-together with curator labels, not NPS alone.
+of chart this is*, not *how hard it is to clear*. Two charts may show
+inverted NPS-vs-tier rank: e.g. **Sampling Satan (st3, NPS 33.6,
+chord-wall, primary `chord-shape`)** has higher NPS than **κανων
+(st12, NPS 27.0, primary `stream-pure`)**, despite sitting 9 satellite
+tiers below it. Use the radar + tags + Pos/s together with curator
+labels, not NPS alone. (See framework §7.4a for the full decomposition.)
+
+*(Earlier editions of this caveat used Skydive vs FREEDOM DiVE; that
+example was struck 2026-06-06 after a `bms_parser` `#RANDOM` bug was
+found to have inflated Skydive's NPS by ~35%. See framework §7.4 for
+the corrected analysis and §7.4a for the replacement pair.)*
 
 </details>
 
@@ -75,21 +82,8 @@ together with curator labels, not NPS alone.
   <div class="note-attrs-compare-table-wrap" data-na-compare-table></div>
 </div>
 
-<dialog class="note-attrs-search-modal" data-na-search-modal aria-label="Search charts">
-  <form method="dialog" class="note-attrs-search-form" data-na-search-form>
-    <input type="search" class="note-attrs-search-input" data-na-search-input
-           placeholder="title or artist" autocomplete="off"
-           aria-label="Search title or artist">
-    <button type="button" class="note-attrs-search-close" data-na-search-close
-            aria-label="Close search">Close</button>
-  </form>
-  <ul class="note-attrs-search-results" data-na-search-results></ul>
-  <p class="note-attrs-search-hint">
-    <kbd>↑</kbd> <kbd>↓</kbd> navigate
-    · <kbd>Enter</kbd> select
-    · <kbd>Esc</kbd> close
-  </p>
-</dialog>
+{% include chart-search-dialog.html %}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+<script src="{{ '/assets/js/chart-search.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/note-attributes.js' | relative_url }}" defer></script>
