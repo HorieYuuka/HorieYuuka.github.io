@@ -1,0 +1,18 @@
+<!-- Shared chart-search dialog. Used by Note attributes (drives the
+     compare table) and Chart-preview (selects the chart to play). The
+     consumer JS attaches behavior via assets/js/chart-search.js. -->
+<dialog class="note-attrs-search-modal" data-na-search-modal aria-label="Search charts">
+  <form method="dialog" class="note-attrs-search-form" data-na-search-form>
+    <input type="search" class="note-attrs-search-input" data-na-search-input
+           placeholder="title or artist" autocomplete="off"
+           aria-label="Search title or artist">
+    <button type="button" class="note-attrs-search-close" data-na-search-close
+            aria-label="Close search">Close</button>
+  </form>
+  <ul class="note-attrs-search-results" data-na-search-results></ul>
+  <p class="note-attrs-search-hint">
+    <kbd>↑</kbd> <kbd>↓</kbd> navigate
+    · <kbd>Enter</kbd> select
+    · <kbd>Esc</kbd> close
+  </p>
+</dialog>
