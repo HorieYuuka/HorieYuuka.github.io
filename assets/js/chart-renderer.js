@@ -3850,9 +3850,9 @@
     return b64.replace(/=+$/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   }
 
-  async function resolveAudioUrl(apiBase, audioMeta) {
-    if (!apiBase || !audioMeta || !audioMeta.relative_path) return null;
-    const fileId = encodeFileId(audioMeta.relative_path);
+  async function resolveGrantUrl(apiBase, relativePath, tag) {
+    if (!apiBase || !relativePath) return null;
+    const fileId = encodeFileId(relativePath);
     const grantUrl = apiBase.replace(/\/+$/, "") +
       "/api/v1/files/" + encodeURIComponent(fileId) + "/download-grants";
     try {
@@ -3862,20 +3862,28 @@
         headers: { "Accept": "application/json" },
       });
       if (!resp.ok) {
-        console.warn("[chart] audio grant failed: HTTP " + resp.status);
+        console.warn("[chart] " + tag + " grant failed: HTTP " + resp.status);
         return null;
       }
       const data = await resp.json();
       if (!data || !data.downloadUrl) {
-        console.warn("[chart] audio grant response missing downloadUrl", data);
+        console.warn("[chart] " + tag + " grant response missing downloadUrl", data);
         return null;
       }
-      // downloadUrl is server-relative; resolve against apiBase.
       return apiBase.replace(/\/+$/, "") + data.downloadUrl;
     } catch (e) {
-      console.warn("[chart] audio grant fetch threw", e);
+      console.warn("[chart] " + tag + " grant fetch threw", e);
       return null;
     }
+  }
+
+  async function resolveAudioUrl(apiBase, audioMeta) {
+    if (!audioMeta || !audioMeta.relative_path) return null;
+    return resolveGrantUrl(apiBase, audioMeta.relative_path, "audio");
+  }
+
+  async function resolveBundleUrl(apiBase, relativePath) {
+    return resolveGrantUrl(apiBase, relativePath, "bundle");
   }
 
   // ── Public API ─────────────────────────────────────────────────────────
@@ -3883,14 +3891,20 @@
     const r = await fetch(timelineUrl);
     if (!r.ok) throw new Error("Failed to fetch timeline: " + r.status);
     const timeline = await r.json();
+    return renderTimeline(host, timeline, opts);
+  }
 
+  async function renderTimeline(host, timeline, opts) {
     const resolvedOpts = Object.assign({}, opts || {});
-    if (timeline.audio && resolvedOpts.apiBase) {
+    if (timeline.audio && resolvedOpts.apiBase && !resolvedOpts.audioUrl) {
       const url = await resolveAudioUrl(resolvedOpts.apiBase, timeline.audio);
       if (url) {
         resolvedOpts.audioUrl = url;
         resolvedOpts.audioOffsetSec = timeline.audio.offset_sec || 0;
       }
+    } else if (resolvedOpts.audioUrl && timeline.audio &&
+               resolvedOpts.audioOffsetSec == null) {
+      resolvedOpts.audioOffsetSec = timeline.audio.offset_sec || 0;
     }
     return createChartView(host, timeline, resolvedOpts);
   }
@@ -3898,11 +3912,11 @@
   root.ChartRenderer = {
     createChartView,
     loadAndRender,
+    renderTimeline,
     DEFAULT_OPTS,
-    // r12.1 — module-level baseline so the host can subtract it during
-    // calibration apply even before any chart is loaded (no view yet).
     INPUT_BASELINE_MS,
     encodeFileId,
     resolveAudioUrl,
+    resolveBundleUrl,
   };
 })(window);

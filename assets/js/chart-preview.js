@@ -1996,32 +1996,34 @@
     showEmpty(true);   // PORT_FIXUPS #4
   }
 
-  async function loadByUrl(url, label) {
-    dlog("INFO", "chart", "loadByUrl start", { url: url, label: label });
+  function _setupLoadingUI(label) {
     titleEl.textContent = label || "Chart preview";
     metaEl.textContent = "loading…";
     teardownView();
     const body = $(".cp-body", dialog);
     const rect = body.getBoundingClientRect();
     const mainHeight = Math.max(360, Math.min(900, Math.floor(rect.height - 24)));
-    const apiBase = apiBaseFromPage();
-    try {
-      // R3-fix: drop explicit mainWidth — let the renderer use laneFitW so
-      // lanes precisely fill the main canvas (mockup convention; otherwise
-      // we get an off-centre canvas with wide black gutters because the
-      // lane unit is fixed-px and lanes only occupy ~240/460).
-      // R11 Phase 1 — keyZoneH sourced from --cp-keyzone-h so SP keyzone
-      // height has a single source. Renderer uses this for SP tile-footer
-      // math and (for DP) as the "what SP would use" baseline that the
-      // DP-mode branch overrides internally.
-      const _kzRaw = parseFloat(getComputedStyle(document.documentElement)
-        .getPropertyValue("--cp-keyzone-h"));
-      view = await window.ChartRenderer.loadAndRender(host, url, {
-        mainHeight: mainHeight,
-        profile: profileEl ? profileEl.checked : false,
-        apiBase: apiBase || undefined,
-        keyZoneH: isFinite(_kzRaw) ? _kzRaw : 135,
-      });
+    return { mainHeight: mainHeight, apiBase: apiBaseFromPage() };
+  }
+
+  function _baseRendererOpts(ctx) {
+    const _kzRaw = parseFloat(getComputedStyle(document.documentElement)
+      .getPropertyValue("--cp-keyzone-h"));
+    return {
+      mainHeight: ctx.mainHeight,
+      profile: profileEl ? profileEl.checked : false,
+      apiBase: ctx.apiBase || undefined,
+      keyZoneH: isFinite(_kzRaw) ? _kzRaw : 135,
+    };
+  }
+
+  function _onLoadError(e) {
+    console.error("[chart-preview] load failed", e);
+    dlog("WARN", "chart", "load failed", { msg: e && e.message, stack: e && e.stack ? String(e.stack).slice(0, 400) : null });
+    metaEl.textContent = "Error: " + e.message;
+  }
+
+  function _finalizeLoadedView() {
       const t = view.timeline;
       const measCount = view.getMeasures().length;
       const audioOk = !!(t.audio && view.hasAudio);
@@ -2140,20 +2142,73 @@
         positionJudgment();
         bindJudgmentResize();
       }
-    } catch (e) {
-      console.error("[chart-preview] load failed", e);
-      dlog("WARN", "chart", "load failed", { msg: e && e.message, stack: e && e.stack ? String(e.stack).slice(0, 400) : null });
-      metaEl.textContent = "Error: " + e.message;
-    }
   }
 
-  function loadByRow(row) {
-    if (!row || !row.md5) return Promise.resolve();
+  async function loadByUrl(url, label) {
+    dlog("INFO", "chart", "loadByUrl start", { url: url, label: label });
+    const ctx = _setupLoadingUI(label);
+    try {
+      view = await window.ChartRenderer.loadAndRender(host, url, _baseRendererOpts(ctx));
+      _finalizeLoadedView();
+    } catch (e) { _onLoadError(e); }
+  }
+
+  async function _tryFetchBundle(bundleUrl) {
+    const resp = await fetch(bundleUrl, { credentials: "include" });
+    if (!resp.ok) {
+      dlog("WARN", "chart", "bundle fetch HTTP " + resp.status);
+      return null;
+    }
+    const buf = await resp.arrayBuffer();
+    const zip = await window.JSZip.loadAsync(buf);
+    const jsonFile = zip.file("timeline.json");
+    if (!jsonFile) {
+      dlog("WARN", "chart", "bundle missing timeline.json");
+      return null;
+    }
+    const timeline = JSON.parse(await jsonFile.async("text"));
+    let audioUrl = null;
+    const mp3File = zip.file("audio.mp3");
+    if (mp3File) {
+      const blob = await mp3File.async("blob");
+      audioUrl = URL.createObjectURL(blob);
+    }
+    return { timeline: timeline, audioUrl: audioUrl };
+  }
+
+  async function loadByBundle(bundle, label) {
+    dlog("INFO", "chart", "loadByBundle start", { label: label, hasAudio: !!bundle.audioUrl });
+    const ctx = _setupLoadingUI(label);
+    try {
+      const opts = _baseRendererOpts(ctx);
+      if (bundle.audioUrl) opts.audioUrl = bundle.audioUrl;
+      view = await window.ChartRenderer.renderTimeline(host, bundle.timeline, opts);
+      _finalizeLoadedView();
+    } catch (e) { _onLoadError(e); }
+  }
+
+  async function loadByRow(row) {
+    if (!row || !row.md5) return;
     currentRow = row;
-    const url = "/Resource/NoteAttributes/timeline/" + row.md5 + ".json";
     const family = row.family ? " " + row.family : "";
     const label = (row.title || row.file || row.md5) +
                   " (" + (row.mode || "?") + family + ")";
+    const apiBase = apiBaseFromPage();
+    const hasJSZip = typeof window.JSZip !== "undefined";
+    const hasBundleAPI = window.ChartRenderer && window.ChartRenderer.resolveBundleUrl;
+    if (apiBase && hasJSZip && hasBundleAPI) {
+      try {
+        const bundleUrl = await window.ChartRenderer.resolveBundleUrl(
+          apiBase, "bms-bundle/" + row.md5 + ".zip");
+        if (bundleUrl) {
+          const bundle = await _tryFetchBundle(bundleUrl);
+          if (bundle) return loadByBundle(bundle, label);
+        }
+      } catch (e) {
+        dlog("WARN", "chart", "bundle attempt failed, falling back", { msg: e && e.message });
+      }
+    }
+    const url = "/Resource/NoteAttributes/timeline/" + row.md5 + ".json";
     return loadByUrl(url, label);
   }
 
