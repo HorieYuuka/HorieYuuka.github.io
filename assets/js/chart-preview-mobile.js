@@ -721,16 +721,25 @@
 
     function setMenuOpen(open) {
       if (!menuEl) return;
-      menuEl.classList.toggle("is-open", !!open);
+      const on = !!open;
+      menuEl.classList.toggle("is-open", on);
+      // Belt-and-braces: also force the visibility-relevant styles inline so
+      // the actionbar can't get pinned invisible by a stray cascade rule.
+      menuEl.style.opacity = on ? "1" : "0";
+      menuEl.style.pointerEvents = on ? "auto" : "none";
+      menuEl.style.transform = on
+        ? "translateX(-50%) translateY(0)"
+        : "translateX(-50%) translateY(10px)";
       if (menuToggleBtn) {
-        menuToggleBtn.classList.toggle("is-open", !!open);
-        menuToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        menuToggleBtn.classList.toggle("is-open", on);
+        menuToggleBtn.setAttribute("aria-expanded", on ? "true" : "false");
       }
     }
     if (menuToggleBtn) {
       menuToggleBtn.addEventListener("click", function (e) {
         e.stopPropagation();
-        setMenuOpen(!menuEl.classList.contains("is-open"));
+        const next = !(menuEl && menuEl.classList.contains("is-open"));
+        setMenuOpen(next);
       });
     }
     if (menuEl) {
