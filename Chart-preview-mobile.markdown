@@ -1,12 +1,12 @@
 ---
 layout: chart_preview_mobile
-title: "Chart preview"
+title: "Chart preview (mobile)"
 permalink: /chart-preview/m
-nav_exclude: true
+nav_order: 99
 sitemap: false
 ---
 
-<div class="cpm-shell" data-cpm-shell>
+<div class="cpm-shell" data-cpm-shell markdown="0">
   <header class="cpm-top">
     <div class="cpm-title-row">
       <span class="cp-badge cp-badge--mode" data-cpm-mode hidden></span>
@@ -24,11 +24,16 @@ sitemap: false
       </button>
     </div>
   </header>
-
   <main class="cpm-stage" data-cpm-host>
     <div class="cpm-hispeed-toast" data-cpm-hispeed-toast></div>
     <div class="cpm-toast" data-cpm-toast></div>
-
+    <div class="cpm-loop-countdown" data-cpm-loop-countdown hidden>
+      <svg viewBox="0 0 100 100" width="64" height="64" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" class="cpm-loop-countdown__bg"></circle>
+        <circle cx="50" cy="50" r="46" class="cpm-loop-countdown__fg"></circle>
+      </svg>
+      <span class="cpm-loop-countdown__num" data-cpm-loop-countdown-num>1</span>
+    </div>
     <div class="cpm-actionbar" data-cpm-menu>
       <button type="button" class="cp-btn cp-btn-icon cpm-action cpm-action--pick"
               data-cpm-pick aria-label="Pick chart">
@@ -49,7 +54,6 @@ sitemap: false
       </button>
     </div>
   </main>
-
   <div class="cpm-empty" data-cpm-empty>
     <div class="cpm-empty__inner">
       <h2>No chart selected</h2>
@@ -57,18 +61,24 @@ sitemap: false
       <button type="button" class="cp-btn" data-cpm-pick>Search charts</button>
     </div>
   </div>
-
   <footer class="cpm-bottom" data-cpm-bottom hidden>
     <button type="button" class="cp-btn cp-btn-icon cp-btn-play"
             data-cpm-play aria-label="Play / pause">
       <svg class="cpm-play__icon cpm-play__icon--play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><polygon points="6,4 20,12 6,20"/></svg>
-      <svg class="cpm-play__icon cpm-play__icon--pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>
+      <svg class="cpm-play__icon cpm-play__icon--pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>
     </button>
     <button type="button" class="cp-btn cp-btn-icon cp-btn-reset"
             data-cpm-reset aria-label="Reset to start">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/></svg>
     </button>
-    <input type="range" class="cp-progress" data-cpm-progress min="0" max="0" step="0.05" value="0">
+    <div class="cp-progress-wrap" data-cpm-progress-wrap>
+      <div class="cpm-loop-band" data-cpm-loop-band></div>
+      <button type="button" class="cpm-loop-handle cpm-loop-handle--start"
+              data-cpm-loop-start aria-label="Loop start"></button>
+      <button type="button" class="cpm-loop-handle cpm-loop-handle--end"
+              data-cpm-loop-end aria-label="Loop end"></button>
+      <input type="range" class="cp-progress" data-cpm-progress min="0" max="0" step="0.05" value="0">
+    </div>
     <span class="cp-progress-time" data-cpm-time><span class="cur">0:00</span> / 0:00</span>
   </footer>
 </div>
@@ -135,6 +145,24 @@ sitemap: false
         <span class="cpm-config-toggle__label">Hide measure rail</span>
       </label>
       <span class="cpm-config-hint">SP only — collapses the left rail; lanes shift left.</span>
+    </li>
+    <li class="cpm-config-row">
+      <label class="cpm-config-toggle">
+        <input type="checkbox" data-cpm-config-loop>
+        <span class="cpm-config-toggle__track" aria-hidden="true"></span>
+        <span class="cpm-config-toggle__label">Loop mode</span>
+      </label>
+      <span class="cpm-config-hint">Default range 0–end. Drag the chevrons above the slider to adjust. Session-only; refresh clears.</span>
+    </li>
+    <li class="cpm-config-row">
+      <span class="cpm-config-toggle__label">Loop standby hold</span>
+      <div class="cpm-config-radios" data-cpm-config-standby>
+        <label><input type="radio" name="cpm-standby" value="instant" checked>Instant</label>
+        <label><input type="radio" name="cpm-standby" value="500">500</label>
+        <label><input type="radio" name="cpm-standby" value="1000">1000</label>
+        <label><input type="radio" name="cpm-standby" value="2000">2000</label>
+      </div>
+      <span class="cpm-config-hint">ms — pause before audio resumes after loop wrap.</span>
     </li>
   </ul>
 </dialog>

@@ -44,8 +44,6 @@
     const emptyEl      = $("[data-cpm-empty]");
     const bottomEl     = $("[data-cpm-bottom]");
     const playBtn      = $("[data-cpm-play]");
-    const playIcon     = $(".cpm-play__icon--play", playBtn);
-    const pauseIcon    = $(".cpm-play__icon--pause", playBtn);
     const resetBtn     = $("[data-cpm-reset]");
     const progressEl   = $("[data-cpm-progress]");
     const timeEl       = $("[data-cpm-time]");
@@ -65,6 +63,15 @@
     const configModal  = $("[data-cpm-config-modal]");
     const configClose  = $("[data-cpm-config-close]");
     const configHideRail = $("[data-cpm-config-hide-rail]");
+    const configLoop     = $("[data-cpm-config-loop]");
+    const standbyGroup   = $("[data-cpm-config-standby]");
+    const progressWrap   = $("[data-cpm-progress-wrap]");
+    const loopBand       = $("[data-cpm-loop-band]");
+    const loopStartH     = $("[data-cpm-loop-start]");
+    const loopEndH       = $("[data-cpm-loop-end]");
+    const countdownEl    = $("[data-cpm-loop-countdown]");
+    const countdownNumEl = $("[data-cpm-loop-countdown-num]");
+    const countdownFgEl  = countdownEl && countdownEl.querySelector(".cpm-loop-countdown__fg");
     const pickBtns     = $$("[data-cpm-pick]");
     const searchModal  = $("[data-na-search-modal]");
     const searchInput  = $("[data-na-search-input]");
@@ -91,10 +98,21 @@
     let sudplusTipTimer = null;
     let progressActive = false;
     let progressWasPlaying = false;
-    const mobileSettings = { hideMeasureRail: false };
+    const mobileSettings = { hideMeasureRail: false, loopWrapHoldMs: 250, loopStandby: "instant" };
+    let loopEnabled = false;
+    let loopStartSec = 0;
+    let loopEndSec = 0;
     const SUDPLUS_TIP_MS = 900;
     const SUDPLUS_MAX = 500;
     const DRAG_THRESHOLD_PX = 12;
+    // Loop standby — 250 ms of decoder grace is silent; anything beyond is
+    // the visible countdown the user picks ("500" / "1000" / "2000").
+    const STANDBY_INSTANT_MS = 250;
+    const STANDBY_VISIBLE_MS = { instant: 0, "500": 500, "1000": 1000, "2000": 2000 };
+    const COUNTDOWN_CIRCUMFERENCE = 2 * Math.PI * 46;
+    let countdownRAF = 0;
+    let countdownStartTs = 0;
+    let countdownTotalMs = 0;
 
     function showEmpty(on) {
       if (emptyEl) emptyEl.hidden = !on;
@@ -105,18 +123,26 @@
     function teardownView() {
       if (clockTimer) { clearInterval(clockTimer); clockTimer = null; }
       if (touchUnbind) { touchUnbind(); touchUnbind = null; }
+      hideLoopCountdown();
       if (view && view.destroy) {
         try { view.destroy(); } catch (e) {}
       }
       view = null;
     }
 
-    function clearHostChildren() {
-      // Renderer-built DOM lives directly under host. Overlays + action bar
-      // are siblings placed before any chart loads — preserve them.
-      const keep = [hispeedToast, toastEl, menuEl];
-      Array.from(host.children).forEach(function (child) {
-        if (keep.indexOf(child) === -1) host.removeChild(child);
+    // The renderer's createChartView does `host.innerHTML = ""` before it
+    // rebuilds (chart-renderer.js:1704), which would nuke the overlay
+    // siblings (hispeed-toast, info toast, action bar) we author in the
+    // markdown. Pull them out before the render call and put them back
+    // after — references survive even while detached from the document.
+    function detachOverlays() {
+      [hispeedToast, toastEl, countdownEl, menuEl].forEach(function (el) {
+        if (el && el.parentNode === host) host.removeChild(el);
+      });
+    }
+    function reattachOverlays() {
+      [hispeedToast, toastEl, countdownEl, menuEl].forEach(function (el) {
+        if (el && el.parentNode !== host) host.appendChild(el);
       });
     }
 
@@ -372,12 +398,31 @@
       view.setSettings({
         hideJudgment: true,
         hideMeasureRail: !!mobileSettings.hideMeasureRail,
+        loopWrapHoldMs: mobileSettings.loopWrapHoldMs | 0,
       });
+      if (view.setOnLoopChange) {
+        view.setOnLoopChange(function (loop) {
+          if (loop) {
+            loopStartSec = loop.startSec;
+            loopEndSec = loop.endSec;
+          } else if (loopEnabled) {
+            loopEnabled = false;
+            if (configLoop) configLoop.checked = false;
+          }
+          syncLoopUI();
+        });
+      }
+      if (view.setOnLoopWrap) {
+        view.setOnLoopWrap(function (info) {
+          const holdMs = (info && info.holdMs) || 0;
+          startLoopCountdown(holdMs - STANDBY_INSTANT_MS);
+        });
+      }
       view.setOnPlayStateChange(function (playing) {
         if (playBtn) playBtn.classList.toggle("is-playing", playing);
-        if (playIcon) { playIcon.hidden = playing; playIcon.style.display = playing ? "none" : "block"; }
-        if (pauseIcon) { pauseIcon.hidden = !playing; pauseIcon.style.display = playing ? "block" : "none"; }
       });
+      // Explicit initial state — new charts always start paused.
+      if (playBtn) playBtn.classList.remove("is-playing");
       if (progressEl) {
         progressEl.max = String(totalSec);
         progressEl.value = "0";
@@ -398,6 +443,15 @@
       // is gone with the old element.
       injectSudplusTip();
       applySudplus(sudplusValue);
+      // Loop state survives chart switches inside the session but the range
+      // resets to [0, total_sec] because absolute seconds don't transfer.
+      if (loopEnabled) {
+        loopStartSec = 0;
+        loopEndSec = totalSec;
+        applyLoop();
+      } else {
+        syncLoopUI();
+      }
       // SP-only config rows. Toggle visibility now that we know the mode.
       const hideRailRow = document.querySelector('[data-cpm-config-row="hide-rail"]');
       if (hideRailRow) hideRailRow.hidden = t.mode !== "SP";
@@ -433,14 +487,16 @@
 
     async function loadByBundle(bundle, label) {
       teardownView();
-      clearHostChildren();
+      detachOverlays();
       if (titleEl) titleEl.textContent = label || "loading…";
       try {
         const opts = rendererOpts();
         if (bundle.audioUrl) opts.audioUrl = bundle.audioUrl;
         view = await window.ChartRenderer.renderTimeline(host, bundle.timeline, opts);
+        reattachOverlays();
         _finalizeView();
       } catch (e) {
+        reattachOverlays();
         console.error("[cpm] bundle render failed", e);
         showEmpty(true);
         if (titleEl) titleEl.textContent = "Error: " + e.message;
@@ -449,12 +505,14 @@
 
     async function loadByUrl(url, label) {
       teardownView();
-      clearHostChildren();
+      detachOverlays();
       if (titleEl) titleEl.textContent = label || "loading…";
       try {
         view = await window.ChartRenderer.loadAndRender(host, url, rendererOpts());
+        reattachOverlays();
         _finalizeView();
       } catch (e) {
+        reattachOverlays();
         console.error("[cpm] load failed", e);
         showEmpty(true);
         if (titleEl) titleEl.textContent = "Error: " + e.message;
@@ -727,9 +785,7 @@
       // the actionbar can't get pinned invisible by a stray cascade rule.
       menuEl.style.opacity = on ? "1" : "0";
       menuEl.style.pointerEvents = on ? "auto" : "none";
-      menuEl.style.transform = on
-        ? "translateX(-50%) translateY(0)"
-        : "translateX(-50%) translateY(10px)";
+      menuEl.style.transform = on ? "translateY(0)" : "translateY(-8px)";
       if (menuToggleBtn) {
         menuToggleBtn.classList.toggle("is-open", on);
         menuToggleBtn.setAttribute("aria-expanded", on ? "true" : "false");
@@ -754,11 +810,133 @@
       });
     }
 
+    /* ── Loop UI ──────────────────────────────────────────────────── */
+
+    function progressMetrics() {
+      if (!progressEl) return { left: 0, width: 0 };
+      const r = progressEl.getBoundingClientRect();
+      return { left: r.left, width: r.width };
+    }
+    function wrapLeft() {
+      return progressWrap ? progressWrap.getBoundingClientRect().left : 0;
+    }
+    function secToWrapPx(sec) {
+      if (!totalSec) return 0;
+      const m = progressMetrics();
+      const offsetInsideWrap = m.left - wrapLeft();
+      return offsetInsideWrap + (sec / totalSec) * m.width;
+    }
+    function syncLoopUI() {
+      if (!loopBand || !loopStartH || !loopEndH) return;
+      if (!loopEnabled || !view || !totalSec) {
+        loopBand.classList.remove("is-on");
+        loopStartH.classList.remove("is-on");
+        loopEndH.classList.remove("is-on");
+        return;
+      }
+      const startPx = secToWrapPx(loopStartSec);
+      const endPx   = secToWrapPx(loopEndSec);
+      loopBand.style.left  = startPx + "px";
+      loopBand.style.width = Math.max(0, endPx - startPx) + "px";
+      loopStartH.style.left = startPx + "px";
+      loopEndH.style.left   = endPx + "px";
+      loopBand.classList.add("is-on");
+      loopStartH.classList.add("is-on");
+      loopEndH.classList.add("is-on");
+    }
+    function applyLoop() {
+      if (!view) return;
+      if (loopEnabled && view.setLoopState) {
+        view.setLoopState(loopStartSec, loopEndSec);
+      } else if (!loopEnabled && view.clearLoop) {
+        view.clearLoop();
+        hideLoopCountdown();
+      }
+      syncLoopUI();
+    }
+    function bindLoopHandle(handle, isStart) {
+      if (!handle) return;
+      let dragging = false;
+      let metrics = null;
+      handle.addEventListener("pointerdown", function (e) {
+        if (!loopEnabled || !view || !totalSec) return;
+        e.stopPropagation();
+        e.preventDefault();
+        metrics = progressMetrics();
+        dragging = true;
+        try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      handle.addEventListener("pointermove", function (e) {
+        if (!dragging || !metrics) return;
+        const px = e.clientX - metrics.left;
+        const sec = Math.max(0, Math.min(totalSec, (px / metrics.width) * totalSec));
+        if (isStart) loopStartSec = Math.min(sec, Math.max(0, loopEndSec - 0.5));
+        else         loopEndSec   = Math.max(sec, Math.min(totalSec, loopStartSec + 0.5));
+        if (view.setLoopState) view.setLoopState(loopStartSec, loopEndSec);
+        syncLoopUI();
+      });
+      function endDrag(e) {
+        if (!dragging) return;
+        dragging = false;
+        try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
+        // If the playhead now sits outside the (newly resized) loop, snap
+        // it to the start so the loop actually kicks in. Without this a
+        // drag that pulls the start ahead of currentSec leaves the playhead
+        // dangling behind the loop and playback would have to scrub all
+        // the way around before the loop wrap fires.
+        if (!view || !view.getState || !view.seekToSec) return;
+        const cur = view.getState().currentSec || 0;
+        if (cur < loopStartSec - 1e-3 || cur > loopEndSec + 1e-3) {
+          view.seekToSec(loopStartSec);
+        }
+      }
+      handle.addEventListener("pointerup", endDrag);
+      handle.addEventListener("pointercancel", endDrag);
+    }
+    bindLoopHandle(loopStartH, true);
+    bindLoopHandle(loopEndH, false);
+    window.addEventListener("resize", syncLoopUI);
+
+    function startLoopCountdown(visibleMs) {
+      if (!countdownEl || visibleMs <= 0) return;
+      countdownTotalMs = visibleMs;
+      countdownStartTs = performance.now();
+      if (countdownFgEl) countdownFgEl.style.strokeDashoffset = "0";
+      if (countdownNumEl) countdownNumEl.textContent = String(Math.ceil(visibleMs / 1000));
+      countdownEl.hidden = false;
+      if (countdownRAF) cancelAnimationFrame(countdownRAF);
+      countdownRAF = requestAnimationFrame(stepLoopCountdown);
+    }
+    function stepLoopCountdown(ts) {
+      countdownRAF = 0;
+      if (!countdownEl || countdownEl.hidden) return;
+      const elapsed = ts - countdownStartTs;
+      const remaining = countdownTotalMs - elapsed;
+      if (remaining <= 0) { hideLoopCountdown(); return; }
+      const sec = Math.ceil(remaining / 1000);
+      const inSec = remaining - (sec - 1) * 1000;
+      const secProgress = Math.max(0, Math.min(1, inSec / 1000));
+      if (countdownNumEl) countdownNumEl.textContent = String(sec);
+      if (countdownFgEl) {
+        countdownFgEl.style.strokeDashoffset =
+          ((1 - secProgress) * COUNTDOWN_CIRCUMFERENCE).toFixed(2);
+      }
+      countdownRAF = requestAnimationFrame(stepLoopCountdown);
+    }
+    function hideLoopCountdown() {
+      if (countdownRAF) cancelAnimationFrame(countdownRAF);
+      countdownRAF = 0;
+      if (countdownEl) countdownEl.hidden = true;
+    }
+
     /* ── Settings dialog ──────────────────────────────────────────── */
 
     function applyMobileSettings() {
       if (view && view.setSettings) {
-        view.setSettings({ hideMeasureRail: !!mobileSettings.hideMeasureRail });
+        view.setSettings({
+          hideMeasureRail: !!mobileSettings.hideMeasureRail,
+          loopWrapHoldMs: mobileSettings.loopWrapHoldMs | 0,
+        });
       }
     }
     if (configBtn && configModal) {
@@ -783,6 +961,27 @@
       configHideRail.addEventListener("change", function () {
         mobileSettings.hideMeasureRail = !!configHideRail.checked;
         applyMobileSettings();
+      });
+    }
+    if (configLoop) {
+      configLoop.addEventListener("change", function () {
+        loopEnabled = !!configLoop.checked;
+        if (loopEnabled) {
+          loopStartSec = 0;
+          loopEndSec = totalSec || 0;
+        }
+        applyLoop();
+      });
+    }
+    if (standbyGroup) {
+      standbyGroup.querySelectorAll("input[type=radio]").forEach(function (r) {
+        r.addEventListener("change", function () {
+          if (!r.checked) return;
+          mobileSettings.loopStandby = r.value;
+          const visible = STANDBY_VISIBLE_MS[r.value];
+          mobileSettings.loopWrapHoldMs = STANDBY_INSTANT_MS + (visible || 0);
+          applyMobileSettings();
+        });
       });
     }
 

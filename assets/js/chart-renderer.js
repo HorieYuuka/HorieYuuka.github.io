@@ -852,8 +852,14 @@
           }
         }
       } else {
-        // Tap — hide once resolved (hit or miss).
+        // Tap — hide once resolved (hit or miss). In watch mode no judgment
+        // ever fires so the flag-based cut never trips; mirror ageMisses'
+        // sec-based cutoff (entry.sec + Bad window) so notes vanish at the
+        // same wall-clock moment they would in play mode. This matters most
+        // when a STOP freezes currentBeat at the note's beat (Aleph-0 last
+        // chord etc.) — beat-based cuts can't fire while currentBeat is pinned.
         if (flag) continue;
+        if (settings.hideJudgment && n[1] + JUDGMENT_WINDOWS.Bad < currentSec) continue;
         if (bn < bMin) continue;
         const yNote = judgmentY - (bn - currentBeat) * pxPerBeat;
         if (yNote < bodyTop - opts.mainNoteHeight || yNote > bodyBot + opts.mainNoteHeight) continue;
@@ -2754,6 +2760,11 @@
     }
 
     function positionLoopBand() {
+      // Queue-side band is irrelevant when the queue/wrap isn't laid out
+      // (e.g. mobile host that hides the queue entirely). queueWrap is the
+      // positioned ancestor for the band DOM; if it has zero clientHeight,
+      // every per-frame style assignment and canvas op here is wasted work.
+      if (!queueWrap || queueWrap.clientHeight === 0) return;
       if (!loopState) {
         loopBand.style.display = "none";
         loopCanvas.style.display = "none";
@@ -3186,6 +3197,10 @@
     }
 
     function drawFullQueue() {
+      // Mobile hides the queue entirely (display:none on .cp-queue) so the
+      // wrap has zero size and any work here is invisible. Skip the sweep —
+      // the tiles will be regenerated lazily when the queue is revealed.
+      if (!queueWrap || queueWrap.clientHeight === 0) return;
       const t0 = performance.now();
       // Sweep existing pool tiles; createTile already renders new ones.
       for (const [idx, tile] of tilesPool) {
