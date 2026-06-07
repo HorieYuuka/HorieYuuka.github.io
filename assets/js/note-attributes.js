@@ -437,14 +437,19 @@
       btn.addEventListener("click", () => removeFromCompare(btn.dataset.naCompareRemove));
     });
 
-    // Wire preview buttons — open the chart-preview modal with this row.
-    // Falls back silently if the modal partial isn't included on this page
-    // (window.openChartPreview undefined).
+    // Wire preview buttons. Hoverless narrow viewports route to the dedicated
+    // mobile preview page; everything else opens the in-page modal.
+    const isMobileViewport = typeof window.matchMedia === "function" &&
+      window.matchMedia("(hover: none) and (max-width: 900px)").matches;
     els.compareCards.querySelectorAll("[data-na-compare-preview]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        if (typeof window.openChartPreview !== "function") return;
         const row = state.compareSet.find((r) => r.file === btn.dataset.naComparePreview);
-        if (row) window.openChartPreview(row);
+        if (!row) return;
+        if (isMobileViewport) {
+          if (row.md5) location.href = "/chart-preview/m?md5=" + encodeURIComponent(row.md5);
+          return;
+        }
+        if (typeof window.openChartPreview === "function") window.openChartPreview(row);
       });
     });
 

@@ -25,10 +25,14 @@ axes · Peak · BPM per column.
   <div class="note-attrs-callout-body" markdown="1">
 **Chart preview** — Tetris-style preview. Main panel scrolls notes IIDX-style toward the judgment line, queue holds the rest of the chart as a horizontal ribbon. Opens in a dialog so the queue gets the full viewport width. Keybindings + HID controllers configurable, input latency calibration built in.
   </div>
-  <button type="button" class="note-attrs-callout-btn"
+  <button type="button" class="note-attrs-callout-btn note-attrs-callout-btn--desktop"
           onclick="window.openChartPreview && window.openChartPreview()">
     ▶ Open preview
   </button>
+  <a class="note-attrs-callout-btn note-attrs-callout-btn--mobile"
+     href="/chart-preview/m">
+    ▶ Open preview
+  </a>
 </div>
 
 <details class="note-attrs-help" markdown="1">

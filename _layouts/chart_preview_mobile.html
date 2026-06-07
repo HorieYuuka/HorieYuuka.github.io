@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en-US' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#05070d">
+  <title>{{ page.title | default: 'Chart preview' }}</title>
+  <meta name="cp-api-base" content="https://horie.synology.me:8443">
+  <link rel="preconnect" href="https://horie.synology.me:8443" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --cpm-bg: #05070d;
+  --cpm-panel: #0c111c;
+  --cpm-line: rgba(120,150,200,0.18);
+  --cpm-text: #e8edf6;
+  --cpm-text-dim: #7c879a;
+  --cpm-cyan: #34e0ff;
+  --cpm-judge-line: #ff3344;
+  --cpm-pg: #ffd23f;
+  --cp-stage-h: 100%;
+  --cp-queue-label-h: 0px;
+  --cp-queue-bottom-pad: 0px;
+  --cp-keyzone-h: 0px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; height: 100dvh; overflow: hidden; }
+body.cpm-body {
+  background: var(--cpm-bg);
+  color: var(--cpm-text);
+  font-family: 'Chakra Petch', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.cpm-shell {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.cpm-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--cpm-line);
+  background: var(--cpm-panel);
+}
+.cpm-title-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.2;
+}
+.cpm-mode, .cpm-tier {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border: 1px solid var(--cpm-line);
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--cpm-text-dim);
+  background: transparent;
+  flex: 0 0 auto;
+}
+.cpm-mode { color: var(--cpm-cyan); border-color: rgba(52,224,255,0.4); }
+.cpm-title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  color: var(--cpm-text);
+}
+
+.cpm-pickbtn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--cpm-line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--cpm-text);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.cpm-pickbtn:active { background: rgba(52,224,255,0.1); }
+.cpm-pickbtn--lg { padding: 12px 20px; font-size: 14px; font-weight: 600; }
+
+.cpm-stage {
+  position: relative;
+  min-height: 0;
+  background: var(--cpm-bg);
+  overflow: hidden;
+}
+
+/* Renderer-owned DOM lives inside .cpm-stage. */
+.cpm-stage .cp-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  background: var(--cpm-bg);
+}
+.cpm-stage .cp-stage--dp {
+  /* Hide aux/queue on mobile — field-only. */
+  display: block;
+}
+.cpm-stage .cp-field {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--cpm-panel);
+}
+.cpm-stage .cp-field__play {
+  position: absolute;
+  inset: 0;
+}
+.cpm-stage .cp-field__canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+.cpm-stage .cp-queue,
+.cpm-stage .cp-aux,
+.cpm-stage .cp-field__bottom,
+.cpm-stage .cp-keyzone {
+  display: none !important;
+}
+
+.cpm-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cpm-bg);
+  z-index: 5;
+  pointer-events: auto;
+}
+.cpm-empty[hidden] { display: none !important; }
+.cpm-empty__inner {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+}
+.cpm-empty h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cpm-text);
+}
+.cpm-empty p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--cpm-text-dim);
+}
+
+.cpm-rotate-hint {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5,7,13,0.92);
+  z-index: 50;
+  color: var(--cpm-text);
+  pointer-events: auto;
+}
+.cpm-rotate-hint__inner {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+}
+.cpm-rotate-hint__inner p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--cpm-text-dim);
+}
+.cpm-rotate-hint__inner svg { color: var(--cpm-cyan); }
+
+.cpm-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--cpm-line);
+  background: var(--cpm-panel);
+}
+.cpm-bottom[hidden] { display: none !important; }
+.cpm-play {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--cpm-line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--cpm-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  flex: 0 0 auto;
+}
+.cpm-play:active { background: rgba(52,224,255,0.1); }
+.cpm-play.is-playing { color: var(--cpm-cyan); border-color: rgba(52,224,255,0.5); }
+
+.cpm-progress {
+  flex: 1;
+  height: 30px;
+  accent-color: var(--cpm-cyan);
+  min-width: 0;
+}
+
+.cpm-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--cpm-text-dim);
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+@media (orientation: portrait) {
+  /* Portrait — DP doesn't fit; overlay the rotate hint. */
+  .cpm-shell[data-cpm-mode="DP"] .cpm-rotate-hint { display: flex; }
+}
+@media (min-width: 1024px) {
+  /* Desktop — surface the URL but suggest the modal experience. */
+  .cpm-shell::after {
+    content: "Desktop users — open the Chart preview modal from Note attributes for the full layout.";
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 14px;
+    background: rgba(12,17,28,0.92);
+    border: 1px solid var(--cpm-line);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--cpm-text-dim);
+    pointer-events: none;
+  }
+}
+
+/* Search dialog — replicates the chart-search shape without the
+   just-the-docs cascade (no theme CSS loads on this page). */
+dialog.note-attrs-search-modal {
+  width: min(560px, 92vw);
+  max-height: 80vh;
+  padding: 0;
+  border: 1px solid var(--cpm-line);
+  border-radius: 6px;
+  background: var(--cpm-panel);
+  color: var(--cpm-text);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  display: none;
+  flex-direction: column;
+}
+dialog.note-attrs-search-modal[open] { display: flex; }
+dialog.note-attrs-search-modal::backdrop {
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+}
+.note-attrs-search-form {
+  display: flex;
+  gap: 6px;
+  padding: 10px;
+  border-bottom: 1px solid var(--cpm-line);
+  margin: 0;
+}
+.note-attrs-search-input {
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  border: 1px solid var(--cpm-line);
+  border-radius: 4px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.04);
+  color: var(--cpm-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.note-attrs-search-close {
+  appearance: none;
+  border: 1px solid var(--cpm-line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--cpm-text);
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.note-attrs-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-height: 0;
+}
+.note-attrs-search-results li {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--cpm-line);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  -webkit-tap-highlight-color: transparent;
+  color: var(--cpm-text);
+}
+.note-attrs-search-results li:active,
+.note-attrs-search-results li.is-active {
+  background: rgba(52,224,255,0.12);
+}
+.note-attrs-search-mode,
+.note-attrs-search-family {
+  display: inline-block;
+  padding: 1px 6px;
+  margin-right: 4px;
+  border: 1px solid var(--cpm-line);
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--cpm-text-dim);
+  background: transparent;
+  vertical-align: middle;
+}
+.note-attrs-search-mode { color: var(--cpm-cyan); border-color: rgba(52,224,255,0.4); }
+.note-attrs-search-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--cpm-text);
+  margin-right: 6px;
+}
+.note-attrs-search-artist {
+  font-size: 12px;
+  color: var(--cpm-text-dim);
+}
+.note-attrs-search-hint {
+  margin: 0;
+  padding: 8px 12px;
+  border-top: 1px solid var(--cpm-line);
+  font-size: 11px;
+  color: var(--cpm-text-dim);
+}
+.note-attrs-search-hint kbd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 1px 4px;
+  border: 1px solid var(--cpm-line);
+  border-radius: 2px;
+  color: var(--cpm-text);
+}
+  </style>
+</head>
+<body class="cpm-body">
+  {{ content }}
+</body>
+</html>

@@ -1136,6 +1136,16 @@
 .note-attrs-callout-btn:hover { background: #1d4ed8; color: #fff; text-decoration: none; }
 .note-attrs-callout-btn:visited { color: #fff; }
 
+/* Desktop ↔ mobile entry split for the Chart preview callout. The desktop
+   variant opens the in-page modal; the mobile variant navigates to a
+   dedicated fullscreen page. Hover queries gate mobile to actual no-hover
+   inputs so a narrow desktop window doesn't lose the modal. */
+.note-attrs-callout-btn--mobile { display: none; }
+@media (hover: none) and (max-width: 900px) {
+  .note-attrs-callout-btn--desktop { display: none; }
+  .note-attrs-callout-btn--mobile  { display: inline-block; }
+}
+
 .note-attrs-compare-close {
   border: 0;
   background: transparent;
