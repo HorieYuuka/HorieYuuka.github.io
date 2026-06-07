@@ -9,121 +9,246 @@
   <link rel="preconnect" href="https://horie.synology.me:8443" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
 :root {
-  --cpm-bg: #05070d;
-  --cpm-panel: #0c111c;
-  --cpm-line: rgba(120,150,200,0.18);
-  --cpm-text: #e8edf6;
-  --cpm-text-dim: #7c879a;
-  --cpm-cyan: #34e0ff;
-  --cpm-judge-line: #ff3344;
-  --cpm-pg: #ffd23f;
-  --cp-stage-h: 100%;
+  /* Mirrors the desktop modal tokens so component shapes match exactly. */
+  --cp-bg: #05070d;
+  --cp-panel: #0c111c;
+  --cp-panel-2: #0e1320;
+  --cp-line: rgba(120,150,200,0.12);
+  --cp-line-soft: rgba(120,150,200,0.07);
+  --cp-text: #e8edf6;
+  --cp-text-dim: #7c879a;
+  --cp-text-mute: #4a5566;
+  --cp-cyan: #34e0ff;
+  --cp-cyan-dim: #1c6f86;
+  --cp-cyan-a08: rgba(52,224,255,0.08);
+  --cp-green: #37e58f;
+  --cp-judge-line: #ff3344;
+  --cp-pg: #ffd23f;
+  --cp-g: #37e58f;
+  --cp-good: #56a8ff;
+  --cp-bad: #ff7a45;
+  --cp-miss: #ff3b5c;
+  --cp-reset: #f0995a;
+  --cp-font-ui: 'Chakra Petch', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --cp-font-mono: 'JetBrains Mono', monospace;
+  --cp-fs-xs: 11px;
+  --cp-fs-sm: 13px;
+  --cp-fs-md: 15px;
+  --cp-r-sm: 4px;
+  --cp-r-md: 6px;
+  --cp-r-lg: 7px;
+  --cp-sp-1: 4px;
+  --cp-sp-2: 7px;
+  --cp-sp-3: 10px;
+  --cp-sp-4: 12px;
+  --cp-sp-5: 16px;
+  --cp-topbar-h: 50px;
+  --cp-glow-cyan: 0 0 10px rgba(52,224,255,0.7);
+  --cp-glow-play: 0 0 0 1px rgba(52,224,255,0.3), 0 4px 16px -6px rgba(52,224,255,0.6);
+  /* Renderer cssPxOf() lookups — queue/keyzone are collapsed on mobile. */
+  --cp-keyzone-h: 0px;
   --cp-queue-label-h: 0px;
   --cp-queue-bottom-pad: 0px;
-  --cp-keyzone-h: 0px;
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; height: 100dvh; overflow: hidden; }
 body.cpm-body {
-  background: var(--cpm-bg);
-  color: var(--cpm-text);
-  font-family: 'Chakra Petch', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: var(--cp-font-ui);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+/* ===== shell layout ===== */
 .cpm-shell {
   position: fixed;
   inset: 0;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 0;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .cpm-top {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border-bottom: 1px solid var(--cpm-line);
-  background: var(--cpm-panel);
+  justify-content: space-between;
+  gap: var(--cp-sp-3);
+  padding: var(--cp-sp-2) var(--cp-sp-4);
+  min-height: var(--cp-topbar-h);
+  border-bottom: 1px solid var(--cp-line);
+  background: linear-gradient(180deg, rgba(255,255,255,0.014), transparent);
+  flex: 0 0 auto;
 }
 .cpm-title-row {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--cp-sp-2);
   min-width: 0;
-  font-size: 13px;
-  line-height: 1.2;
 }
-.cpm-mode, .cpm-tier {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 6px;
-  border: 1px solid var(--cpm-line);
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--cpm-text-dim);
-  background: transparent;
-  flex: 0 0 auto;
-}
-.cpm-mode { color: var(--cpm-cyan); border-color: rgba(52,224,255,0.4); }
-.cpm-title {
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 600;
-  color: var(--cpm-text);
-}
-
-.cpm-pickbtn {
-  appearance: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border: 1px solid var(--cpm-line);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--cpm-text);
-  font-family: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-.cpm-pickbtn:active { background: rgba(52,224,255,0.1); }
-.cpm-pickbtn--lg { padding: 12px 20px; font-size: 14px; font-weight: 600; }
 
 .cpm-stage {
   position: relative;
   min-height: 0;
-  background: var(--cpm-bg);
+  background: var(--cp-bg);
   overflow: hidden;
 }
 
-/* Renderer-owned DOM lives inside .cpm-stage. */
+.cpm-bottom {
+  display: flex;
+  align-items: center;
+  gap: var(--cp-sp-3);
+  padding: var(--cp-sp-2) var(--cp-sp-4);
+  border-top: 1px solid var(--cp-line);
+  background: linear-gradient(0deg, rgba(255,255,255,0.014), transparent);
+  flex: 0 0 auto;
+}
+.cpm-bottom[hidden] { display: none !important; }
+
+/* ===== badges (cp-badge) ===== */
+.cp-badge {
+  font-family: var(--cp-font-mono);
+  font-size: var(--cp-fs-xs);
+  font-weight: 500;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-sm);
+  padding: 3px var(--cp-sp-2);
+  letter-spacing: .3px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  background: rgba(255,255,255,0.03);
+  color: var(--cp-text);
+}
+.cp-badge--mode {
+  font-weight: 700;
+  color: var(--cp-cyan);
+  border-color: rgba(52,224,255,0.4);
+  background: var(--cp-cyan-a08);
+  letter-spacing: .5px;
+}
+.cp-badge[hidden] { display: none; }
+
+.cpm-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: #fff;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== icon buttons (cp-btn-icon) ===== */
+.cp-btn {
+  font-family: var(--cp-font-ui);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cp-sp-2);
+  font-size: var(--cp-fs-sm);
+  font-weight: 600;
+  color: var(--cp-text);
+  background: var(--cp-panel-2);
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-lg);
+  padding: var(--cp-sp-2) var(--cp-sp-4);
+  cursor: pointer;
+  letter-spacing: .3px;
+  transition: .13s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.cp-btn:disabled { opacity: .4; cursor: not-allowed; }
+.cp-btn svg, .cp-btn span, .cp-btn kbd { pointer-events: none; }
+
+.cp-btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  gap: 0;
+  background: var(--cp-panel-2);
+  color: var(--cp-text);
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-lg);
+}
+.cp-btn-icon.cp-btn-pick { color: #cfe9ff; }
+.cp-btn-icon.cp-btn-play {
+  width: 44px;
+  height: 44px;
+  background: var(--cp-cyan);
+  border-color: var(--cp-cyan);
+  color: #031018;
+  box-shadow: var(--cp-glow-play);
+}
+.cp-btn-icon.cp-btn-play.is-playing {
+  color: var(--cp-cyan);
+  background: rgba(52,224,255,0.10);
+  box-shadow: none;
+}
+.cp-btn-icon.cp-btn-reset { color: var(--cp-reset); }
+
+/* ===== progress (cp-progress) ===== */
+.cp-progress {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  accent-color: var(--cp-cyan);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--cp-line);
+}
+.cp-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cp-cyan);
+  border: 2px solid #05121a;
+  box-shadow: var(--cp-glow-cyan);
+  cursor: pointer;
+}
+.cp-progress::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cp-cyan);
+  border: 2px solid #05121a;
+  box-shadow: var(--cp-glow-cyan);
+  cursor: pointer;
+}
+.cp-progress:disabled { opacity: .4; cursor: default; }
+
+.cp-progress-time {
+  font-family: var(--cp-font-mono);
+  font-size: var(--cp-fs-sm);
+  color: var(--cp-text-dim);
+  white-space: nowrap;
+  min-width: 11ch;
+  text-align: right;
+  flex: 0 0 auto;
+}
+.cp-progress-time .cur { color: var(--cp-cyan); font-weight: 700; }
+
+/* ===== renderer-owned canvas inside .cpm-stage ===== */
 .cpm-stage .cp-stage {
   position: absolute;
   inset: 0;
   display: flex;
-  background: var(--cpm-bg);
+  background: var(--cp-bg);
 }
-.cpm-stage .cp-stage--dp {
-  /* Hide aux/queue on mobile — field-only. */
-  display: block;
-}
+.cpm-stage .cp-stage--dp { display: block; }
 .cpm-stage .cp-field {
   position: relative;
   flex: 1;
@@ -131,7 +256,8 @@ body.cpm-body {
   min-height: 0;
   width: 100%;
   height: 100%;
-  background: var(--cpm-panel);
+  background: var(--cp-panel);
+  touch-action: none;            /* tap/double-tap/pinch handled in JS */
 }
 .cpm-stage .cp-field__play {
   position: absolute;
@@ -149,15 +275,15 @@ body.cpm-body {
   display: none !important;
 }
 
+/* ===== empty + rotate overlays ===== */
 .cpm-empty {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--cpm-bg);
+  background: var(--cp-bg);
   z-index: 5;
-  pointer-events: auto;
 }
 .cpm-empty[hidden] { display: none !important; }
 .cpm-empty__inner {
@@ -165,19 +291,20 @@ body.cpm-body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: 24px;
+  gap: var(--cp-sp-4);
+  padding: var(--cp-sp-5);
 }
 .cpm-empty h2 {
   margin: 0;
   font-size: 18px;
-  font-weight: 600;
-  color: var(--cpm-text);
+  font-weight: 700;
+  color: var(--cp-text);
+  letter-spacing: .2px;
 }
 .cpm-empty p {
   margin: 0;
   font-size: 14px;
-  color: var(--cpm-text-dim);
+  color: var(--cp-text-dim);
 }
 
 .cpm-rotate-hint {
@@ -188,102 +315,60 @@ body.cpm-body {
   justify-content: center;
   background: rgba(5,7,13,0.92);
   z-index: 50;
-  color: var(--cpm-text);
-  pointer-events: auto;
+  color: var(--cp-text);
 }
 .cpm-rotate-hint__inner {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: 24px;
+  gap: var(--cp-sp-4);
+  padding: var(--cp-sp-5);
 }
 .cpm-rotate-hint__inner p {
   margin: 0;
   font-size: 14px;
-  color: var(--cpm-text-dim);
+  color: var(--cp-text-dim);
 }
-.cpm-rotate-hint__inner svg { color: var(--cpm-cyan); }
-
-.cpm-bottom {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-top: 1px solid var(--cpm-line);
-  background: var(--cpm-panel);
-}
-.cpm-bottom[hidden] { display: none !important; }
-.cpm-play {
-  appearance: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--cpm-line);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--cpm-text);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  flex: 0 0 auto;
-}
-.cpm-play:active { background: rgba(52,224,255,0.1); }
-.cpm-play.is-playing { color: var(--cpm-cyan); border-color: rgba(52,224,255,0.5); }
-
-.cpm-progress {
-  flex: 1;
-  height: 30px;
-  accent-color: var(--cpm-cyan);
-  min-width: 0;
-}
-
-.cpm-time {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  color: var(--cpm-text-dim);
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
+.cpm-rotate-hint__inner svg { color: var(--cp-cyan); }
 @media (orientation: portrait) {
-  /* Portrait — DP doesn't fit; overlay the rotate hint. */
   .cpm-shell[data-cpm-mode="DP"] .cpm-rotate-hint { display: flex; }
 }
-@media (min-width: 1024px) {
-  /* Desktop — surface the URL but suggest the modal experience. */
-  .cpm-shell::after {
-    content: "Desktop users — open the Chart preview modal from Note attributes for the full layout.";
-    position: fixed;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 8px 14px;
-    background: rgba(12,17,28,0.92);
-    border: 1px solid var(--cpm-line);
-    border-radius: 4px;
-    font-size: 12px;
-    color: var(--cpm-text-dim);
-    pointer-events: none;
-  }
-}
 
-/* Search dialog — replicates the chart-search shape without the
-   just-the-docs cascade (no theme CSS loads on this page). */
+/* ===== HI-SPEED transient overlay during pinch ===== */
+.cpm-hispeed-toast {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 10px;
+  border: 1px solid rgba(52,224,255,0.4);
+  border-radius: var(--cp-r-sm);
+  background: rgba(5,7,13,0.78);
+  color: var(--cp-cyan);
+  font-family: var(--cp-font-mono);
+  font-size: var(--cp-fs-sm);
+  font-weight: 700;
+  letter-spacing: .3px;
+  z-index: 30;
+  opacity: 0;
+  transition: opacity .15s;
+  pointer-events: none;
+}
+.cpm-hispeed-toast.is-visible { opacity: 1; }
+
+/* ===== search dialog (replicates desktop look without theme cascade) ===== */
 dialog.note-attrs-search-modal {
   width: min(560px, 92vw);
   max-height: 80vh;
   padding: 0;
-  border: 1px solid var(--cpm-line);
-  border-radius: 6px;
-  background: var(--cpm-panel);
-  color: var(--cpm-text);
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-md);
+  background: var(--cp-panel);
+  color: var(--cp-text);
   box-shadow: 0 12px 40px rgba(0,0,0,0.6);
   display: none;
   flex-direction: column;
+  font-family: var(--cp-font-ui);
 }
 dialog.note-attrs-search-modal[open] { display: flex; }
 dialog.note-attrs-search-modal::backdrop {
@@ -292,30 +377,35 @@ dialog.note-attrs-search-modal::backdrop {
 }
 .note-attrs-search-form {
   display: flex;
-  gap: 6px;
-  padding: 10px;
-  border-bottom: 1px solid var(--cpm-line);
+  gap: var(--cp-sp-2);
+  padding: var(--cp-sp-3);
+  border-bottom: 1px solid var(--cp-line);
   margin: 0;
+  flex: 0 0 auto;
 }
 .note-attrs-search-input {
   flex: 1;
   min-width: 0;
   appearance: none;
-  border: 1px solid var(--cpm-line);
-  border-radius: 4px;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-sm);
   padding: 8px 10px;
   background: rgba(255,255,255,0.04);
-  color: var(--cpm-text);
+  color: var(--cp-text);
   font-family: inherit;
   font-size: 14px;
 }
+.note-attrs-search-input:focus {
+  outline: none;
+  border-color: rgba(52,224,255,0.5);
+}
 .note-attrs-search-close {
   appearance: none;
-  border: 1px solid var(--cpm-line);
-  border-radius: 4px;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-sm);
   background: transparent;
-  color: var(--cpm-text);
-  padding: 6px 10px;
+  color: var(--cp-text);
+  padding: 6px 12px;
   font-family: inherit;
   font-size: 13px;
   cursor: pointer;
@@ -330,14 +420,15 @@ dialog.note-attrs-search-modal::backdrop {
   min-height: 0;
 }
 .note-attrs-search-results li {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--cpm-line);
+  padding: 10px var(--cp-sp-4);
+  border-bottom: 1px solid var(--cp-line);
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: var(--cp-sp-2);
+  flex-wrap: wrap;
   -webkit-tap-highlight-color: transparent;
-  color: var(--cpm-text);
+  color: var(--cp-text);
 }
 .note-attrs-search-results li:active,
 .note-attrs-search-results li.is-active {
@@ -346,42 +437,70 @@ dialog.note-attrs-search-modal::backdrop {
 .note-attrs-search-mode,
 .note-attrs-search-family {
   display: inline-block;
-  padding: 1px 6px;
-  margin-right: 4px;
-  border: 1px solid var(--cpm-line);
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--cpm-text-dim);
-  background: transparent;
-  vertical-align: middle;
+  padding: 2px 6px;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-sm);
+  font-family: var(--cp-font-mono);
+  font-size: var(--cp-fs-xs);
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: var(--cp-text-dim);
+  background: rgba(255,255,255,0.03);
+  flex: 0 0 auto;
 }
-.note-attrs-search-mode { color: var(--cpm-cyan); border-color: rgba(52,224,255,0.4); }
+.note-attrs-search-mode {
+  color: var(--cp-cyan);
+  border-color: rgba(52,224,255,0.4);
+  background: var(--cp-cyan-a08);
+}
 .note-attrs-search-title {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
-  color: var(--cpm-text);
-  margin-right: 6px;
+  color: var(--cp-text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .note-attrs-search-artist {
   font-size: 12px;
-  color: var(--cpm-text-dim);
+  color: var(--cp-text-dim);
+  flex: 0 0 auto;
 }
 .note-attrs-search-hint {
   margin: 0;
-  padding: 8px 12px;
-  border-top: 1px solid var(--cpm-line);
+  padding: 8px var(--cp-sp-4);
+  border-top: 1px solid var(--cp-line);
+  font-family: var(--cp-font-mono);
   font-size: 11px;
-  color: var(--cpm-text-dim);
+  color: var(--cp-text-mute);
+  flex: 0 0 auto;
 }
 .note-attrs-search-hint kbd {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--cp-font-mono);
   font-size: 10px;
   padding: 1px 4px;
-  border: 1px solid var(--cpm-line);
+  border: 1px solid var(--cp-line);
   border-radius: 2px;
-  color: var(--cpm-text);
+  color: var(--cp-text);
+}
+
+@media (min-width: 1024px) {
+  .cpm-shell::after {
+    content: "Desktop users — open the Chart preview modal from Note attributes for the full layout.";
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 14px;
+    background: rgba(12,17,28,0.92);
+    border: 1px solid var(--cp-line);
+    border-radius: var(--cp-r-sm);
+    font-size: 12px;
+    color: var(--cp-text-dim);
+    pointer-events: none;
+  }
 }
   </style>
 </head>

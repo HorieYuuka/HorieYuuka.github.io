@@ -3,6 +3,13 @@
 (function () {
   "use strict";
 
+  const DOUBLE_TAP_MS    = 280;
+  const TAP_MAX_MOVE_PX  = 10;
+  const TAP_MAX_TIME_MS  = 300;
+  const HISPEED_MIN      = 0.5;
+  const HISPEED_MAX      = 5.0;
+  const HISPEED_TOAST_MS = 700;
+
   function apiBaseFromPage() {
     const meta = document.querySelector('meta[name="cp-api-base"]');
     if (!meta) return "";
@@ -19,6 +26,8 @@
     const r = Math.floor(s % 60);
     return m + ":" + (r < 10 ? "0" + r : r);
   }
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
   function ready(fn) {
     if (document.readyState === "loading") {
@@ -39,6 +48,8 @@
     const pauseIcon    = $(".cpm-play__icon--pause", playBtn);
     const progressEl   = $("[data-cpm-progress]");
     const timeEl       = $("[data-cpm-time]");
+    const timeCurEl    = timeEl && timeEl.querySelector(".cur");
+    const hispeedToast = $("[data-cpm-hispeed-toast]");
     const pickBtns     = $$("[data-cpm-pick]");
     const searchModal  = $("[data-na-search-modal]");
     const searchInput  = $("[data-na-search-input]");
@@ -54,6 +65,17 @@
     let wasPlayingBeforeDrag = false;
     let searchController = null;
     let corpusPromise = null;
+    let totalSec = 0;
+
+    /* Canvas-tap + pinch state */
+    let activePointers = new Map();
+    let pinchInitialDist = 0;
+    let pinchInitialHiSpeed = 1;
+    let pinchActive = false;
+    let lastTapAt = 0;
+    let pendingSingleTapTimer = null;
+    let hispeedToastTimer = null;
+    let touchUnbind = null;
 
     function showEmpty(on) {
       if (emptyEl) emptyEl.hidden = !on;
@@ -63,11 +85,19 @@
 
     function teardownView() {
       if (clockTimer) { clearInterval(clockTimer); clockTimer = null; }
+      if (touchUnbind) { touchUnbind(); touchUnbind = null; }
       if (view && view.destroy) {
         try { view.destroy(); } catch (e) {}
       }
       view = null;
-      while (host.firstChild) host.removeChild(host.firstChild);
+    }
+
+    function clearHostChildren() {
+      // Renderer-built DOM lives directly under host. The hispeed toast is a
+      // sibling overlay placed before any chart loads — preserve it.
+      Array.from(host.children).forEach(function (child) {
+        if (child !== hispeedToast) host.removeChild(child);
+      });
     }
 
     async function _tryFetchBundle(bundleUrl) {
@@ -104,17 +134,138 @@
       if (!view || !view.getState) return;
       const st = view.getState();
       const cur = st.currentSec || 0;
-      const total = (view.timeline && view.timeline.total_sec) || 0;
-      if (!dragging && progressEl) {
-        progressEl.value = String(cur);
-      }
-      if (timeEl) {
-        timeEl.textContent = fmtTime(cur) + " / " + fmtTime(total);
-      }
+      if (!dragging && progressEl) progressEl.value = String(cur);
+      if (timeCurEl) timeCurEl.textContent = fmtTime(cur);
+      else if (timeEl) timeEl.textContent = fmtTime(cur) + " / " + fmtTime(totalSec);
+    }
+
+    /* ── Canvas interactions (tap / double-tap / pinch) ───────────────── */
+
+    function showHispeedToast(hs) {
+      if (!hispeedToast) return;
+      hispeedToast.textContent = "HS " + hs.toFixed(2) + "×";
+      hispeedToast.classList.add("is-visible");
+      if (hispeedToastTimer) clearTimeout(hispeedToastTimer);
+      hispeedToastTimer = setTimeout(function () {
+        hispeedToast.classList.remove("is-visible");
+        hispeedToastTimer = null;
+      }, HISPEED_TOAST_MS);
+    }
+
+    function handleSingleTap() {
+      if (!view) return;
+      try { view.toggle(); } catch (e) { console.warn("[cpm] toggle failed", e); }
+    }
+
+    function handleDoubleTap() {
+      if (!view) return;
+      try {
+        if (view.seekToSec) view.seekToSec(0);
+        if (view.pause) view.pause();
+      } catch (e) { console.warn("[cpm] reset failed", e); }
+    }
+
+    function bindCanvasInteractions() {
+      const cpField = host.querySelector(".cp-field");
+      const cpCanvas = host.querySelector(".cp-field__canvas");
+      if (!cpField || !cpCanvas) return null;
+
+      // Suppress the renderer's "click-canvas-to-seek-to-measure" binding —
+      // the mobile interaction model owns canvas taps.
+      const clickBlocker = function (e) { e.stopImmediatePropagation(); };
+      cpCanvas.addEventListener("click", clickBlocker, true);
+
+      const onPointerDown = function (e) {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        activePointers.set(e.pointerId, {
+          origX: e.clientX, origY: e.clientY,
+          curX:  e.clientX, curY:  e.clientY,
+          downAt: performance.now(),
+        });
+        try { cpField.setPointerCapture(e.pointerId); } catch (err) {}
+        if (activePointers.size === 2) {
+          const pts = Array.from(activePointers.values());
+          pinchInitialDist = Math.hypot(pts[1].curX - pts[0].curX, pts[1].curY - pts[0].curY);
+          pinchInitialHiSpeed = (view && view.getSettings && view.getSettings().hiSpeed) || 1;
+          pinchActive = true;
+          if (pendingSingleTapTimer) {
+            clearTimeout(pendingSingleTapTimer);
+            pendingSingleTapTimer = null;
+          }
+          lastTapAt = 0;
+        }
+      };
+
+      const onPointerMove = function (e) {
+        const p = activePointers.get(e.pointerId);
+        if (!p) return;
+        p.curX = e.clientX;
+        p.curY = e.clientY;
+        if (pinchActive && activePointers.size === 2 && pinchInitialDist > 0 && view) {
+          const pts = Array.from(activePointers.values());
+          const curDist = Math.hypot(pts[1].curX - pts[0].curX, pts[1].curY - pts[0].curY);
+          if (curDist > 0) {
+            const ratio = curDist / pinchInitialDist;
+            const newHs = clamp(pinchInitialHiSpeed * ratio, HISPEED_MIN, HISPEED_MAX);
+            if (view.setSettings) view.setSettings({ hiSpeed: newHs });
+            showHispeedToast(newHs);
+          }
+        }
+      };
+
+      const onPointerEnd = function (e) {
+        const p = activePointers.get(e.pointerId);
+        activePointers.delete(e.pointerId);
+        try { cpField.releasePointerCapture(e.pointerId); } catch (err) {}
+        if (activePointers.size < 2) {
+          pinchInitialDist = 0;
+          pinchActive = false;
+        }
+        if (e.type !== "pointerup" || !p) return;
+        if (activePointers.size > 0) return;     // multi-touch sequence; not a tap
+        if (pinchActive) return;
+        const dt = performance.now() - p.downAt;
+        const dx = Math.abs(e.clientX - p.origX);
+        const dy = Math.abs(e.clientY - p.origY);
+        if (dt > TAP_MAX_TIME_MS) return;
+        if (dx > TAP_MAX_MOVE_PX || dy > TAP_MAX_MOVE_PX) return;
+        const now = performance.now();
+        if (now - lastTapAt < DOUBLE_TAP_MS) {
+          if (pendingSingleTapTimer) {
+            clearTimeout(pendingSingleTapTimer);
+            pendingSingleTapTimer = null;
+          }
+          lastTapAt = 0;
+          handleDoubleTap();
+        } else {
+          lastTapAt = now;
+          pendingSingleTapTimer = setTimeout(function () {
+            handleSingleTap();
+            pendingSingleTapTimer = null;
+          }, DOUBLE_TAP_MS);
+        }
+      };
+
+      cpField.addEventListener("pointerdown",   onPointerDown);
+      cpField.addEventListener("pointermove",   onPointerMove);
+      cpField.addEventListener("pointerup",     onPointerEnd);
+      cpField.addEventListener("pointercancel", onPointerEnd);
+
+      return function unbind() {
+        cpCanvas.removeEventListener("click", clickBlocker, true);
+        cpField.removeEventListener("pointerdown",   onPointerDown);
+        cpField.removeEventListener("pointermove",   onPointerMove);
+        cpField.removeEventListener("pointerup",     onPointerEnd);
+        cpField.removeEventListener("pointercancel", onPointerEnd);
+        activePointers.clear();
+        pinchInitialDist = 0;
+        pinchActive = false;
+      };
     }
 
     function _finalizeView() {
       const t = view.timeline;
+      totalSec = t.total_sec || 0;
       setBadges(t);
       if (titleEl) {
         titleEl.textContent = (currentRow && (currentRow.title || currentRow.file))
@@ -127,17 +278,26 @@
         if (pauseIcon) { pauseIcon.hidden = !playing; pauseIcon.style.display = playing ? "block" : "none"; }
       });
       if (progressEl) {
-        progressEl.max = String(t.total_sec || 0);
+        progressEl.max = String(totalSec);
         progressEl.value = "0";
         progressEl.disabled = false;
       }
+      if (timeEl) {
+        // Reset trailing text to "/ TOTAL".
+        while (timeEl.lastChild && timeEl.lastChild !== timeCurEl) {
+          timeEl.removeChild(timeEl.lastChild);
+        }
+        timeEl.appendChild(document.createTextNode(" / " + fmtTime(totalSec)));
+      }
       updateClock();
       clockTimer = setInterval(updateClock, 200);
+      touchUnbind = bindCanvasInteractions();
       showEmpty(false);
     }
 
     async function loadByBundle(bundle, label) {
       teardownView();
+      clearHostChildren();
       if (titleEl) titleEl.textContent = label || "loading…";
       try {
         const opts = { apiBase: apiBaseFromPage() || undefined, keyZoneH: 0 };
@@ -153,6 +313,7 @@
 
     async function loadByUrl(url, label) {
       teardownView();
+      clearHostChildren();
       if (titleEl) titleEl.textContent = label || "loading…";
       try {
         const opts = { apiBase: apiBaseFromPage() || undefined, keyZoneH: 0 };
