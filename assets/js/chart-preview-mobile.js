@@ -59,8 +59,8 @@
     const fsIconExpand   = fsBtn && fsBtn.querySelector(".cpm-fs__icon--expand");
     const fsIconContract = fsBtn && fsBtn.querySelector(".cpm-fs__icon--contract");
     const rotateBtn    = $("[data-cpm-rotate]");
-    const fabEl        = $("[data-cpm-fab]");
-    const fabToggleBtn = $("[data-cpm-fab-toggle]");
+    const menuEl       = $("[data-cpm-menu]");
+    const menuToggleBtn = $("[data-cpm-menu-toggle]");
     const configBtn    = $("[data-cpm-config]");
     const configModal  = $("[data-cpm-config-modal]");
     const configClose  = $("[data-cpm-config-close]");
@@ -112,9 +112,9 @@
     }
 
     function clearHostChildren() {
-      // Renderer-built DOM lives directly under host. Overlays + FAB placed
-      // before any chart loads are preserved across reloads.
-      const keep = [hispeedToast, toastEl, fabEl];
+      // Renderer-built DOM lives directly under host. Overlays + action bar
+      // are siblings placed before any chart loads — preserve them.
+      const keep = [hispeedToast, toastEl, menuEl];
       Array.from(host.children).forEach(function (child) {
         if (keep.indexOf(child) === -1) host.removeChild(child);
       });
@@ -717,30 +717,31 @@
       progressEl.addEventListener("blur", _cancelDrag);
     }
 
-    /* ── FAB ──────────────────────────────────────────────────────── */
+    /* ── Action bar (topbar kebab toggle) ─────────────────────────── */
 
-    function setFabOpen(open) {
-      if (!fabEl) return;
-      fabEl.classList.toggle("is-open", !!open);
-      if (fabToggleBtn) fabToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    function setMenuOpen(open) {
+      if (!menuEl) return;
+      menuEl.classList.toggle("is-open", !!open);
+      if (menuToggleBtn) {
+        menuToggleBtn.classList.toggle("is-open", !!open);
+        menuToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      }
     }
-    if (fabToggleBtn) {
-      fabToggleBtn.addEventListener("click", function () {
-        setFabOpen(!fabEl.classList.contains("is-open"));
+    if (menuToggleBtn) {
+      menuToggleBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        setMenuOpen(!menuEl.classList.contains("is-open"));
       });
     }
-    // Tap any mini action closes the FAB (after their own handler fires).
-    if (fabEl) {
-      fabEl.querySelectorAll(".cpm-fab__mini").forEach(function (mini) {
-        mini.addEventListener("click", function () {
-          setFabOpen(false);
-        });
+    if (menuEl) {
+      menuEl.querySelectorAll(".cpm-action").forEach(function (btn) {
+        btn.addEventListener("click", function () { setMenuOpen(false); });
       });
-      // Tap outside FAB collapses it.
       document.addEventListener("pointerdown", function (e) {
-        if (!fabEl.classList.contains("is-open")) return;
-        if (fabEl.contains(e.target)) return;
-        setFabOpen(false);
+        if (!menuEl.classList.contains("is-open")) return;
+        if (menuEl.contains(e.target)) return;
+        if (menuToggleBtn && menuToggleBtn.contains(e.target)) return;
+        setMenuOpen(false);
       });
     }
 
