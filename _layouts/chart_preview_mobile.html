@@ -188,11 +188,6 @@ body.cpm-body {
 }
 .cp-btn-icon.cp-btn-pick { color: #cfe9ff; }
 .cp-btn-icon.cpm-btn-help { color: var(--cp-text-dim); }
-.cp-btn-icon.cpm-btn-fs { color: var(--cp-text-dim); }
-.cp-btn-icon.cpm-btn-fs.is-active { color: var(--cp-cyan); border-color: rgba(52,224,255,0.4); }
-.cp-btn-icon.cpm-btn-rotate { color: var(--cp-text-dim); display: none; }
-.cp-btn-icon.cpm-btn-rotate.is-active { color: var(--cp-cyan); border-color: rgba(52,224,255,0.4); }
-.cpm-shell[data-cpm-mode="DP"] .cp-btn-icon.cpm-btn-rotate { display: inline-flex; }
 .cp-btn-icon.cp-btn-play {
   background: var(--cp-cyan);
   border-color: var(--cp-cyan);
@@ -354,25 +349,27 @@ body.cpm-body {
   transform: translateX(-50%) translateY(0);
 }
 
-.cpm-sudplus-toast {
+/* SUD+ value tip — appended into cp-field by JS so it floats at the
+   bottom edge of the cover (matches desktop's cp-sudplus-tip). */
+.cpm-sudplus-tip {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 6px 10px;
-  border: 1px solid rgba(52,224,255,0.4);
-  border-radius: var(--cp-r-sm);
-  background: rgba(5,7,13,0.78);
-  color: var(--cp-cyan);
-  font-family: var(--cp-font-mono);
-  font-size: var(--cp-fs-sm);
-  font-weight: 700;
-  letter-spacing: .3px;
-  z-index: 30;
-  opacity: 0;
-  transition: opacity .15s;
+  left: 50%;
+  top: var(--cp-sudplus-h, 0);
+  transform: translate(-50%, -50%);
   pointer-events: none;
+  z-index: 5;
+  font-family: var(--cp-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .2s;
 }
-.cpm-sudplus-toast.is-visible { opacity: 1; }
+.cpm-sudplus-tip.is-visible { opacity: 1; }
 
 .cpm-hispeed-toast {
   position: absolute;
@@ -393,6 +390,82 @@ body.cpm-body {
   pointer-events: none;
 }
 .cpm-hispeed-toast.is-visible { opacity: 1; }
+
+/* ===== floating action button ===== */
+.cpm-fab {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 10px;
+}
+.cpm-fab__main {
+  appearance: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--cp-line);
+  background: var(--cp-panel-2);
+  color: var(--cp-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  transition: transform .15s, background .15s, border-color .15s;
+}
+.cpm-fab.is-open .cpm-fab__main {
+  background: var(--cp-cyan-a08);
+  border-color: rgba(52,224,255,0.5);
+  color: var(--cp-cyan);
+  transform: rotate(90deg);
+}
+.cpm-fab__menu {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+.cpm-fab__mini {
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--cp-line);
+  background: var(--cp-panel);
+  color: var(--cp-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  opacity: 0;
+  transform: translateY(8px) scale(0.85);
+  transition: opacity .15s, transform .15s;
+  pointer-events: none;
+}
+.cpm-fab__mini svg { pointer-events: none; }
+.cpm-fab.is-open .cpm-fab__mini {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.cpm-fab__mini.is-active {
+  color: var(--cp-cyan);
+  border-color: rgba(52,224,255,0.4);
+}
+.cpm-fab__mini--rotate { display: none; }
+.cpm-shell[data-cpm-mode="DP"] .cpm-fab__mini--rotate { display: inline-flex; }
+.cpm-fab__mini--config { color: var(--cp-text-dim); }
+.cpm-fab__mini--pick { color: #cfe9ff; }
 
 /* ===== search dialog ===== */
 dialog.note-attrs-search-modal {
@@ -714,6 +787,85 @@ dialog.cpm-help-modal[open] .cpm-gesture--drag .cpm-gesture__finger--drag {
 @keyframes cpm-pinch-right {
   0%, 100% { transform: translate(0, -50%); }
   50%      { transform: translate(-16px, -50%); }
+}
+
+/* ===== config dialog ===== */
+dialog.cpm-config-modal {
+  width: min(420px, 92vw);
+  padding: 0;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-md);
+  background: var(--cp-panel);
+  color: var(--cp-text);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  font-family: var(--cp-font-ui);
+}
+dialog.cpm-config-modal::backdrop {
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+}
+.cpm-config-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--cp-sp-3) 0;
+}
+.cpm-config-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--cp-sp-3) var(--cp-sp-4);
+  border-bottom: 1px solid var(--cp-line-soft);
+}
+.cpm-config-row:last-child { border-bottom: none; }
+.cpm-config-row[hidden] { display: none !important; }
+.cpm-config-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--cp-sp-3);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.cpm-config-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.cpm-config-toggle__track {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 22px;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--cp-line);
+  position: relative;
+  transition: background .15s, border-color .15s;
+}
+.cpm-config-toggle__track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cp-text-dim);
+  transition: transform .15s, background .15s;
+}
+.cpm-config-toggle input:checked + .cpm-config-toggle__track {
+  background: var(--cp-cyan-a08);
+  border-color: rgba(52,224,255,0.5);
+}
+.cpm-config-toggle input:checked + .cpm-config-toggle__track::after {
+  background: var(--cp-cyan);
+  transform: translateX(16px);
+}
+.cpm-config-toggle__label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cp-text);
+  letter-spacing: .2px;
+}
+.cpm-config-hint {
+  font-family: var(--cp-font-mono);
+  font-size: 11px;
+  color: var(--cp-text-mute);
+  margin-left: 50px;
 }
 
 @media (min-width: 1024px) {

@@ -59,7 +59,12 @@
     const fsIconExpand   = fsBtn && fsBtn.querySelector(".cpm-fs__icon--expand");
     const fsIconContract = fsBtn && fsBtn.querySelector(".cpm-fs__icon--contract");
     const rotateBtn    = $("[data-cpm-rotate]");
-    const sudplusToast = $("[data-cpm-sudplus-toast]");
+    const fabEl        = $("[data-cpm-fab]");
+    const fabToggleBtn = $("[data-cpm-fab-toggle]");
+    const configBtn    = $("[data-cpm-config]");
+    const configModal  = $("[data-cpm-config-modal]");
+    const configClose  = $("[data-cpm-config-close]");
+    const configHideRail = $("[data-cpm-config-hide-rail]");
     const pickBtns     = $$("[data-cpm-pick]");
     const searchModal  = $("[data-na-search-modal]");
     const searchInput  = $("[data-na-search-input]");
@@ -71,8 +76,6 @@
     let view = null;
     let currentRow = null;
     let clockTimer = null;
-    let dragging = false;
-    let wasPlayingBeforeDrag = false;
     let searchController = null;
     let corpusPromise = null;
     let totalSec = 0;
@@ -84,8 +87,12 @@
     let touchUnbind = null;
     let toastTimer = null;
     let sudplusValue = 0;
-    let sudplusToastTimer = null;
-    const SUDPLUS_TOAST_MS = 700;
+    let sudplusTipEl = null;
+    let sudplusTipTimer = null;
+    let progressActive = false;
+    let progressWasPlaying = false;
+    const mobileSettings = { hideMeasureRail: false };
+    const SUDPLUS_TIP_MS = 900;
     const SUDPLUS_MAX = 500;
     const DRAG_THRESHOLD_PX = 12;
 
@@ -105,9 +112,9 @@
     }
 
     function clearHostChildren() {
-      // Renderer-built DOM lives directly under host. Overlays placed before
-      // any chart loads are preserved across reloads.
-      const keep = [hispeedToast, toastEl, sudplusToast];
+      // Renderer-built DOM lives directly under host. Overlays + FAB placed
+      // before any chart loads are preserved across reloads.
+      const keep = [hispeedToast, toastEl, fabEl];
       Array.from(host.children).forEach(function (child) {
         if (keep.indexOf(child) === -1) host.removeChild(child);
       });
@@ -158,7 +165,9 @@
       if (!view || !view.getState) return;
       const st = view.getState();
       const cur = st.currentSec || 0;
-      if (!dragging && progressEl) progressEl.value = String(cur);
+      if (!progressActive && progressEl && document.activeElement !== progressEl) {
+        progressEl.value = String(cur);
+      }
       if (timeCurEl) timeCurEl.textContent = fmtTime(cur);
       else if (timeEl) timeEl.textContent = fmtTime(cur) + " / " + fmtTime(totalSec);
     }
@@ -189,20 +198,28 @@
       } catch (e) { console.warn("[cpm] reset failed", e); }
     }
 
+    function injectSudplusTip() {
+      const cpField = host.querySelector(".cp-field");
+      if (!cpField) { sudplusTipEl = null; return; }
+      sudplusTipEl = document.createElement("div");
+      sudplusTipEl.className = "cpm-sudplus-tip";
+      sudplusTipEl.textContent = "SUD+ " + sudplusValue + " px";
+      cpField.appendChild(sudplusTipEl);
+    }
     function applySudplus(v) {
       sudplusValue = Math.max(0, Math.min(SUDPLUS_MAX, v | 0));
       const cpField = host.querySelector(".cp-field");
       if (cpField) cpField.style.setProperty("--cp-sudplus-h", sudplusValue + "px");
+      if (sudplusTipEl) sudplusTipEl.textContent = "SUD+ " + sudplusValue + " px";
     }
-    function showSudplusToast() {
-      if (!sudplusToast) return;
-      sudplusToast.textContent = "SUD+ " + sudplusValue + " px";
-      sudplusToast.classList.add("is-visible");
-      if (sudplusToastTimer) clearTimeout(sudplusToastTimer);
-      sudplusToastTimer = setTimeout(function () {
-        sudplusToast.classList.remove("is-visible");
-        sudplusToastTimer = null;
-      }, SUDPLUS_TOAST_MS);
+    function showSudplusTip() {
+      if (!sudplusTipEl) return;
+      sudplusTipEl.classList.add("is-visible");
+      if (sudplusTipTimer) clearTimeout(sudplusTipTimer);
+      sudplusTipTimer = setTimeout(function () {
+        if (sudplusTipEl) sudplusTipEl.classList.remove("is-visible");
+        sudplusTipTimer = null;
+      }, SUDPLUS_TIP_MS);
     }
 
     function bindCanvasInteractions() {
@@ -288,7 +305,7 @@
         if (mode === "drag-sudplus" && pts.size === 1) {
           const dy = e.clientY - p.origY;
           applySudplus(dragInitialSudplus + dy);
-          showSudplusToast();
+          showSudplusTip();
         }
       };
 
@@ -352,7 +369,10 @@
         titleEl.textContent = (currentRow && (currentRow.title || currentRow.file))
           || t.title || "Chart preview";
       }
-      view.setSettings({ hideJudgment: true });
+      view.setSettings({
+        hideJudgment: true,
+        hideMeasureRail: !!mobileSettings.hideMeasureRail,
+      });
       view.setOnPlayStateChange(function (playing) {
         if (playBtn) playBtn.classList.toggle("is-playing", playing);
         if (playIcon) { playIcon.hidden = playing; playIcon.style.display = playing ? "none" : "block"; }
@@ -373,9 +393,14 @@
       updateClock();
       clockTimer = setInterval(updateClock, 200);
       touchUnbind = bindCanvasInteractions();
-      // Re-apply SUD+ — the renderer rebuilt cp-field, so the inline
-      // --cp-sudplus-h is gone with the old element.
+      // Inject SUD+ tip into the new cp-field and re-apply the persisted
+      // cover value — the renderer rebuilt cp-field, so the inline variable
+      // is gone with the old element.
+      injectSudplusTip();
       applySudplus(sudplusValue);
+      // SP-only config rows. Toggle visibility now that we know the mode.
+      const hideRailRow = document.querySelector('[data-cpm-config-row="hide-rail"]');
+      if (hideRailRow) hideRailRow.hidden = t.mode !== "SP";
       showEmpty(false);
       // Defer one more draw to the frame after layout settles. Without this,
       // the very first paint on DP can happen while cp-field.clientWidth is
@@ -654,28 +679,100 @@
     }
 
     if (progressEl) {
-      progressEl.addEventListener("pointerdown", function () {
-        if (!view) return;
-        dragging = true;
-        const st = view.getState();
-        wasPlayingBeforeDrag = !!st.playing;
-        if (wasPlayingBeforeDrag) view.pause();
-      });
+      // 'input' fires continuously while the user drags the slider; 'change'
+      // fires once on release. Pointer events on range inputs are flaky on
+      // touch browsers (cancel mid-drag, lost capture, etc.), so we rely on
+      // these higher-level events instead. progressActive gates the periodic
+      // updateClock() rewrite so the user's in-flight drag isn't clobbered.
       progressEl.addEventListener("input", function () {
-        if (!view || !dragging) return;
+        if (!view) return;
+        if (!progressActive) {
+          progressActive = true;
+          const st = view.getState();
+          progressWasPlaying = !!st.playing;
+          if (progressWasPlaying && view.pause) view.pause();
+        }
         const sec = parseFloat(progressEl.value);
         if (isFinite(sec) && view.seekToSec) view.seekToSec(sec);
-        updateClock();
-      });
-      progressEl.addEventListener("pointerup", function () {
-        if (!view || !dragging) return;
-        dragging = false;
-        if (wasPlayingBeforeDrag) view.play();
+        if (timeCurEl) timeCurEl.textContent = fmtTime(sec);
       });
       progressEl.addEventListener("change", function () {
         if (!view) return;
         const sec = parseFloat(progressEl.value);
         if (isFinite(sec) && view.seekToSec) view.seekToSec(sec);
+        progressActive = false;
+        if (progressWasPlaying && view.play) view.play();
+        progressWasPlaying = false;
+      });
+      // Cancel/blur safety nets — touch range inputs sometimes lose pointer
+      // events mid-drag; without these, progressActive would stick true and
+      // the periodic clock tick would stop updating the slider thumb.
+      function _cancelDrag() {
+        if (!progressActive) return;
+        progressActive = false;
+        if (progressWasPlaying && view && view.play) view.play();
+        progressWasPlaying = false;
+      }
+      progressEl.addEventListener("pointercancel", _cancelDrag);
+      progressEl.addEventListener("blur", _cancelDrag);
+    }
+
+    /* ── FAB ──────────────────────────────────────────────────────── */
+
+    function setFabOpen(open) {
+      if (!fabEl) return;
+      fabEl.classList.toggle("is-open", !!open);
+      if (fabToggleBtn) fabToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    if (fabToggleBtn) {
+      fabToggleBtn.addEventListener("click", function () {
+        setFabOpen(!fabEl.classList.contains("is-open"));
+      });
+    }
+    // Tap any mini action closes the FAB (after their own handler fires).
+    if (fabEl) {
+      fabEl.querySelectorAll(".cpm-fab__mini").forEach(function (mini) {
+        mini.addEventListener("click", function () {
+          setFabOpen(false);
+        });
+      });
+      // Tap outside FAB collapses it.
+      document.addEventListener("pointerdown", function (e) {
+        if (!fabEl.classList.contains("is-open")) return;
+        if (fabEl.contains(e.target)) return;
+        setFabOpen(false);
+      });
+    }
+
+    /* ── Settings dialog ──────────────────────────────────────────── */
+
+    function applyMobileSettings() {
+      if (view && view.setSettings) {
+        view.setSettings({ hideMeasureRail: !!mobileSettings.hideMeasureRail });
+      }
+    }
+    if (configBtn && configModal) {
+      configBtn.addEventListener("click", function () {
+        if (configHideRail) configHideRail.checked = !!mobileSettings.hideMeasureRail;
+        try { configModal.showModal(); } catch (e) { configModal.setAttribute("open", ""); }
+      });
+    }
+    if (configClose && configModal) {
+      configClose.addEventListener("click", function () {
+        try { configModal.close(); } catch (e) { configModal.removeAttribute("open"); }
+      });
+    }
+    if (configModal) {
+      configModal.addEventListener("click", function (e) {
+        if (e.target === configModal) {
+          try { configModal.close(); } catch (err) { configModal.removeAttribute("open"); }
+        }
+      });
+    }
+    if (configHideRail) {
+      configHideRail.addEventListener("change", function () {
+        mobileSettings.hideMeasureRail = !!configHideRail.checked;
+        applyMobileSettings();
       });
     }
 
