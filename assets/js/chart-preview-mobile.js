@@ -55,6 +55,9 @@
     const helpBtn      = $("[data-cpm-help]");
     const helpModal    = $("[data-cpm-help-modal]");
     const helpClose    = $("[data-cpm-help-close]");
+    const fsBtn        = $("[data-cpm-fullscreen]");
+    const fsIconExpand   = fsBtn && fsBtn.querySelector(".cpm-fs__icon--expand");
+    const fsIconContract = fsBtn && fsBtn.querySelector(".cpm-fs__icon--contract");
     const pickBtns     = $$("[data-cpm-pick]");
     const searchModal  = $("[data-na-search-modal]");
     const searchInput  = $("[data-na-search-input]");
@@ -445,6 +448,42 @@
         } catch (e) { console.warn("[cpm] reset failed", e); }
       });
     }
+
+    /* ── Fullscreen ───────────────────────────────────────────────── */
+
+    function fsElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+    function updateFsButton() {
+      const on = !!fsElement();
+      if (fsBtn) fsBtn.classList.toggle("is-active", on);
+      if (fsIconExpand)   { fsIconExpand.hidden = on;  fsIconExpand.style.display   = on ? "none"  : "block"; }
+      if (fsIconContract) { fsIconContract.hidden = !on; fsIconContract.style.display = on ? "block" : "none"; }
+    }
+    async function enterFullscreen() {
+      const el = document.documentElement;
+      try {
+        if (el.requestFullscreen) await el.requestFullscreen({ navigationUI: "hide" });
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else throw new Error("not supported");
+      } catch (e) {
+        showToast("Fullscreen unavailable — try Add to Home Screen", 3500);
+      }
+    }
+    function exitFullscreen() {
+      try {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      } catch (e) {}
+    }
+    if (fsBtn) {
+      fsBtn.addEventListener("click", function () {
+        if (fsElement()) exitFullscreen(); else enterFullscreen();
+      });
+    }
+    document.addEventListener("fullscreenchange", updateFsButton);
+    document.addEventListener("webkitfullscreenchange", updateFsButton);
+    updateFsButton();
 
     /* ── Help dialog ──────────────────────────────────────────────── */
 
