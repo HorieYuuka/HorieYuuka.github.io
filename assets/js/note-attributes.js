@@ -437,15 +437,17 @@
       btn.addEventListener("click", () => removeFromCompare(btn.dataset.naCompareRemove));
     });
 
-    // Wire preview buttons. Hoverless narrow viewports route to the dedicated
-    // mobile preview page; everything else opens the in-page modal.
-    const isMobileViewport = typeof window.matchMedia === "function" &&
-      window.matchMedia("(hover: none) and (max-width: 900px)").matches;
+    // Wire preview buttons. Narrow viewports route to the dedicated mobile
+    // preview page; everything else opens the in-page modal. The viewport
+    // check fires at click time so a device-rotation mid-session picks the
+    // right path.
     els.compareCards.querySelectorAll("[data-na-compare-preview]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const row = state.compareSet.find((r) => r.file === btn.dataset.naComparePreview);
         if (!row) return;
-        if (isMobileViewport) {
+        const isMobile = typeof window.matchMedia === "function" &&
+          window.matchMedia("(max-width: 900px)").matches;
+        if (isMobile) {
           if (row.md5) location.href = "/chart-preview/m?md5=" + encodeURIComponent(row.md5);
           return;
         }

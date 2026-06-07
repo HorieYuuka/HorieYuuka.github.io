@@ -190,6 +190,8 @@ body.cpm-body {
 .cp-btn-icon.cpm-btn-help { color: var(--cp-text-dim); }
 .cp-btn-icon.cpm-btn-fs { color: var(--cp-text-dim); }
 .cp-btn-icon.cpm-btn-fs.is-active { color: var(--cp-cyan); border-color: rgba(52,224,255,0.4); }
+.cp-btn-icon.cpm-btn-rotate { color: var(--cp-text-dim); display: none; }
+.cpm-shell[data-cpm-mode="DP"] .cp-btn-icon.cpm-btn-rotate { display: inline-flex; }
 .cp-btn-icon.cp-btn-play {
   background: var(--cp-cyan);
   border-color: var(--cp-cyan);
@@ -266,6 +268,17 @@ body.cpm-body {
   background: var(--cp-panel);
   touch-action: none;
 }
+.cpm-stage .cp-field::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: var(--cp-sudplus-h, 0);
+  background:
+    linear-gradient(180deg, #04070d 0%, #04070d calc(100% - 2px),
+                    rgba(52,224,255,0.22) calc(100% - 1px), rgba(52,224,255,0) 100%);
+  pointer-events: none;
+  z-index: 4;
+}
 .cpm-stage .cp-field__play {
   position: absolute;
   inset: 0;
@@ -338,6 +351,52 @@ body.cpm-body {
 .cpm-toast.is-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+.cpm-sudplus {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: var(--cp-sp-3);
+  padding: 8px 12px;
+  border: 1px solid rgba(52,224,255,0.4);
+  border-radius: var(--cp-r-md);
+  background: rgba(5,7,13,0.92);
+  z-index: 35;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+}
+.cpm-sudplus.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.cpm-sudplus[hidden] { display: none !important; }
+.cpm-sudplus__label {
+  font-family: var(--cp-font-mono);
+  font-size: var(--cp-fs-xs);
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: var(--cp-cyan);
+  flex: 0 0 auto;
+}
+.cpm-sudplus__range {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+.cpm-sudplus__value {
+  font-family: var(--cp-font-mono);
+  font-size: var(--cp-fs-sm);
+  color: var(--cp-text);
+  min-width: 5ch;
+  text-align: right;
+  flex: 0 0 auto;
 }
 
 .cpm-hispeed-toast {

@@ -18,6 +18,10 @@ sitemap: false
               data-cpm-pick aria-label="Pick chart">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
+      <button type="button" class="cp-btn cp-btn-icon cpm-btn-rotate"
+              data-cpm-rotate aria-label="View in landscape">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12a10 10 0 0 1 14-9.14"/><polyline points="16 1 16 5 12 5"/><path d="M22 12a10 10 0 0 1-14 9.14"/><polyline points="8 23 8 19 12 19"/></svg>
+      </button>
       <button type="button" class="cp-btn cp-btn-icon cpm-btn-fs"
               data-cpm-fullscreen aria-label="Toggle fullscreen">
         <svg class="cpm-fs__icon cpm-fs__icon--expand" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
@@ -33,6 +37,13 @@ sitemap: false
   <main class="cpm-stage" data-cpm-host>
     <div class="cpm-hispeed-toast" data-cpm-hispeed-toast></div>
     <div class="cpm-toast" data-cpm-toast></div>
+    <div class="cpm-sudplus" data-cpm-sudplus hidden>
+      <span class="cpm-sudplus__label">SUD+</span>
+      <input type="range" class="cp-progress cpm-sudplus__range"
+             data-cpm-sudplus-range min="0" max="500" step="10" value="0"
+             aria-label="SUD+ cover height">
+      <span class="cpm-sudplus__value" data-cpm-sudplus-val>0 px</span>
+    </div>
   </main>
 
   <div class="cpm-empty" data-cpm-empty>
@@ -82,7 +93,7 @@ sitemap: false
       </div>
       <div class="cpm-help-text">
         <strong>Double tap</strong>
-        <span>Reset to start</span>
+        <span>Toggle SUD+ cover</span>
       </div>
     </li>
     <li class="cpm-help-row">

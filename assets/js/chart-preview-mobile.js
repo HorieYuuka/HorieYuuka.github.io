@@ -58,6 +58,10 @@
     const fsBtn        = $("[data-cpm-fullscreen]");
     const fsIconExpand   = fsBtn && fsBtn.querySelector(".cpm-fs__icon--expand");
     const fsIconContract = fsBtn && fsBtn.querySelector(".cpm-fs__icon--contract");
+    const rotateBtn    = $("[data-cpm-rotate]");
+    const sudplusEl    = $("[data-cpm-sudplus]");
+    const sudplusRange = $("[data-cpm-sudplus-range]");
+    const sudplusValEl = $("[data-cpm-sudplus-val]");
     const pickBtns     = $$("[data-cpm-pick]");
     const searchModal  = $("[data-na-search-modal]");
     const searchInput  = $("[data-na-search-input]");
@@ -85,6 +89,9 @@
     let hispeedToastTimer = null;
     let touchUnbind = null;
     let toastTimer = null;
+    let sudplusValue = 0;
+    let sudplusHideTimer = null;
+    const SUDPLUS_AUTO_HIDE_MS = 3500;
 
     function showEmpty(on) {
       if (emptyEl) emptyEl.hidden = !on;
@@ -102,10 +109,11 @@
     }
 
     function clearHostChildren() {
-      // Renderer-built DOM lives directly under host. Toasts are siblings
-      // placed before any chart loads — preserve them.
+      // Renderer-built DOM lives directly under host. Overlays placed before
+      // any chart loads are preserved across reloads.
+      const keep = [hispeedToast, toastEl, sudplusEl];
       Array.from(host.children).forEach(function (child) {
-        if (child !== hispeedToast && child !== toastEl) host.removeChild(child);
+        if (keep.indexOf(child) === -1) host.removeChild(child);
       });
     }
 
@@ -178,11 +186,44 @@
     }
 
     function handleDoubleTap() {
-      if (!view) return;
-      try {
-        if (view.seekToSec) view.seekToSec(0);
-        if (view.pause) view.pause();
-      } catch (e) { console.warn("[cpm] reset failed", e); }
+      if (sudplusEl && sudplusEl.classList.contains("is-visible")) hideSudplus();
+      else showSudplus();
+    }
+
+    function applySudplus(v) {
+      sudplusValue = Math.max(0, Math.min(500, v | 0));
+      const cpField = host.querySelector(".cp-field");
+      if (cpField) cpField.style.setProperty("--cp-sudplus-h", sudplusValue + "px");
+      if (sudplusValEl) sudplusValEl.textContent = sudplusValue + " px";
+      if (sudplusRange && parseInt(sudplusRange.value, 10) !== sudplusValue) {
+        sudplusRange.value = String(sudplusValue);
+      }
+    }
+    function resetSudplusHideTimer() {
+      if (sudplusHideTimer) clearTimeout(sudplusHideTimer);
+      sudplusHideTimer = setTimeout(hideSudplus, SUDPLUS_AUTO_HIDE_MS);
+    }
+    function showSudplus() {
+      if (!sudplusEl) return;
+      sudplusEl.hidden = false;
+      void sudplusEl.offsetWidth;
+      sudplusEl.classList.add("is-visible");
+      resetSudplusHideTimer();
+    }
+    function hideSudplus() {
+      if (!sudplusEl) return;
+      sudplusEl.classList.remove("is-visible");
+      if (sudplusHideTimer) { clearTimeout(sudplusHideTimer); sudplusHideTimer = null; }
+      setTimeout(function () {
+        if (!sudplusEl.classList.contains("is-visible")) sudplusEl.hidden = true;
+      }, 220);
+    }
+    if (sudplusRange) {
+      sudplusRange.addEventListener("input", function () {
+        applySudplus(parseInt(sudplusRange.value, 10));
+        resetSudplusHideTimer();
+      });
+      sudplusRange.addEventListener("pointerdown", resetSudplusHideTimer);
     }
 
     function bindCanvasInteractions() {
@@ -312,11 +353,37 @@
       updateClock();
       clockTimer = setInterval(updateClock, 200);
       touchUnbind = bindCanvasInteractions();
+      // Re-apply SUD+ — the renderer rebuilt cp-field, so the inline
+      // --cp-sudplus-h is gone with the old element.
+      applySudplus(sudplusValue);
       showEmpty(false);
+      // Defer one more draw to the frame after layout settles. Without this,
+      // the very first paint on DP can happen while cp-field.clientWidth is
+      // still 0, leaving lanes drawn at the renderer's mainW fallback and
+      // clipped on the right.
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          if (view && view.draw) { try { view.draw(); } catch (e) {} }
+        });
+      });
       if (t.mode === "DP" && typeof window.matchMedia === "function" &&
           window.matchMedia("(orientation: portrait)").matches) {
         showToast("Rotate to landscape for a wider DP view", 3000);
       }
+    }
+
+    function rendererOpts() {
+      const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+      // On narrow viewports the renderer's fixed lane-fit width (553 px for DP
+      // at the default lane unit of 30) overflows portrait phones. Trim it so
+      // the construction-time mainW stays under viewport — the dynamic
+      // per-frame lane unit then fills whatever the canvas actually got.
+      const dpLaneUnit = vw > 0 && vw < 480 ? 18 : 30;
+      return {
+        apiBase: apiBaseFromPage() || undefined,
+        keyZoneH: 0,
+        mainLaneUnit: { SP: 30, DP: dpLaneUnit },
+      };
     }
 
     async function loadByBundle(bundle, label) {
@@ -324,7 +391,7 @@
       clearHostChildren();
       if (titleEl) titleEl.textContent = label || "loading…";
       try {
-        const opts = { apiBase: apiBaseFromPage() || undefined, keyZoneH: 0 };
+        const opts = rendererOpts();
         if (bundle.audioUrl) opts.audioUrl = bundle.audioUrl;
         view = await window.ChartRenderer.renderTimeline(host, bundle.timeline, opts);
         _finalizeView();
@@ -340,8 +407,7 @@
       clearHostChildren();
       if (titleEl) titleEl.textContent = label || "loading…";
       try {
-        const opts = { apiBase: apiBaseFromPage() || undefined, keyZoneH: 0 };
-        view = await window.ChartRenderer.loadAndRender(host, url, opts);
+        view = await window.ChartRenderer.loadAndRender(host, url, rendererOpts());
         _finalizeView();
       } catch (e) {
         console.error("[cpm] load failed", e);
@@ -484,6 +550,28 @@
     document.addEventListener("fullscreenchange", updateFsButton);
     document.addEventListener("webkitfullscreenchange", updateFsButton);
     updateFsButton();
+
+    /* ── Landscape lock (DP) ───────────────────────────────────────── */
+
+    async function lockLandscape() {
+      try {
+        const el = document.documentElement;
+        if (!fsElement()) {
+          if (el.requestFullscreen) await el.requestFullscreen({ navigationUI: "hide" });
+          else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        }
+        if (screen && screen.orientation && screen.orientation.lock) {
+          await screen.orientation.lock("landscape");
+          return;
+        }
+        throw new Error("orientation lock unsupported");
+      } catch (e) {
+        showToast("Rotate your device to landscape", 3000);
+      }
+    }
+    if (rotateBtn) {
+      rotateBtn.addEventListener("click", lockLandscape);
+    }
 
     /* ── Help dialog ──────────────────────────────────────────────── */
 

@@ -1138,10 +1138,11 @@
 
 /* Desktop ↔ mobile entry split for the Chart preview callout. The desktop
    variant opens the in-page modal; the mobile variant navigates to a
-   dedicated fullscreen page. Hover queries gate mobile to actual no-hover
-   inputs so a narrow desktop window doesn't lose the modal. */
+   dedicated fullscreen page. Width alone gates the swap so the rule fires
+   on phones, tablets in portrait, and any browser window narrower than
+   900 px — same threshold as the note-attributes.js per-card check. */
 .note-attrs-callout-btn--mobile { display: none; }
-@media (hover: none) and (max-width: 900px) {
+@media (max-width: 900px) {
   .note-attrs-callout-btn--desktop { display: none; }
   .note-attrs-callout-btn--mobile  { display: inline-block; }
 }
