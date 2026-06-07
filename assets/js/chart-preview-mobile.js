@@ -46,10 +46,15 @@
     const playBtn      = $("[data-cpm-play]");
     const playIcon     = $(".cpm-play__icon--play", playBtn);
     const pauseIcon    = $(".cpm-play__icon--pause", playBtn);
+    const resetBtn     = $("[data-cpm-reset]");
     const progressEl   = $("[data-cpm-progress]");
     const timeEl       = $("[data-cpm-time]");
     const timeCurEl    = timeEl && timeEl.querySelector(".cur");
     const hispeedToast = $("[data-cpm-hispeed-toast]");
+    const toastEl      = $("[data-cpm-toast]");
+    const helpBtn      = $("[data-cpm-help]");
+    const helpModal    = $("[data-cpm-help-modal]");
+    const helpClose    = $("[data-cpm-help-close]");
     const pickBtns     = $$("[data-cpm-pick]");
     const searchModal  = $("[data-na-search-modal]");
     const searchInput  = $("[data-na-search-input]");
@@ -76,6 +81,7 @@
     let pendingSingleTapTimer = null;
     let hispeedToastTimer = null;
     let touchUnbind = null;
+    let toastTimer = null;
 
     function showEmpty(on) {
       if (emptyEl) emptyEl.hidden = !on;
@@ -93,11 +99,22 @@
     }
 
     function clearHostChildren() {
-      // Renderer-built DOM lives directly under host. The hispeed toast is a
-      // sibling overlay placed before any chart loads — preserve it.
+      // Renderer-built DOM lives directly under host. Toasts are siblings
+      // placed before any chart loads — preserve them.
       Array.from(host.children).forEach(function (child) {
-        if (child !== hispeedToast) host.removeChild(child);
+        if (child !== hispeedToast && child !== toastEl) host.removeChild(child);
       });
+    }
+
+    function showToast(msg, durationMs) {
+      if (!toastEl) return;
+      toastEl.textContent = msg;
+      toastEl.classList.add("is-visible");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        toastEl.classList.remove("is-visible");
+        toastTimer = null;
+      }, durationMs || 3000);
     }
 
     async function _tryFetchBundle(bundleUrl) {
@@ -293,6 +310,10 @@
       clockTimer = setInterval(updateClock, 200);
       touchUnbind = bindCanvasInteractions();
       showEmpty(false);
+      if (t.mode === "DP" && typeof window.matchMedia === "function" &&
+          window.matchMedia("(orientation: portrait)").matches) {
+        showToast("Rotate to landscape for a wider DP view", 3000);
+      }
     }
 
     async function loadByBundle(bundle, label) {
@@ -412,6 +433,39 @@
       playBtn.addEventListener("click", function () {
         if (!view) return;
         try { view.toggle(); } catch (e) { console.warn("[cpm] toggle failed", e); }
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        if (!view) return;
+        try {
+          if (view.pause) view.pause();
+          if (view.seekToSec) view.seekToSec(0);
+        } catch (e) { console.warn("[cpm] reset failed", e); }
+      });
+    }
+
+    /* ── Help dialog ──────────────────────────────────────────────── */
+
+    if (helpBtn && helpModal) {
+      helpBtn.addEventListener("click", function () {
+        try { helpModal.showModal(); } catch (e) { helpModal.setAttribute("open", ""); }
+      });
+    }
+    if (helpClose && helpModal) {
+      helpClose.addEventListener("click", function () {
+        try { helpModal.close(); } catch (e) { helpModal.removeAttribute("open"); }
+      });
+    }
+    if (helpModal) {
+      helpModal.addEventListener("click", function (e) {
+        // Tap on backdrop closes — <dialog> backdrop sits behind the dialog
+        // box, so a click on the dialog element itself (not its children)
+        // means the backdrop was hit.
+        if (e.target === helpModal) {
+          try { helpModal.close(); } catch (err) { helpModal.removeAttribute("open"); }
+        }
       });
     }
 

@@ -45,7 +45,7 @@
   --cp-sp-3: 10px;
   --cp-sp-4: 12px;
   --cp-sp-5: 16px;
-  --cp-topbar-h: 50px;
+  --cp-topbar-h: 48px;
   --cp-glow-cyan: 0 0 10px rgba(52,224,255,0.7);
   --cp-glow-play: 0 0 0 1px rgba(52,224,255,0.3), 0 4px 16px -6px rgba(52,224,255,0.6);
   /* Renderer cssPxOf() lookups — queue/keyzone are collapsed on mobile. */
@@ -78,7 +78,7 @@ body.cpm-body {
   align-items: center;
   justify-content: space-between;
   gap: var(--cp-sp-3);
-  padding: var(--cp-sp-2) var(--cp-sp-4);
+  padding: var(--cp-sp-1) var(--cp-sp-3);
   min-height: var(--cp-topbar-h);
   border-bottom: 1px solid var(--cp-line);
   background: linear-gradient(180deg, rgba(255,255,255,0.014), transparent);
@@ -91,6 +91,12 @@ body.cpm-body {
   gap: var(--cp-sp-2);
   min-width: 0;
 }
+.cpm-top-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--cp-sp-1);
+  flex: 0 0 auto;
+}
 
 .cpm-stage {
   position: relative;
@@ -102,8 +108,8 @@ body.cpm-body {
 .cpm-bottom {
   display: flex;
   align-items: center;
-  gap: var(--cp-sp-3);
-  padding: var(--cp-sp-2) var(--cp-sp-4);
+  gap: var(--cp-sp-2);
+  padding: var(--cp-sp-1) var(--cp-sp-3);
   border-top: 1px solid var(--cp-line);
   background: linear-gradient(0deg, rgba(255,255,255,0.014), transparent);
   flex: 0 0 auto;
@@ -171,8 +177,8 @@ body.cpm-body {
 .cp-btn svg, .cp-btn span, .cp-btn kbd { pointer-events: none; }
 
 .cp-btn-icon {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 32px;
   padding: 0;
   gap: 0;
   background: var(--cp-panel-2);
@@ -181,9 +187,8 @@ body.cpm-body {
   border-radius: var(--cp-r-lg);
 }
 .cp-btn-icon.cp-btn-pick { color: #cfe9ff; }
+.cp-btn-icon.cpm-btn-help { color: var(--cp-text-dim); }
 .cp-btn-icon.cp-btn-play {
-  width: 44px;
-  height: 44px;
   background: var(--cp-cyan);
   border-color: var(--cp-cyan);
   color: #031018;
@@ -211,8 +216,8 @@ body.cpm-body {
 }
 .cp-progress::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--cp-cyan);
   border: 2px solid #05121a;
@@ -220,8 +225,8 @@ body.cpm-body {
   cursor: pointer;
 }
 .cp-progress::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--cp-cyan);
   border: 2px solid #05121a;
@@ -257,7 +262,7 @@ body.cpm-body {
   width: 100%;
   height: 100%;
   background: var(--cp-panel);
-  touch-action: none;            /* tap/double-tap/pinch handled in JS */
+  touch-action: none;
 }
 .cpm-stage .cp-field__play {
   position: absolute;
@@ -275,7 +280,7 @@ body.cpm-body {
   display: none !important;
 }
 
-/* ===== empty + rotate overlays ===== */
+/* ===== empty overlay ===== */
 .cpm-empty {
   position: absolute;
   inset: 0;
@@ -307,35 +312,32 @@ body.cpm-body {
   color: var(--cp-text-dim);
 }
 
-.cpm-rotate-hint {
+/* ===== transient toasts inside .cpm-stage ===== */
+.cpm-toast {
   position: absolute;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(5,7,13,0.92);
-  z-index: 50;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  padding: 8px 14px;
+  border: 1px solid rgba(52,224,255,0.4);
+  border-radius: var(--cp-r-sm);
+  background: rgba(5,7,13,0.88);
   color: var(--cp-text);
+  font-family: var(--cp-font-mono);
+  font-size: var(--cp-fs-sm);
+  letter-spacing: .2px;
+  z-index: 40;
+  opacity: 0;
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: calc(100% - 28px);
 }
-.cpm-rotate-hint__inner {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--cp-sp-4);
-  padding: var(--cp-sp-5);
-}
-.cpm-rotate-hint__inner p {
-  margin: 0;
-  font-size: 14px;
-  color: var(--cp-text-dim);
-}
-.cpm-rotate-hint__inner svg { color: var(--cp-cyan); }
-@media (orientation: portrait) {
-  .cpm-shell[data-cpm-mode="DP"] .cpm-rotate-hint { display: flex; }
+.cpm-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
-/* ===== HI-SPEED transient overlay during pinch ===== */
 .cpm-hispeed-toast {
   position: absolute;
   top: 12px;
@@ -356,7 +358,7 @@ body.cpm-body {
 }
 .cpm-hispeed-toast.is-visible { opacity: 1; }
 
-/* ===== search dialog (replicates desktop look without theme cascade) ===== */
+/* ===== search dialog ===== */
 dialog.note-attrs-search-modal {
   width: min(560px, 92vw);
   max-height: 80vh;
@@ -484,6 +486,185 @@ dialog.note-attrs-search-modal::backdrop {
   border: 1px solid var(--cp-line);
   border-radius: 2px;
   color: var(--cp-text);
+}
+
+/* ===== help dialog (gesture guide) ===== */
+dialog.cpm-help-modal {
+  width: min(420px, 92vw);
+  padding: 0;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-md);
+  background: var(--cp-panel);
+  color: var(--cp-text);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  font-family: var(--cp-font-ui);
+}
+dialog.cpm-help-modal::backdrop {
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+}
+.cpm-help-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--cp-sp-3) var(--cp-sp-4);
+  border-bottom: 1px solid var(--cp-line);
+  margin: 0;
+}
+.cpm-help-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: var(--cp-text);
+}
+.cpm-help-close {
+  appearance: none;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-sm);
+  background: transparent;
+  color: var(--cp-text);
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.cpm-help-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--cp-sp-2) 0;
+}
+.cpm-help-row {
+  display: flex;
+  align-items: center;
+  gap: var(--cp-sp-4);
+  padding: var(--cp-sp-3) var(--cp-sp-4);
+  border-bottom: 1px solid var(--cp-line-soft);
+}
+.cpm-help-row:last-child { border-bottom: none; }
+.cpm-help-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.cpm-help-text strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cp-text);
+  letter-spacing: .2px;
+}
+.cpm-help-text span {
+  font-size: 13px;
+  color: var(--cp-text-dim);
+  font-family: var(--cp-font-mono);
+}
+
+/* ===== gesture animations ===== */
+.cpm-gesture {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-md);
+  background: rgba(255,255,255,0.02);
+  overflow: hidden;
+}
+.cpm-gesture__finger {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  background: var(--cp-cyan);
+  box-shadow: 0 0 8px rgba(52,224,255,0.5);
+}
+.cpm-gesture__ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  border: 2px solid var(--cp-cyan);
+  opacity: 0;
+}
+/* Only animate when the dialog is actually open so the rings don't burn
+   pixels in the background. */
+dialog.cpm-help-modal[open] .cpm-gesture--tap .cpm-gesture__ripple {
+  animation: cpm-ripple 1.6s ease-out infinite;
+}
+dialog.cpm-help-modal[open] .cpm-gesture--tap .cpm-gesture__finger {
+  animation: cpm-tap 1.6s ease-out infinite;
+}
+dialog.cpm-help-modal[open] .cpm-gesture--double .cpm-gesture__ripple {
+  animation: cpm-double-ripple-1 1.8s ease-out infinite;
+}
+dialog.cpm-help-modal[open] .cpm-gesture--double .cpm-gesture__ripple--2 {
+  animation: cpm-double-ripple-2 1.8s ease-out infinite;
+}
+dialog.cpm-help-modal[open] .cpm-gesture--double .cpm-gesture__finger {
+  animation: cpm-double-tap 1.8s ease-out infinite;
+}
+.cpm-gesture--pinch .cpm-gesture__finger {
+  margin: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.cpm-gesture--pinch .cpm-gesture__finger--left {
+  left: 14px;
+}
+.cpm-gesture--pinch .cpm-gesture__finger--right {
+  left: auto;
+  right: 14px;
+}
+dialog.cpm-help-modal[open] .cpm-gesture--pinch .cpm-gesture__finger--left {
+  animation: cpm-pinch-left 2s ease-in-out infinite;
+}
+dialog.cpm-help-modal[open] .cpm-gesture--pinch .cpm-gesture__finger--right {
+  animation: cpm-pinch-right 2s ease-in-out infinite;
+}
+
+@keyframes cpm-tap {
+  0%, 8%   { transform: scale(0.85); }
+  18%      { transform: scale(1); }
+  35%, 100%{ transform: scale(0.85); }
+}
+@keyframes cpm-ripple {
+  0%        { transform: scale(1); opacity: 0; }
+  10%       { transform: scale(1); opacity: .9; }
+  60%, 100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes cpm-double-tap {
+  0%, 6%   { transform: scale(0.85); }
+  12%      { transform: scale(1); }
+  20%, 30% { transform: scale(0.85); }
+  36%      { transform: scale(1); }
+  44%, 100%{ transform: scale(0.85); }
+}
+@keyframes cpm-double-ripple-1 {
+  0%        { transform: scale(1); opacity: 0; }
+  6%        { transform: scale(1); opacity: .9; }
+  30%, 100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes cpm-double-ripple-2 {
+  0%, 30%   { transform: scale(1); opacity: 0; }
+  36%       { transform: scale(1); opacity: .9; }
+  60%, 100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes cpm-pinch-left {
+  0%, 100% { transform: translate(0, -50%); }
+  50%      { transform: translate(16px, -50%); }
+}
+@keyframes cpm-pinch-right {
+  0%, 100% { transform: translate(0, -50%); }
+  50%      { transform: translate(-16px, -50%); }
 }
 
 @media (min-width: 1024px) {
