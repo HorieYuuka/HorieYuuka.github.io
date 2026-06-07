@@ -191,6 +191,7 @@ body.cpm-body {
 .cp-btn-icon.cpm-btn-fs { color: var(--cp-text-dim); }
 .cp-btn-icon.cpm-btn-fs.is-active { color: var(--cp-cyan); border-color: rgba(52,224,255,0.4); }
 .cp-btn-icon.cpm-btn-rotate { color: var(--cp-text-dim); display: none; }
+.cp-btn-icon.cpm-btn-rotate.is-active { color: var(--cp-cyan); border-color: rgba(52,224,255,0.4); }
 .cpm-shell[data-cpm-mode="DP"] .cp-btn-icon.cpm-btn-rotate { display: inline-flex; }
 .cp-btn-icon.cp-btn-play {
   background: var(--cp-cyan);
@@ -353,51 +354,25 @@ body.cpm-body {
   transform: translateX(-50%) translateY(0);
 }
 
-.cpm-sudplus {
+.cpm-sudplus-toast {
   position: absolute;
+  top: 12px;
   left: 12px;
-  right: 12px;
-  bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: var(--cp-sp-3);
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid rgba(52,224,255,0.4);
-  border-radius: var(--cp-r-md);
-  background: rgba(5,7,13,0.92);
-  z-index: 35;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .2s, transform .2s;
-  pointer-events: none;
-}
-.cpm-sudplus.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-.cpm-sudplus[hidden] { display: none !important; }
-.cpm-sudplus__label {
-  font-family: var(--cp-font-mono);
-  font-size: var(--cp-fs-xs);
-  font-weight: 700;
-  letter-spacing: .5px;
+  border-radius: var(--cp-r-sm);
+  background: rgba(5,7,13,0.78);
   color: var(--cp-cyan);
-  flex: 0 0 auto;
-}
-.cpm-sudplus__range {
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-}
-.cpm-sudplus__value {
   font-family: var(--cp-font-mono);
   font-size: var(--cp-fs-sm);
-  color: var(--cp-text);
-  min-width: 5ch;
-  text-align: right;
-  flex: 0 0 auto;
+  font-weight: 700;
+  letter-spacing: .3px;
+  z-index: 30;
+  opacity: 0;
+  transition: opacity .15s;
+  pointer-events: none;
 }
+.cpm-sudplus-toast.is-visible { opacity: 1; }
 
 .cpm-hispeed-toast {
   position: absolute;
@@ -690,6 +665,19 @@ dialog.cpm-help-modal[open] .cpm-gesture--pinch .cpm-gesture__finger--left {
 }
 dialog.cpm-help-modal[open] .cpm-gesture--pinch .cpm-gesture__finger--right {
   animation: cpm-pinch-right 2s ease-in-out infinite;
+}
+.cpm-gesture--drag .cpm-gesture__finger--drag {
+  margin: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+dialog.cpm-help-modal[open] .cpm-gesture--drag .cpm-gesture__finger--drag {
+  animation: cpm-drag-vert 1.8s ease-in-out infinite;
+}
+@keyframes cpm-drag-vert {
+  0%, 100% { transform: translate(-50%, -90%); }
+  50%      { transform: translate(-50%, 10%); }
 }
 
 @keyframes cpm-tap {

@@ -36,14 +36,8 @@ sitemap: false
 
   <main class="cpm-stage" data-cpm-host>
     <div class="cpm-hispeed-toast" data-cpm-hispeed-toast></div>
+    <div class="cpm-sudplus-toast" data-cpm-sudplus-toast></div>
     <div class="cpm-toast" data-cpm-toast></div>
-    <div class="cpm-sudplus" data-cpm-sudplus hidden>
-      <span class="cpm-sudplus__label">SUD+</span>
-      <input type="range" class="cp-progress cpm-sudplus__range"
-             data-cpm-sudplus-range min="0" max="500" step="10" value="0"
-             aria-label="SUD+ cover height">
-      <span class="cpm-sudplus__value" data-cpm-sudplus-val>0 px</span>
-    </div>
   </main>
 
   <div class="cpm-empty" data-cpm-empty>
@@ -93,7 +87,16 @@ sitemap: false
       </div>
       <div class="cpm-help-text">
         <strong>Double tap</strong>
-        <span>Toggle SUD+ cover</span>
+        <span>Reset to start</span>
+      </div>
+    </li>
+    <li class="cpm-help-row">
+      <div class="cpm-gesture cpm-gesture--drag" aria-hidden="true">
+        <span class="cpm-gesture__finger cpm-gesture__finger--drag"></span>
+      </div>
+      <div class="cpm-help-text">
+        <strong>Vertical drag</strong>
+        <span>Adjust SUD+ cover</span>
       </div>
     </li>
     <li class="cpm-help-row">

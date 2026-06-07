@@ -59,9 +59,7 @@
     const fsIconExpand   = fsBtn && fsBtn.querySelector(".cpm-fs__icon--expand");
     const fsIconContract = fsBtn && fsBtn.querySelector(".cpm-fs__icon--contract");
     const rotateBtn    = $("[data-cpm-rotate]");
-    const sudplusEl    = $("[data-cpm-sudplus]");
-    const sudplusRange = $("[data-cpm-sudplus-range]");
-    const sudplusValEl = $("[data-cpm-sudplus-val]");
+    const sudplusToast = $("[data-cpm-sudplus-toast]");
     const pickBtns     = $$("[data-cpm-pick]");
     const searchModal  = $("[data-na-search-modal]");
     const searchInput  = $("[data-na-search-input]");
@@ -79,19 +77,17 @@
     let corpusPromise = null;
     let totalSec = 0;
 
-    /* Canvas-tap + pinch state */
-    let activePointers = new Map();
-    let pinchInitialDist = 0;
-    let pinchInitialHiSpeed = 1;
-    let pinchActive = false;
+    /* Canvas-tap state */
     let lastTapAt = 0;
     let pendingSingleTapTimer = null;
     let hispeedToastTimer = null;
     let touchUnbind = null;
     let toastTimer = null;
     let sudplusValue = 0;
-    let sudplusHideTimer = null;
-    const SUDPLUS_AUTO_HIDE_MS = 3500;
+    let sudplusToastTimer = null;
+    const SUDPLUS_TOAST_MS = 700;
+    const SUDPLUS_MAX = 500;
+    const DRAG_THRESHOLD_PX = 12;
 
     function showEmpty(on) {
       if (emptyEl) emptyEl.hidden = !on;
@@ -111,7 +107,7 @@
     function clearHostChildren() {
       // Renderer-built DOM lives directly under host. Overlays placed before
       // any chart loads are preserved across reloads.
-      const keep = [hispeedToast, toastEl, sudplusEl];
+      const keep = [hispeedToast, toastEl, sudplusToast];
       Array.from(host.children).forEach(function (child) {
         if (keep.indexOf(child) === -1) host.removeChild(child);
       });
@@ -186,44 +182,27 @@
     }
 
     function handleDoubleTap() {
-      if (sudplusEl && sudplusEl.classList.contains("is-visible")) hideSudplus();
-      else showSudplus();
+      if (!view) return;
+      try {
+        if (view.pause) view.pause();
+        if (view.seekToSec) view.seekToSec(0);
+      } catch (e) { console.warn("[cpm] reset failed", e); }
     }
 
     function applySudplus(v) {
-      sudplusValue = Math.max(0, Math.min(500, v | 0));
+      sudplusValue = Math.max(0, Math.min(SUDPLUS_MAX, v | 0));
       const cpField = host.querySelector(".cp-field");
       if (cpField) cpField.style.setProperty("--cp-sudplus-h", sudplusValue + "px");
-      if (sudplusValEl) sudplusValEl.textContent = sudplusValue + " px";
-      if (sudplusRange && parseInt(sudplusRange.value, 10) !== sudplusValue) {
-        sudplusRange.value = String(sudplusValue);
-      }
     }
-    function resetSudplusHideTimer() {
-      if (sudplusHideTimer) clearTimeout(sudplusHideTimer);
-      sudplusHideTimer = setTimeout(hideSudplus, SUDPLUS_AUTO_HIDE_MS);
-    }
-    function showSudplus() {
-      if (!sudplusEl) return;
-      sudplusEl.hidden = false;
-      void sudplusEl.offsetWidth;
-      sudplusEl.classList.add("is-visible");
-      resetSudplusHideTimer();
-    }
-    function hideSudplus() {
-      if (!sudplusEl) return;
-      sudplusEl.classList.remove("is-visible");
-      if (sudplusHideTimer) { clearTimeout(sudplusHideTimer); sudplusHideTimer = null; }
-      setTimeout(function () {
-        if (!sudplusEl.classList.contains("is-visible")) sudplusEl.hidden = true;
-      }, 220);
-    }
-    if (sudplusRange) {
-      sudplusRange.addEventListener("input", function () {
-        applySudplus(parseInt(sudplusRange.value, 10));
-        resetSudplusHideTimer();
-      });
-      sudplusRange.addEventListener("pointerdown", resetSudplusHideTimer);
+    function showSudplusToast() {
+      if (!sudplusToast) return;
+      sudplusToast.textContent = "SUD+ " + sudplusValue + " px";
+      sudplusToast.classList.add("is-visible");
+      if (sudplusToastTimer) clearTimeout(sudplusToastTimer);
+      sudplusToastTimer = setTimeout(function () {
+        sudplusToast.classList.remove("is-visible");
+        sudplusToastTimer = null;
+      }, SUDPLUS_TOAST_MS);
     }
 
     function bindCanvasInteractions() {
@@ -236,60 +215,102 @@
       const clickBlocker = function (e) { e.stopImmediatePropagation(); };
       cpCanvas.addEventListener("click", clickBlocker, true);
 
+      const pts = new Map();
+      let mode = "idle";                 // "idle" | "drag-sudplus" | "pinch"
+      let multiTouchSeen = false;
+      let pinchInitialDist = 0;
+      let pinchInitialHs = 1;
+      let dragInitialSudplus = 0;
+
+      function resetSequence() {
+        mode = "idle";
+        multiTouchSeen = false;
+        pinchInitialDist = 0;
+      }
+
       const onPointerDown = function (e) {
         if (e.pointerType === "mouse" && e.button !== 0) return;
-        activePointers.set(e.pointerId, {
+        pts.set(e.pointerId, {
           origX: e.clientX, origY: e.clientY,
-          curX:  e.clientX, curY:  e.clientY,
+          x: e.clientX, y: e.clientY,
           downAt: performance.now(),
         });
         try { cpField.setPointerCapture(e.pointerId); } catch (err) {}
-        if (activePointers.size === 2) {
-          const pts = Array.from(activePointers.values());
-          pinchInitialDist = Math.hypot(pts[1].curX - pts[0].curX, pts[1].curY - pts[0].curY);
-          pinchInitialHiSpeed = (view && view.getSettings && view.getSettings().hiSpeed) || 1;
-          pinchActive = true;
+
+        if (pts.size === 2) {
+          const arr = Array.from(pts.values());
+          pinchInitialDist = Math.hypot(arr[1].x - arr[0].x, arr[1].y - arr[0].y);
+          pinchInitialHs = (view && view.getSettings && view.getSettings().hiSpeed) || 1;
+          mode = "pinch";
+          multiTouchSeen = true;
           if (pendingSingleTapTimer) {
             clearTimeout(pendingSingleTapTimer);
             pendingSingleTapTimer = null;
           }
           lastTapAt = 0;
+        } else if (pts.size > 2) {
+          multiTouchSeen = true;
         }
       };
 
       const onPointerMove = function (e) {
-        const p = activePointers.get(e.pointerId);
+        const p = pts.get(e.pointerId);
         if (!p) return;
-        p.curX = e.clientX;
-        p.curY = e.clientY;
-        if (pinchActive && activePointers.size === 2 && pinchInitialDist > 0 && view) {
-          const pts = Array.from(activePointers.values());
-          const curDist = Math.hypot(pts[1].curX - pts[0].curX, pts[1].curY - pts[0].curY);
+        p.x = e.clientX;
+        p.y = e.clientY;
+
+        if (mode === "pinch" && pts.size === 2 && pinchInitialDist > 0 && view) {
+          const arr = Array.from(pts.values());
+          const curDist = Math.hypot(arr[1].x - arr[0].x, arr[1].y - arr[0].y);
           if (curDist > 0) {
             const ratio = curDist / pinchInitialDist;
-            const newHs = clamp(pinchInitialHiSpeed * ratio, HISPEED_MIN, HISPEED_MAX);
+            const newHs = clamp(pinchInitialHs * ratio, HISPEED_MIN, HISPEED_MAX);
             if (view.setSettings) view.setSettings({ hiSpeed: newHs });
             showHispeedToast(newHs);
           }
+          return;
+        }
+
+        if (mode === "idle" && pts.size === 1) {
+          const dy = e.clientY - p.origY;
+          const dx = e.clientX - p.origX;
+          if (Math.abs(dy) > DRAG_THRESHOLD_PX && Math.abs(dy) > Math.abs(dx)) {
+            mode = "drag-sudplus";
+            dragInitialSudplus = sudplusValue;
+            if (pendingSingleTapTimer) {
+              clearTimeout(pendingSingleTapTimer);
+              pendingSingleTapTimer = null;
+            }
+            lastTapAt = 0;
+          }
+        }
+
+        if (mode === "drag-sudplus" && pts.size === 1) {
+          const dy = e.clientY - p.origY;
+          applySudplus(dragInitialSudplus + dy);
+          showSudplusToast();
         }
       };
 
       const onPointerEnd = function (e) {
-        const p = activePointers.get(e.pointerId);
-        activePointers.delete(e.pointerId);
+        const p = pts.get(e.pointerId);
+        pts.delete(e.pointerId);
         try { cpField.releasePointerCapture(e.pointerId); } catch (err) {}
-        if (activePointers.size < 2) {
-          pinchInitialDist = 0;
-          pinchActive = false;
-        }
+
+        if (pts.size > 0) return;        // wait for the last finger to lift
+        const endedMode = mode;
+        const endedMulti = multiTouchSeen;
+        resetSequence();
+
         if (e.type !== "pointerup" || !p) return;
-        if (activePointers.size > 0) return;     // multi-touch sequence; not a tap
-        if (pinchActive) return;
+        if (endedMode !== "idle" || endedMulti) return;
+
         const dt = performance.now() - p.downAt;
         const dx = Math.abs(e.clientX - p.origX);
         const dy = Math.abs(e.clientY - p.origY);
         if (dt > TAP_MAX_TIME_MS) return;
         if (dx > TAP_MAX_MOVE_PX || dy > TAP_MAX_MOVE_PX) return;
+
         const now = performance.now();
         if (now - lastTapAt < DOUBLE_TAP_MS) {
           if (pendingSingleTapTimer) {
@@ -318,9 +339,8 @@
         cpField.removeEventListener("pointermove",   onPointerMove);
         cpField.removeEventListener("pointerup",     onPointerEnd);
         cpField.removeEventListener("pointercancel", onPointerEnd);
-        activePointers.clear();
-        pinchInitialDist = 0;
-        pinchActive = false;
+        pts.clear();
+        resetSequence();
       };
     }
 
@@ -551,8 +571,23 @@
     document.addEventListener("webkitfullscreenchange", updateFsButton);
     updateFsButton();
 
-    /* ── Landscape lock (DP) ───────────────────────────────────────── */
+    /* ── Orientation toggle (DP) ───────────────────────────────────── */
 
+    function currentOrientation() {
+      if (screen && screen.orientation && screen.orientation.type) {
+        return screen.orientation.type;     // "landscape-primary", etc.
+      }
+      const w = window.innerWidth || 0;
+      const h = window.innerHeight || 0;
+      return w >= h ? "landscape" : "portrait";
+    }
+    function isLandscape() {
+      return /landscape/.test(currentOrientation());
+    }
+    function updateRotateButton() {
+      if (!rotateBtn) return;
+      rotateBtn.classList.toggle("is-active", isLandscape());
+    }
     async function lockLandscape() {
       try {
         const el = document.documentElement;
@@ -569,9 +604,31 @@
         showToast("Rotate your device to landscape", 3000);
       }
     }
-    if (rotateBtn) {
-      rotateBtn.addEventListener("click", lockLandscape);
+    async function releaseLandscape() {
+      try {
+        if (screen && screen.orientation && screen.orientation.unlock) {
+          try { screen.orientation.unlock(); } catch (err) {}
+        }
+        if (fsElement() && document.exitFullscreen) {
+          try { await document.exitFullscreen(); } catch (err) {}
+        }
+      } catch (e) {
+        showToast("Rotate your device to portrait", 3000);
+      }
     }
+    if (rotateBtn) {
+      rotateBtn.addEventListener("click", function () {
+        if (isLandscape()) releaseLandscape();
+        else lockLandscape();
+      });
+    }
+    if (screen && screen.orientation && screen.orientation.addEventListener) {
+      screen.orientation.addEventListener("change", updateRotateButton);
+    } else {
+      window.addEventListener("orientationchange", updateRotateButton);
+    }
+    window.addEventListener("resize", updateRotateButton);
+    updateRotateButton();
 
     /* ── Help dialog ──────────────────────────────────────────────── */
 
