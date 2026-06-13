@@ -160,15 +160,15 @@ By BMS community curation convention, each family carries a different expectatio
 
 **[Figure 1]** SP family × tier monotonicity. Left → right: mean IRT EASY-clear · NPS_mean · NPS_max by tier. Colour encodes family, line style encodes class (linear-rank solid bold / body-linear solid / mean-tracking dotted).
 
-![SP family × tier monotonicity](/Resource/Framework/figures/family_tier_monotonicity_SP.png)
+![SP family × tier monotonicity](figures/family_tier_monotonicity_SP.png)
 
-→ Interactive HTML: [`/Resource/Framework/figures/family_tier_monotonicity_SP.html`](/Resource/Framework/figures/family_tier_monotonicity_SP.html) (hover for per-tier n and values)
+→ Interactive HTML: [`figures/family_tier_monotonicity_SP.html`](figures/family_tier_monotonicity_SP.html) (hover for per-tier n and values)
 
 **[Figure 2]** DP family × tier monotonicity. Same layout. The DP corpus is smaller (n = 1,852), so the tier ranges are shorter, but the same monotonic pattern holds.
 
-![DP family × tier monotonicity](/Resource/Framework/figures/family_tier_monotonicity_DP.png)
+![DP family × tier monotonicity](figures/family_tier_monotonicity_DP.png)
 
-→ HTML: [`/Resource/Framework/figures/family_tier_monotonicity_DP.html`](/Resource/Framework/figures/family_tier_monotonicity_DP.html)
+→ HTML: [`figures/family_tier_monotonicity_DP.html`](figures/family_tier_monotonicity_DP.html)
 
 Regenerate: `python paper/plot_family_tier.py --mode both --png`
 
@@ -260,6 +260,15 @@ Concretely, the same raw axis value 0.5 appearing in both sl0 (NPS-mean 12) and 
 
 **(c) Matching expected monotonicity in evaluation.** When evaluating the family-tier behavior of any axis metric, the right monotonicity must match the family's class (linear-rank / body-linear-top-break / mean-tracking). Within-tier rank Spearman < 0.5 in a linear-rank family is a metric defect; the same result in a mean-tracking family is normal.
 
+#### 2.5.5 Axis-class-appropriate validation
+
+A second distinction governs *which* gold standard an axis is validated against, set by whether the axis is coupled to density or orthogonal to it:
+
+- **Density-coupled axes** (chord / stream / peak) co-vary with difficulty, so they are validated by **family cohort-mean trend** vs PL2 tier (the monotonicity of §2.5.3, matched to the family class).
+- **Orthogonal character axes** (scratch / ln / stair) do not co-vary with tier — a chart can be scratch-heavy, LN-heavy, or stair-heavy at *any* tier. For these, tier monotonicity is the **wrong** criterion. They are validated by **membership discrimination** against curator lists (rank AUC of the axis separating list members from the rest of the corpus: x_scratch vs SC.json 0.9996, x_ln vs LN.json 0.9993) and by **known-verdict canary charts** (§4.6.3).
+
+This is why x_scratch vs SC-tier Spearman is only +0.007 yet the axis is correct: scratch difficulty is not monotone in tier, so a near-zero tier correlation is *consistent with the model*, not a defect. Applying the tier-monotonicity test to a character axis would reject a working metric.
+
 ---
 
 ## 3. Architecture
@@ -301,6 +310,8 @@ Tags expose boolean sub-patterns that **the radar can't or shouldn't carry**. Ex
 - `last_killing` — late-chart NPS spike
 - `double_tab` / `triple_tab` — keysound-id-matched chain (jack sub-class)
 - `jack_present` — same-lane rapid pair count above floor
+- `bpm_ramp` — progressive accelerando (monotonic, bounded-step BPM rise over a substantial share of notes); see §5.6
+- `randomized` — whole-chart per-play #RANDOM (≥ 10 `#RANDOM N>1` blocks); the radar/density reflect one md5-fixed branch of a per-play-variable chart; see §5.7
 
 Tags **do not surface cross-axis combinations** (the radar already shows that). Tag scope is sub-metrics and composites only.
 
@@ -331,33 +342,18 @@ The comparison tool's table sits below the cards (radar + density bar) and prese
 
 $$\text{NPS} = \text{Pos/s} \times \overline{\text{chord_size}}$$
 
-This shorthand assumes nearly every position is a chord (`chord_rate ≈ 1`). For mixed charts where some positions are single notes the precise form is:
-
-$$\text{NPS} = \text{Pos/s} \times \left[ r_{\text{chord}} \cdot \overline{\text{chord_size}} + (1 - r_{\text{chord}}) \right]$$
-
-where `r_chord` (`chord_rate`) is the fraction of positions that are chord events. The bracketed factor is the average number of notes per position. The shorthand and the precise form agree once `chord_rate > ~0.85`; stream-heavy charts need the full expression (see §7.4a for a worked κανων example where the shorthand overshoots by 45 %).
-
 The same NPS can arise from very different mechanisms:
-
-> **[2026-06-06 revision]** Skydive numbers below were based on a
-> `BMS.Tools/scripts/bms_parser.py` bug that ignored BMS §11 `#RANDOM/#IF`
-> blocks (every alternative branch was flattened together). The struck-through
-> rows reflect that inflated data; the corrected row follows. See §7.4 for
-> the full meta-discussion.
 
 | Pattern | Pos/s | avg chord | NPS | Burden type |
 |---|---:|---:|---:|---|
-| ~~Chord wall (e.g. Skydive st4, 120 BPM, 7-key chords on every 16th)~~ | ~~7~~ | ~~6.7~~ | ~~47~~ | ~~endurance (same pattern repeating)~~ |
-| Chord wall (Skydive st4, **corrected**: 120 BPM, mixed 4-chord patterns) | 7 | 4.3 | 29 | endurance (same pattern repeating) |
+| Chord wall (e.g. Skydive st4, 120 BPM, 7-key chords on every 16th) | 7 | 6.7 | 47 | endurance (same pattern repeating) |
 | Varied chord-stream (e.g. FD [FOUR DIMENSIONS], 222 BPM, 3-4 chords with fast positional change) | 12 | 3.3 | 40 | pattern + speed (chasing positional shift) |
 
-~~Looking at NPS alone, they are similar (~50 NPS) — Skydive is even slightly higher. But the underlying mechanics differ completely, and so does perceived difficulty (Skydive st4 vs FD st8/★★5).~~
-
-**Corrected (post-bms_parser fix)**: Skydive's NPS drops below FD's (29 vs 40) once the spurious `#RANDOM` branches are removed. The example as originally written — "same NPS, opposite tier" — was a parser-bug artefact. The underlying point still holds: at any given NPS, mechanism (chord-wall endurance vs positional-shift speed) is the dominant difficulty driver, and the Pos/s decomposition surfaces it.
+Looking at NPS alone, they are similar (~50 NPS) — Skydive is even slightly higher. But the underlying mechanics differ completely, and so does perceived difficulty (Skydive st4 vs FD st8/★★5).
 
 **Role of the Pos/s column**: the user reads Pos/s alongside NPS to directly judge *"is this chart big chords played slowly (low Pos/s + high NPS) vs fast positional shift with smaller chords (high Pos/s + moderate NPS)?"*. The mechanism information NPS alone loses is decomposed and surfaced.
 
-The radar's `chord` axis exposes the same information in a different form (~~Skydive chord 0.99~~ corrected ~0.985 — saturated either way, vs FD 0.73), but if you want the *arithmetic decomposition of NPS itself*, Pos/s is the most direct read.
+The radar's `chord` axis exposes the same information in a different form (Skydive chord 0.99 vs FD 0.73), but if you want the *arithmetic decomposition of NPS itself*, Pos/s is the most direct read.
 
 #### Limitation — within-chart uniformity assumption
 
@@ -493,26 +489,29 @@ DP has two scratches (P1/P2) and a different two-hand burden mechanic, so its di
 
 ### 4.4 soft — off-base BPM (tempo change)
 
-#### 4.4.1 The radar's raw value
+#### 4.4.1 The radar's raw value — cumulative log² burden
 
-Share of events on a BPM segment that is *not* the chart's **base BPM** (the BPM where most notes live):
+Unlike the other six axes (shape_v2 candidate ratios), soft is a **definitional axis**: no curator soflan list exists, so the axis *is* its definition. The radar value is a per-second cumulative burden over the notes that sit on an off-base BPM, where each note is weighted by (a) the **octave-scale magnitude** of its tempo deviation and (b) the **relative local note density** of that off-base section:
 
-$$r_{\text{soft}} = \frac{|\{e : \text{bpm}(e) \neq \text{bpm}_{\text{base}}\}|}{|E|}$$
+$$\text{burden}/\text{sec} = \frac{1}{T}\sum_{s\,\in\,\text{off-base}} \log_2\!\left(\frac{\text{bpm}_s}{\text{bpm}_\text{base}}\right)^2 \cdot n_s \cdot \frac{\rho_s}{\rho_\text{base}}$$
 
-Intuition: a chart whose tempo-change sections carry many notes = a chart whose tempo changes actually *affect play*.
+where $s$ ranges over off-base BPM segments, $n_s$ is the notes in segment $s$, $\rho_s$ its note density, $\rho_\text{base}$ the on-base (home) note density, and $T$ the chart's playback seconds.
 
-**Thresholds**: SP (0.012, 0.085), DP (0.011, 0.062). Sparse axis — the absolute floors (0.03 / 0.08) drive classification.
+- **Octave-scale ($\log_2^2$)**: BPM perception is multiplicative — halving is +1 octave, quartering +2. A single squared-log term captures both abrupt jumps (large per-note ratio) and gradual deep ramps (many notes each progressively far from base).
+- **Relative density ($\rho_s/\rho_\text{base}$)**: a dense off-base hold is more pressure than a sparse one — "변화는 변하는 순간만이 아니라 머무는 동안 노트가 많아도 압박". The ratio is unit-invariant, so it is robust to the abs_tick scale inflation that BPM-trick charts carry.
+- **Per-second cumulative** ($\div T$, like the chord/stair burdens), *not* a per-note average — averaging would divide out exactly the "dense off-base hold = pressure" signal.
 
-#### 4.4.2 Determining base BPM — note-weighted
+**Normalization (log at the p97 knee).** The raw per-second burden spans four orders of magnitude — a lone full-song ramp ([シャトルラン], per_sec ≈ 8634) sits 60× above the next chart, while most non-zero charts are 0.01–6. A linear or max-anchored clip would crush that body to near-zero. So:
 
-The definition of `base BPM` is subtle. Two candidates:
+$$x_\text{soft} = \min\!\left(1,\; \frac{\log_2(1 + \text{burden}/\text{sec})}{\log_2(1 + \text{ref})}\right),\quad \text{ref} = \text{p97 of nonzero per\_sec (SP } 7.15,\ \text{DP } 6.14)$$
 
-- **Duration-weighted mode** — the BPM occupying the longest wall-clock time
-- **Note-weighted longest-held** — the BPM where the most notes *actually live*
+The p97 knee saturates only the ~3 % perceptually-maximal-soft tail at 1.0, letting the strong-but-not-extreme cohort stay distinct. **Thresholds** (intensity p33/p67 of nonzero $x_\text{soft}$): SP (0.013, 0.153), DP (0.009, 0.152).
 
-The framework uses **note-weighted**. Reason: BPM-trick charts intentionally park implausible BPMs (e.g. 10^7) for long wall-clock spans, but those segments hold almost no notes. Duration-weighted would pick the *gimmick BPM* as base. Note-weighted picks the BPM where notes actually flow — sensible.
+#### 4.4.2 Determining base BPM, and the felt frame
 
-If `#BASEBPM` is in the header, use it directly. Otherwise compute via note-weighting.
+**Base BPM.** Computed as the **note-weighted mode** (the BPM where the most notes actually live), tie-broken by duration-weighted mode. BPM-trick charts park implausible BPMs (e.g. 10^7) for long wall-clock spans that hold almost no notes; note-weighting rejects them as base. The duration tie-break only engages on a pure ramp (note counts tie across BPMs), where it picks the longest-held value — the ramp floor — so deviations are measured from the floor up. `#BASEBPM` in the header overrides.
+
+**Felt frame (visual gimmick ≠ soft).** The burden is computed on the **felt-corrected** BPM segments — *after* the offset-translation and Class A–D felt-recovery pipeline (§5) has pinned gimmick BPMs to their recovered truth. This is the crux of the axis: a chart like *Alcubierre Drive [INSANE]* layers a 10^7-BPM visual trick over a real 174-BPM chart. Reading raw BPMs would score it maximally soft (a false positive); on the felt frame its gimmick segments are on-base, so $x_\text{soft} \approx 0$. A genuine progressive ramp ([シャトルラン], 60→573 with no recoverable single truth) keeps its deviations and stays high. Attribution is done on the abs_tick axis — the only frame in which note positions and BPM-segment positions stay aligned on measure-number-trick charts.
 
 #### 4.4.3 Responsibility split with `soflan` and `visual_gimmick` tags
 
@@ -520,11 +519,11 @@ The soft axis and the tempo-related tags measure different things:
 
 | Measurement | What it sees |
 |---|---|
-| **soft axis** | *How many notes* sit on off-base BPM (the *play impact* of tempo change) |
+| **soft axis** | The *felt* tempo-disruption burden carried by notes (octave deviation × density, per second) |
 | **`soflan` tag** | *Count* and *magnitude* of BPM changes (the chart's *structural soflan*) |
 | **`visual_gimmick` tag** | Large BPM trick (`max_intensity ≥ 5.0`) + off_base_note_count ≥ 4 — *display jumpscare presence* |
 
-A chart that fires all three: a genuine tempo-change challenge. Only soft = tempo change is well-integrated with notes but no large trick. Only soflan = BPM changes frequently but tempo-change parts have no notes (visual transitions only).
+Because the soft axis runs on the felt frame, a pure visual gimmick fires `visual_gimmick` but leaves soft low — the two are now cleanly separated. A genuine tempo-change challenge scores high on soft; a chart whose BPM changes carry no notes (visual transitions only) fires `soflan` but not soft.
 
 #### 4.4.4 Limitation
 
@@ -628,52 +627,53 @@ In the current corpus (SP n = 6,703), `advanced_ln` fires on 0 charts — the p9
 
 ### 4.6 stair — scale-progression chains
 
-#### 4.6.1 Chain detection (v3 spec)
+stair = chains of consecutive notes **walking adjacent lanes (±1)** across distinct timing positions. Captures do-re-mi-fa-style progressions like lane 1→2→3→4. The detector was redesigned in **v3 (2026-06-13)** — `_detect_stair_chains_v3` replaced the previous version (`_detect_stair_chains_v2`) in both consumers — after a corpus-mining session showed the older detector systematically lost embedded and fast stairs, inverting the `st`-family cohort-mean trend (ρ = −0.495).
 
-stair = chains of consecutive single notes **walking adjacent lanes (±1)**. Captures do-re-mi-fa-style progressions like lane 1→2→3→4. Detection:
+#### 4.6.1 Chain detection (v3)
 
-1. Separate KEY-lane single notes per player (P1/P2), sort by time.
-2. Adjacent notes $(e_i, e_{i+1})$ belong to the same chain if:
-   - lane delta $|\text{lane}(e_{i+1}) - \text{lane}(e_i)| = 1$ (adjacent)
-   - tick gap $\in [6, 12]$ — i.e. between a 16th note (6 tick) and an 8th note (12 tick)
-3. Accept chains of length $\geq 3$.
-4. **K = 3 chord-size filter**: any segment within a chain where $\geq 3$ lanes fire simultaneously is reclassified as chord, not stair. Chord-flowing-as-stair (e.g. 1+3 → 2+4 → 3+5) carries no stair character.
+Notes are grouped into effective timing positions (within a 16.67 ms chord window, KEY lanes only, per player). A chain extends when a new lane is adjacent (±1) to a lane seen recently. Four design choices distinguish v3:
 
-`stair_cand` collects every event participating in such a chain.
+1. **Lookback matching** — a step extends from a lane ±1 seen within the last 24 ticks via a per-lane recency table, **not only the immediately previous position**. The earlier detector matched only the previous position, so a stair interleaved with another stream voice broke at every intervening note (Another Day, アニマのささやき — user-confirmed positives that read ≈ 0 before).
+2. **No pace floor.** The earlier detector required the step gap $\in [6, 12]$ ticks (16th–8th), excluding faster figures. v3 removes the floor: trills and jacks are excluded **structurally** by the monotonic ±1 progression requirement (a trill yields only length-2 fragments; a jack never chains), so a pace gate is unnecessary — and a hard window cannot answer the question "is a 16th-note stair not a stair?" Detection runs up to a 24-tick (8th-note) ceiling, which bounds chain continuity only.
+3. **WALL rule** — an effective position with **more than 3 lanes** closes every open chain and clears the recency table. A big chord is perceptually opaque: singles on either side of a 5-lane chord do not read as one stair line, and wall lanes must not act as chain sources. This replaces the v2 "K = 3 chord-size filter" that reclassified individual segments.
+4. **Pace-uniformity split** — a step gap differing from the chain's previous gap by more than $\max(1\ \text{tick}, 25\%)$ closes the figure and starts a new one (one chain = one authored pace). Chains of length $\geq 3$ are accepted.
 
-$$r_{\text{stair, shape_v2}} = \frac{|\text{stair_cand}|}{|E|}$$
+#### 4.6.2 Pace as an attribute, not a gate
 
-#### 4.6.2 Burden normalization and purity factor (Phase 1V)
+Each chain carries a **real-time** pace $v$ (steps per second) and a weight
 
-The shape_v2 ratio feeds the raw radar value, but two layers of normalization sit on top:
+$$w = \mathrm{clip}_{01}\!\left(\frac{v - 5}{5}\right)$$
 
-**(a) p99 burden normalization**:
+so $w = 0$ below ~5 steps/sec and $w = 1$ above ~10. Pace is real-time, **not** ticks: Death Opera (BPM 450) walks tick-"8th-note" progressions at ~15 steps/sec — full-strength stairs by user verdict — while R.I.P My Pudding (BPM 166) walks the same tick gap at 5.5 steps/sec, which the user judged *not* a stair. A tick-based gate would conflate the two; a real-time weight separates them while keeping the shape detection pace-agnostic.
 
-$$\text{burden}_{\text{stair}} = \frac{\text{chain notes}}{\text{chart_seconds}}$$
+The radar's raw value is the pace-weighted participation ratio (the parallel-ownership form shared by the other six axes):
 
-$$r_\text{stair}^\text{normalized} = \min(\text{burden}_{\text{stair}} / p_{99}, 1.0)$$
+$$r_{\text{stair}} = \frac{\sum_{e \in \text{stair\_cand}} w(e)}{|E|}$$
 
-p99 = corpus 99th percentile of burden. Extreme outliers saturate at 1.0; 99 % of charts distribute naturally below it.
+where $w(e)$ is the maximum chain weight over the chains event $e$ participates in. This is **graded**, not a binary count: a slow progression is detected as a shape but contributes ≈ 0, so "is a slow stair a stair?" receives a graded answer rather than a gate verdict.
 
-**(b) Purity factor (Phase 1V, 2026-05-17)**:
+**Thresholds**: SP (0.120, 0.237), DP (0.054, 0.120) — recalibrated against the v3 corpus rebuild; all other axes' p33/p67 were unmoved (change isolation).
 
-$$x_\text{stair} = r_\text{stair}^\text{normalized} \times \max(0, 1 - 0.5 \times x_\text{chord})$$
+#### 4.6.3 Validation (canary charts, not tier monotonicity)
 
-When stair and chord are both strong, the stair score is deflated. Intuition: a chord-mixed stair chart (chords interleaved with stair runs) has chord burden dominating the stair burden — it is not a *pure stair* chart, per user audit.
+stair is a density-orthogonal **character** axis: a chart can be a strong stair chart at any tier, so tier monotonicity is not the correct criterion (see §2.5.5). v3 was validated against user-verdict canary charts. Embedded / fast stairs recovered, and chord-stream / denim controls preserved:
 
-**Audit rationale**: Empress of Raizze [フルマラソン] and Complex path [さぼてんのとげザ─] were user-perceived HIGH; Icyxis [Mystery] and 覚醒フィールド-DEATHER- were MEDIUM. Under K=3+p99 alone, all four saturated at 1.000. With the purity factor, Empress / Complex (x_chord ≈ 0.27, pure stair) read 0.865, while Icyxis / 覚醒 (x_chord ≈ 0.48, chord-mixed) read 0.744 — matching the user verdict. WF 5→8, ρ_h 0.8556→0.8653.
+| Chart | x_stair before | after | verdict |
+|---|---:|---:|---|
+| stairway to the universe | 0.000 | 0.612 | 48th sweeps, embedded |
+| klimt_(:3 」∠ )_ | 0.000 | 0.537 | 48th rolls |
+| Death Opera (Eclipse / Genocide / Luna) | 0.000 | 0.46 / 0.50 / 0.30 | BPM 450, tick-slow but fast in real time |
+| Another Day (★★3) | 0.025 | 0.520 | stream-embedded stair |
+| Skydive (control) | 0.003 | 0.003 | chord-stream, correctly ~0 |
+| R.I.P My Pudding (control) | 0.003 | 0.011 | only its real m12/14/16 64th rolls |
+| JUMMER (×3, control) | 0.40–0.56 | 0.40–0.56 | delay-stair, preserved |
+| 幽雅に咲かせ (control) | — | ±0.01 | unchanged |
 
-#### 4.6.3 v2 L² aggregation (drill-down)
+The `st`-family cohort-mean stair trend moved from ρ = −0.495 (systematic inversion) to +0.115; `★` −0.070 → +0.453; `★★` −0.893 → −0.536 (the residual negative slope is honest composition semantics — denser charts carry proportionally less stair, not a detector defect).
 
-Alongside `stair_burden_per_sec`, a **shape × fast × count** 3-dimensional metric (Phase 1U) is also computed:
+#### 4.6.4 Superseded: p99-burden and purity factor (AEζηκ era)
 
-- **shape** (S): monotonic ±1 lane motion across the chain
-- **fast** (B): chain pace vs `target_pace_per_sec = 8.0` anchor
-- **count** (C): chain L² aggregation — `stair_l2 = √(Σ chain_burden²)` — picks up both long single chains and many short chains
-
-This v2 L² aggregation is a drill-down sub-metric. The radar's raw value sits on the shape_v2 ratio.
-
-**Thresholds**: SP (0.089, 0.200), DP (0.040, 0.105).
+Before the parallel-ownership radar (Phase 1Z-1H, 2026-05-25), the exported `x_stair` was a p99-normalized chain burden $\min(\text{chain notes}/\text{chart\_seconds}\,/\,p_{99}, 1)$ deflated by a **purity factor** $\times \max(0, 1 - 0.5\,x_\text{chord})$ — so a chord-mixed stair read lower than a pure one (audit: Empress of Raizze / Complex path read 0.865 vs Icyxis / 覚醒 0.744). Since Phase 1Z-1H the radar reads the shape_v2 ratio directly, so this burden + purity formulation is **no longer applied to the radar value**; it survives only in the legacy `_axes_r1_character` drill-down path. A `shape × fast × count` L² burden (`stair_l2 = √(Σ chain_burden²)`) is still computed as a drill-down sub-metric.
 
 ### 4.7 distraction — mode-split formulation
 
@@ -992,6 +992,12 @@ Stage 2 H1 fires:
 Result: measured as a 222 BPM chart
 ```
 
+#### Surfacing the uncertainty (time_base_reconstructed, 2026-06-13)
+
+The H1 fallback fixes the time base by a single free convention — target peak = 50 NPS — chosen because the chart carries *no* internal evidence of its true tempo (unlike Class B's embedded real BPM or Stage [A]'s recoverable offset). Every real-time-derived attribute on such a chart is therefore an interpretation *under a declared playability postulate*, not a measurement. Rather than hide this, the framework surfaces it: a chart whose `felt_info.method == "h1_heuristic"` is flagged `time_base_reconstructed = True` and its `framework_signal_status` is set accordingly, so consumers can discount absolute-scale attributes (per-second densities, pace, intensity colours) while still trusting tick-domain shape (chain structure, lane geometry), which is frame-invariant.
+
+A correction to the historical roster (§5.1–5.3 origin, 2026-04-29 "Class A = 5 charts"): that cohort is fully superseded. シャトルラン / ZAKOTEMPO now resolve via Stage [A] BPM-offset translation (evidence-based — correctly *not* flagged), and ネグラドルナ ×2 / 戦歌 オルグラリヤ via the scale-troll path into Class D. The genuine evidence-free (h1_heuristic) cohort is now likely empty; the flag is a forward-looking safety net, not a patch for those five.
+
 ---
 
 ### 5.4 Class D — measure-scale trick (no felt-BPM correction)
@@ -1058,6 +1064,26 @@ The earlier measure-level binning divided each measure's note count by its lengt
 - max = 449 (幽雅 [HYPER]) — limit of Class D coverage (§5.4).
 - Some BPM-offset charts (シャトルラン, ZAKOTEMPO) have bucket_count in the millions — the felt-time span is distorted by residual BPM-offset artifacts, but **looking at active buckets only** is fine (シャトルラン active=1479, ZAKOTEMPO active=1192). NPS_max is unaffected.
 
+### 5.6 STOP dead-time and structural BPM ramp (2026-06-13)
+
+#### STOP dead-time injection (L1, partial adoption)
+
+The seconds table that converts ticks to felt-time was built from BPM segments alone, so `#STOP` dead time vanished from the time axis — a figure spanning a 5-second STOP read as continuous, inflating any real-time pace or density across it. The table builder now optionally injects each STOP as a zero-tick-span entry carrying its dead seconds (a note exactly on a stop tick maps to the post-stop side), so gaps across a STOP include the frozen time.
+
+This is **adopted by the stair path and the shape_v2 candidate detector first**, and gated to charts where the declared frame *is* the analysis frame (`stop_cap_info is None and felt_info is None and bpm_offset_info is None`): on trolled or reconstructed-frame charts the declared-frame STOP seconds must not mix into a different time frame, and the §5.x stop-pathology guard (e.g. ニニ bga_haha's 5.58 h of troll stops) must not enter the time axis. The remaining real-time consumers (stream window, LN, scratch, distraction, density bar, peak) migrate metric-by-metric, each with its own canaries.
+
+#### Structural BPM ramp (bpm_ramp tag)
+
+Even when "which BPM is true" is unanswerable (§5.3), a chart may carry frame-invariant evidence that BPM rises *progressively*. `detect_bpm_ramp` walks note-bearing segments (≥ 4 playable notes, so zero-note visual-gimmick spikes can neither break nor fake a ramp) and finds runs that are monotonic with each step bounded at ≤ 1.3× ("progressive", not a jump); a run qualifies at net ratio ≥ 1.25 over ≥ 3 strict rises. The `bpm_ramp` tag fires when the up-ramp covers ≥ 25 % of notes with a max run ratio ≥ 1.3.
+
+The ramp structure is **frame-invariant under Stage [A]** — a $10^k$ offset shift preserves segment ordering and approximate step ratios — so an authored accelerando is a measurable fact even on a chart whose absolute BPM is a gimmick. Validation: ZAKOTEMPO (199→277, 18 steps, 99.4 % of notes), シャトルラン (69→556, 485 steps, ratio 8.06, an authored shuttle-run beep-test acceleration); controls (Skydive / stairway / JUMMER) zero. Down-ramps (ritardando) are tracked as a sub-metric without a tag.
+
+### 5.7 #RANDOM reproducibility (the `randomized` tag)
+
+The BMS `#RANDOM N` directive rolls 1..N at parse time and the enclosing `#IF M` branch fires only on a match — by design the player sees a *fresh roll each play*. For a static analysis corpus this is a defect: the parser originally rolled an unseeded global RNG, so every parse of a #RANDOM chart picked a different branch and produced different events — non-reproducible across runs (even two sequential parses in one process, and under fixed `PYTHONHASHSEED`). The parser now seeds a per-chart RNG from `md5(data)`, so each chart deterministically picks one branch (different charts stay uncorrelated) and the corpus is reproducible.
+
+A survey of the corpus's #RANDOM charts found three classes: **single-variant** (1–2 `#RANDOM` blocks — one branch is a legitimate playable version; most charts, e.g. L9, Trancing, アニマのささやき), **whole-chart per-play** (34–533 blocks — the chart is genuinely different every play; Wavetapper, Skydive, Unidentified Flying Scotsman, りくろ, 薄雲), and **degenerate** (`#RANDOM 1`, a no-op; e.g. Aleph-0). Variation magnitude is independent of block count — L9 has a single `#RANDOM 6` whose six branches are entirely different charts (BPM 3390 / 6666 / 9888). For the whole-chart class the md5-fixed branch is one sample of an inherently variable chart, so a `randomized` tag (fires at ≥ 10 `#RANDOM N>1` blocks) flags that the radar and density bar reflect one branch, not a fixed chart. Single-variant and degenerate charts are not flagged.
+
 ---
 
 ## 6. Threshold calibration
@@ -1104,6 +1130,8 @@ Each case: (chart / family / radar / key tags / time-axis shape / commentary).
 - **Density**: burst cluster at sec 60–65, then a sustained 30–40 NPS plateau at sec 89–102
 - **Commentary**: Canonical chord-heavy stream chart. The parallel-ownership model lets chord and stream both fire red. Even within the ★★ family, the sustained-burst time-axis distribution visibly stands out.
 
+[TODO: card screenshot]
+
 ### 7.2 Alcubierre Drive [INSANE] — BPM trick recovery
 
 - **Family**: sl9
@@ -1113,127 +1141,55 @@ Each case: (chart / family / radar / key tags / time-axis shape / commentary).
 - **NPS_max**: 33.0 (sl-family p75 — not an outlier)
 - **Commentary**: Class A BPM-trick chart (BPM 1.74M warp). After felt-BPM heuristic restores BPM to 174, Z4 1-sec bucketing measures real felt-time NPS. Within the family cohort it reads as ordinary sl9. A successful case of 1-sec felt-time bucketing defeating BPM-trick micro-burst inflation.
 
+[TODO: card screenshot]
+
 ### 7.3 幽雅に咲かせ、墨染の桜 [HYPER] — measure-scale outlier
 
 - **Family**: ★★8
 - **NPS_max**: 449.0 (449 notes in a single felt-second)
 - **Commentary**: Class D measure-scale trick. `#xxxNN02:1000`-class measure multipliers fit hundreds of notes into a measure that spans only ~1 second of felt-time. Not handled by the felt-BPM heuristic (BPM itself is normal; only the measure length is unusual). A limit case of the framework.
 
+[TODO: card screenshot]
+
 ### 7.4 Skydive (st4) vs FREEDOM DiVE [FOUR DIMENSIONS] (st8/★★5) — density-vs-difficulty divergence
 
-> **[2026-06-06 revision]** This section's original Skydive numbers were
-> derived from a `BMS.Tools/scripts/bms_parser.py` defect — the parser
-> ignored BMS spec §11 `#RANDOM / #IF / #ENDIF` control flow, so every
-> alternative branch in the Skydive source was included as if it had fired.
-> Skydive's `.bms` source uses 138 × `#RANDOM 21` + 126 × `#RANDOM 35`
-> sister-branch blocks on the playable channels (one of many staff-roll
-> "troll" patterns); the broken parser inflated its note count from
-> 1,877 (the real, LR2-rendered figure) to 2,891.
->
-> The original example below is preserved with strikethrough as record;
-> the corrected analysis follows. The strike-through tier comparison
-> ("Skydive NPS > FD NPS") was a parser-bug artefact and no longer holds.
+The most intuitive illustration of the framework's *"axes ≠ difficulty"* principle (§2.4). Raw table values for the two charts:
 
-~~The most intuitive illustration of the framework's *"axes ≠ difficulty"* principle (§2.4). Raw table values for the two charts:~~
-
-| | Skydive ~~(original)~~ | Skydive **(corrected)** | FREEDOM DiVE [FOUR DIMENSIONS] |
-|---|---:|---:|---:|
-| **Curator family** | **st4** | **st4** | **st8 / ★25 / ★★5** |
-| BPM | 120 | 120 | 222 |
-| Chart length | 67 sec | 67 sec | 138 sec |
-| NPS mean | ~~**44.5**~~ | **28.9** | 33.0 |
-| NPS max | ~~57~~ | (recomputed downward) | 56 |
-| **Pos/s** | ~~**7.0**~~ | **7.0** | **12.0** |
-| avg chord size | ~~6.67~~ | **4.30** | 3.33 |
-| x_chord | ~~0.99~~ | 0.985 (basically unchanged — saturated) | 0.73 |
-| x_stream | ~~0.96~~ | 0.96 (unchanged) | 0.85 |
-| x_peak | 0.31 | 0.31 | 0.64 |
-| primary_character | ~~**chord-spam**~~ | **chord-shape** (re-categorised) | **chord-shape** |
-
-#### ~~The trap of reading the table alone~~
-
-> ~~Looking only at NPS mean: Skydive (44.5) > FD (33.0). Max is similar. *If a user treats NPS as a difficulty proxy*, the perception "Skydive is harder!" arises. But the curator tier says the opposite (st4 vs ★★5, ~4–5 tier gap).~~
-
-**Corrected**: with the proper data, Skydive's NPS (28.9) is now *lower* than FD's (33.0). The original "high-NPS-but-low-tier paradox" was an artefact of the parser bug, not a real characteristic of the chart. The §2.4 *"axes ≠ difficulty"* principle is not invalidated — it just needs a different illustration.
-
-#### ~~Decomposing reveals the difference~~
-
-~~Using `NPS = Pos/s × avg_chord_size` (§3.5):~~
-
-- ~~**Skydive**: 7.0 positions/sec × 6.67 chord ≈ 47 NPS. A *chord wall* — full 7-chord on nearly every 16th note at 120 BPM (8 pos/sec). Single pattern, endurance chart.~~
-- ~~**FD [FOUR DIMENSIONS]**: 12.0 positions/sec × 3.33 chord ≈ 40 NPS. Rapid positional shift at 222 BPM, with varied 3–4 lane chords. A pattern + speed chart.~~
-
-~~Same ~50-NPS class, completely different mechanics.~~
-
-**Corrected decomposition**: Skydive is now 7.0 × 4.30 ≈ 30 NPS (chord-wall with smaller chords than originally measured); FD remains 12.0 × 3.33 ≈ 40 NPS (positional shift). The Pos/s split still reveals the mechanism difference (endurance vs speed) — the lesson the §3.5 column was designed to teach. Only the raw NPS comparison loses its narrative weight.
-
-#### ~~The radar distinguishes them correctly~~
-
-~~The framework's *radar* expresses the two mechanisms distinctly:~~
-
-- ~~Skydive: chord 0.99 (saturated) + peak 0.31 (no variety) + tag `chord-spam`~~
-- ~~FD: chord 0.73 + peak 0.64 (variety) + tag `chord-shape`~~
-
-~~So the framework's character snapshot describes the two as *different characters* accurately, but the *raw NPS alone* hides the mechanism difference. The Pos/s column (added in Phase 1Z-1L) surfaces the NPS decomposition inside the table so the user sees the compositeness directly.~~
-
-**Corrected** — under clean data both charts now classify as `chord-shape` (chord 0.985 vs 0.73, both with similar peak), so the original "two characters are distinct" claim does not hold for this pair. The category drift from `chord-spam` → `chord-shape` happened because removing the 35 % phantom note inflation moved the chord-shape-variety sub-metric across its threshold. This is the *expected* behaviour of the axis system under data corrections, not a framework failure.
-
-#### Meta-lesson — data integrity precedes axis interpretation
-
-The section is retained as a worked example of what happens when a parser bug feeds the axes corrupted data:
-
-1. The cosmetically-inflated NPS produced a *misleadingly clean* example of "axes ≠ difficulty" (high NPS, low tier).
-2. The chord axis saturated either way (0.985 vs 0.99) — the saturation hid the underlying difference.
-3. The primary-character classifier changed category after correction — a *useful diagnostic*: when re-running the pipeline produces a category flip, suspect a data-layer issue.
-
-**A clean replacement illustration of §2.4 should use a chart pair whose tier vs NPS divergence persists after data validation.** The replacement below was selected by a corpus filter (`SP, both within `st` scale, chord-wall vs varied-chord-shift, post-fix metrics`).
-
-### 7.4a Replacement illustration — Sampling Satan (st3) vs κανων (st12)
-
-After the data integrity fix, a corpus sweep of SP charts (5,575 with tier labels) surfaced a pair that exhibits the §2.4 paradox without depending on parser artefacts. The mechanism contrast here is **chord-wall vs stream-pure** — a different texture than the original Skydive vs FD framing (which was chord-wall vs varied chord-shift, both inside the `chord-shape` category). The new pair crosses category boundaries: framework primary character is `chord-shape` for Satan, `stream-pure` for κανων. Neither chart uses `#RANDOM`, so the values are deterministic across re-runs.
-
-| | Sampling Satan | κανων |
+| | Skydive | FREEDOM DiVE [FOUR DIMENSIONS] |
 |---|---:|---:|
-| **Curator family** | **st3** | **st12** |
-| BPM | 200 | 175 |
-| Chart length | 87 sec | 140 sec |
-| Total notes | 2,835 | 3,422 |
-| NPS mean | **33.57** | **26.95** |
-| NPS max | 46 | 54 |
-| **Pos/s** | **6.19** | **15.17** |
-| avg chord size (within chord windows) | **5.61** | **2.58** |
-| chord_rate (fraction of positions that are chords) | **0.944** | **0.396** |
-| x_chord | 0.970 | 0.351 |
-| x_stream | 0.852 | 0.927 |
-| x_peak | 0.261 | **1.000** |
-| primary_character | chord-shape | **stream-pure** |
-| IRT (easy / hard) | 1.35 / 1.75 | — (low-confidence) |
+| **Curator family** | **st4** | **st8 / ★25 / ★★5** |
+| BPM | 120 | 222 |
+| Chart length | 67 sec | 138 sec |
+| NPS mean | **44.5** | 33.0 |
+| NPS max | 57 | 56 |
+| **Pos/s** | **7.0** | **12.0** |
+| avg chord size | 6.67 | 3.33 |
+| x_chord | 0.99 | 0.73 |
+| x_stream | 0.96 | 0.85 |
+| x_peak | 0.31 | 0.64 |
+| primary_character | **chord-spam** | **chord-shape** |
 
-#### The paradox restored
+#### The trap of reading the table alone
 
-Reading NPS mean alone, Sampling Satan (33.57) > κανων (26.95). A naïve "NPS = difficulty" reader would expect Satan to be harder. The curator labels say the opposite: Satan sits at st3 (low-intermediate satellite), κανων at st12 (top of the satellite scale, 9 tier levels above). The available IRT signal corroborates: Satan's hard-clear difficulty is ≈ 1.75, while κανων's clear data is too sparse for stable IRT — a separate hint that very few players are reaching the clear bar on it.
+Looking only at NPS mean: Skydive (44.5) > FD (33.0). Max is similar. *If a user treats NPS as a difficulty proxy*, the perception "Skydive is harder!" arises. But the curator tier says the opposite (st4 vs ★★5, ~4–5 tier gap).
 
-#### Decomposition — using the general form of §3.5
+#### Decomposing reveals the difference
 
-The shorthand `NPS ≈ Pos/s × avg_chord_size` only holds when nearly every position is a chord (i.e. `chord_rate → 1`). For mixed charts the precise form is:
+Using `NPS = Pos/s × avg_chord_size` (§3.5):
 
-`NPS ≈ Pos/s × [chord_rate × avg_chord_size + (1 − chord_rate)]`
+- **Skydive**: 7.0 positions/sec × 6.67 chord ≈ 47 NPS. A *chord wall* — full 7-chord on nearly every 16th note at 120 BPM (8 pos/sec). Single pattern, endurance chart.
+- **FD [FOUR DIMENSIONS]**: 12.0 positions/sec × 3.33 chord ≈ 40 NPS. Rapid positional shift at 222 BPM, with varied 3–4 lane chords. A pattern + speed chart.
 
-— the bracketed factor is the *average number of notes per position*, weighting chord positions by their size and single-note positions by 1.
-
-- **Sampling Satan**: `chord_rate = 0.944`, `avg_chord = 5.61` → factor = 0.944 × 5.61 + 0.056 = **5.35**. NPS ≈ 6.19 × 5.35 = **33.1**, matches measured 33.6. A chord wall — chord events on 94% of positions, average chord size 5.6 of 7 keys. Single rhythmic vector at 200 BPM, sustained over 87 seconds. *Endurance-class chord mash*.
-- **κανων**: `chord_rate = 0.396`, `avg_chord = 2.58` → factor = 0.396 × 2.58 + 0.604 = **1.63**. NPS ≈ 15.17 × 1.63 = **24.7**, matches measured 27.0 within 9 %. A stream-pure chart — 60 % of positions are *single notes*, the remaining 40 % are 2-3 key clusters, all firing at 15 positions/sec at 175 BPM with peak burst saturation. *Sight-read / finger-discipline class*.
-
-The short form `Pos/s × avg_chord_size` would have given **39.1** for κανων (45 % overshoot) by treating every position as a chord — a useful cautionary case for the §3.5 row order and a reason the full formula matters when `chord_rate < ~0.85`.
+Same ~50-NPS class, completely different mechanics.
 
 #### The radar distinguishes them correctly
 
-- **Sampling Satan**: x_chord 0.97 + x_peak 0.26 + primary `chord-shape` + tag `big_chord_burst` — a saturated, non-bursty chord wall.
-- **κανων**: x_chord 0.35 + x_peak 1.00 + primary `stream-pure` + tag `jack_present` — a stream with sparse mid-size chord punctuation, max burst saturation.
+The framework's *radar* expresses the two mechanisms distinctly:
 
-The two characters cross category boundaries (chord-shape vs stream-pure), x_chord differs by 0.62, x_peak by 0.74, while their NPS values invert the tier rank. This is the §2.4 principle in its honest form: *which* events are producing the density — chord depth or positional frequency — matters more than *how many* events there are.
+- Skydive: chord 0.99 (saturated) + peak 0.31 (no variety) + tag `chord-spam`
+- FD: chord 0.73 + peak 0.64 (variety) + tag `chord-shape`
 
-Note that this pair is a stronger mechanism contrast than the original Skydive vs FD framing (which compared two `chord-shape` textures). The downside is that the §3.5 chord-stream row no longer has a chart-pair tie-in within this section; κανων sits on a different row of §3.5 (the *stream* archetype, not *varied chord-stream*).
+So the framework's character snapshot describes the two as *different characters* accurately, but the *raw NPS alone* hides the mechanism difference. The Pos/s column (added in Phase 1Z-1L) surfaces the NPS decomposition inside the table so the user sees the compositeness directly.
 
 #### Lesson
 
@@ -1337,7 +1293,7 @@ Phase 1V audio FFT was **rejected**. Reverted to lane-only stair detection. Two 
 - **K=3 chord-size filter** (Phase 1U) — chain segments where ≥3 lanes fire simultaneously are reclassified as chord, not stair (§4.6).
 - **p99 burden normalization** (Phase 1U) — raw burden (chain notes / chart length) divided by p99 to normalize stair raw values to 0–1.
 
-These two measures alone produced sufficient user-perception agreement on the stair axis (case audit: Empress / Complex vs Icyxis / 覚醒 separated correctly).
+These two measures alone produced sufficient user-perception agreement on the stair axis *at the time* (case audit: Empress / Complex vs Icyxis / 覚醒 separated correctly). Both were later superseded by the v3 detector (§4.6): the K=3 reclassification became the WALL rule, and the p99-burden + purity factor were dropped from the radar value in favour of the pace-weighted shape_v2 ratio. The lesson of this section — lane progression, not audio pitch, defines stair character — survives the redesign intact.
 
 ### 8.6 L2 — Infrastructure preserved
 
@@ -1386,6 +1342,15 @@ Candidate future work:
 - Small DP family sample (n = 1,852)
 - No unification with IRT (deliberate decoupling)
 
+### 9.3 Felt-time / BPM-aware limits (audit 2026-06-13)
+
+The real-time axis underlying pace- and density-based metrics has four known limits, two of which were addressed this session:
+
+- **L1 — STOP dead-time (partially covered).** The seconds table now injects STOP dead time, but only the stair path and shape_v2 consume it so far (§5.6); the stream / LN / scratch / distraction / density / peak metrics still build their tables without it and migrate metric-by-metric.
+- **L2 — time-base reconstruction (surfaced, not corrected).** Class A (h1_heuristic) charts have no recoverable tempo; their real-time attributes are computed under a declared playability convention and flagged `time_base_reconstructed` rather than presented as measurements (§5.3). Tick-domain shape is unaffected; absolute-scale comparison is not trustworthy on these charts.
+- **L3 — pace ceiling (intended).** Above BPM ~900, 12-tick steps fall inside the 16.67 ms chord window and merge into walls, so the stair detector has a de facto ~60 steps/sec ceiling. Judged correct (faster than that is a glissando, not discrete steps), documented rather than fixed.
+- **L4 — mid-chain BPM change (pending).** Chain pace uniformity is checked in ticks, so a soflan break inside a single figure leaves it as one chain with averaged pace. A per-step real-time-interval split is the fix; now unblocked on the stair path since L1 landed there.
+
 ---
 
 ## Appendix
@@ -1399,9 +1364,9 @@ Consolidates formulas from §4 / §5. All ratio metrics use the chart's playable
 | **chord** | $\|\{ e' : \|t(e') - t(e)\| < 16.67 \text{ms} \}\| \geq 3$ | $r_\text{chord} = \sum_e \text{cand}(e) / \|E\|$ | 16.67 ms ≈ 1/60 sec, 3+ simultaneous lanes (§4.1) |
 | **stream** | $\text{nps}_W(e) \geq 8.0 \wedge e \notin \text{SCR}$, $\text{nps}_W = N_W / (2W)$, $W = 45/b$ sec | $r_\text{stream} = \sum_e \text{cand}(e) / \|E\|$ | ±0.75 beat window, weights single=1.0 / chord=0.6 / scratch=0 (§4.2) |
 | **scratch** | $\text{lane}(e) \in \text{SCR}$ | $r_\text{scratch} = \|\{e : \text{lane}(e) \in \text{SCR}\}\| / \|E\|$ | Turntable lane share (§4.3) |
-| **soft** | $\text{bpm}(e) \neq \text{bpm}_\text{base}$ | $r_\text{soft} = \|\{e : \text{bpm}(e) \neq \text{bpm}_\text{base}\}\| / \|E\|$ | Off-dominant-BPM segment (§4.4) |
+| **soft** | $\text{bpm}_s \neq \text{bpm}_\text{base}$ (felt frame) | $x_\text{soft} = \mathrm{clip}_{01}\!\big(\tfrac{\log_2(1+B/T)}{\log_2(1+\text{ref})}\big)$, $B = \sum_s \log_2(\text{bpm}_s/\text{bpm}_\text{base})^2 n_s \tfrac{\rho_s}{\rho_\text{base}}$ | felt-frame cumulative log² burden, log-norm @ p97 ref (§4.4) |
 | **ln** | $\text{type}(e) = \text{LN}$ | $r_\text{ln} = \|\{e : \text{type}(e) = \text{LN}\}\| / \|E\|$ | Both start + end counted (§4.5) |
-| **stair** | Length ≥ 3 chain, lane Δ = ±1, tick gap ∈ [6, 12], K=3 chord filter | $r_\text{stair} = \min(\text{burden}/p_{99}, 1.0)$, $\text{burden} = \text{chain notes}/\text{chart sec}$ | p99 normalization (§4.6) |
+| **stair** | Length ≥ 3 chain, lane Δ = ±1, lookback ≤ 24 ticks, WALL rule (>3 lanes), no pace floor (v3) | $r_\text{stair} = \sum_{e} w(e) / \|E\|$, $w = \mathrm{clip}_{01}((v-5)/5)$, $v$ = real-time steps/sec | pace-weighted participation (§4.6) |
 | **distraction** | Scratch events inside stream interval $S$ | $r_\text{distract} = \text{scratch}(S)/\|S\| \times \text{intensity}$ | v3_score, intensity reflects scratch-run length (§4.7) |
 
 **Radar-out (drill-down only)**
@@ -1456,9 +1421,9 @@ On fire, every BPM is uniformly scaled by $\text{scale} = 50 / \text{declared pe
 chord:          (0.430, 0.638)           (0.395, 0.563)
 stream:         (0.736, 0.851)           (0.813, 0.899)
 scratch:        (0.020, 0.041)           (0.008, 0.022)
-soft:           (0.012, 0.085)           (0.011, 0.062)
+soft:           (0.013, 0.153)           (0.009, 0.152)
 ln:             (0.004, 0.013)           (0.009, 0.020)
-stair:          (0.089, 0.200)           (0.040, 0.105)
+stair:          (0.120, 0.237)           (0.054, 0.120)
 distraction:    (0.032, 0.084)           (0.086, 0.290)
 peak:           (0.441, 0.608)           (0.525, 0.672)
 jack:           (0.223, 0.369)           (0.265, 0.436)
@@ -1524,4 +1489,3 @@ Charts without a family label (no-family) are charts excluded from curated class
 **IRT data**: From the PL3 SP IRT result (6,103 charts), only rows with `Low-sample low-confidence flag = False` are used — after joining with the chart summary, 5,371 charts back the §2.5 analysis.
 
 **Mode separation**: All metric calibration and thresholds are computed per mode (SP / DP). Cross-mode comparison is not intended (SP 8-key and DP 16-key have different lane mechanics).
-
