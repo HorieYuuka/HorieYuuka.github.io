@@ -19,7 +19,7 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-*Live tool: [Chart comparison](/Note-attributes)*
+*Live tool: [Chart comparison](/Note-attributes)*  ・ *日本語: [Framework paper (日本語)](/Note-attributes/Framework-paper-ja)*
 
 # BMS Chart Character Framework — Seven-Axis Radar, Tags, and Felt-Time Normalization
 
