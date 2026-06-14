@@ -25,7 +25,7 @@ window.MathJax = {
 
 **Subtitle**: Design and validation of an analysis framework that visualizes *what kind of chart* a BMS chart is, rather than reducing it to a one-dimensional difficulty score.
 
-**Version**: Phase 1Z final-state (YYYY-MM-DD)
+**Version**: Phase 1Z + soft v2 / stair v3 (2026-06-14)
 
 > This is a technical report aimed at the BMS community. It assumes basic familiarity with chart analysis and rhythm-game difficulty rating but explains every introduced term and formula in place.
 
