@@ -636,6 +636,14 @@ dialog.note-attrs-search-modal::backdrop {
   border-color: rgba(52,224,255,0.4);
   background: var(--cp-cyan-a08);
 }
+/* DP charts get a red-neon mode badge so they read apart from SP at a glance. */
+.note-attrs-search-mode.note-attrs-row-mode--dp {
+  color: #ff4d66;
+  border-color: rgba(255,59,92,0.6);
+  background: rgba(255,59,92,0.1);
+  text-shadow: 0 0 6px rgba(255,59,92,0.75);
+  box-shadow: 0 0 7px rgba(255,59,92,0.4), inset 0 0 4px rgba(255,59,92,0.22);
+}
 .note-attrs-search-title {
   font-weight: 700;
   font-size: 14px;
@@ -983,6 +991,139 @@ dialog.cpm-config-modal::backdrop {
   color: var(--cp-cyan);
   border-color: rgba(52,224,255,0.5);
   background: var(--cp-cyan-a08);
+}
+
+/* lane-mod row header (label + gear) */
+.cpm-config-rowhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cp-sp-2);
+}
+.cpm-lanemod-gear {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-sm);
+  background: var(--cp-panel-2);
+  color: var(--cp-text-dim);
+  font-size: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.cpm-lanemod-gear:not(:disabled):active {
+  color: var(--cp-cyan);
+  border-color: rgba(52,224,255,0.5);
+}
+.cpm-lanemod-gear:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ===== lane-mod mapping modal ===== */
+dialog.cpm-lanemod-config-modal {
+  width: min(420px, 92vw);
+  padding: 0;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-md);
+  background: var(--cp-panel);
+  color: var(--cp-text);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  font-family: var(--cp-font-ui);
+}
+dialog.cpm-lanemod-config-modal::backdrop {
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+}
+.cpm-lanemod-config-body {
+  padding: var(--cp-sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--cp-sp-3);
+}
+.cpm-lanemod-config-row {
+  display: flex;
+  align-items: center;
+  gap: var(--cp-sp-2);
+}
+.cpm-lanemod-config-chips {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-sm);
+  background: var(--cp-panel-2);
+  min-height: 38px;
+}
+.cpm-lanemod-config-chip {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  border: 1px solid rgba(52,224,255,0.35);
+  border-radius: 4px;
+  background: rgba(52,224,255,0.06);
+  color: var(--cp-cyan);
+  font-family: var(--cp-font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+.cpm-lanemod-config-chip--readonly { cursor: default; opacity: .85; }
+.cpm-lanemod-config-chip.is-selected {
+  background: rgba(52,224,255,0.22);
+  border-color: var(--cp-cyan);
+  box-shadow: 0 0 0 2px rgba(52,224,255,0.3);
+}
+.cpm-lanemod-config-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--cp-panel-2);
+  border: 1px solid var(--cp-line);
+  color: var(--cp-text);
+  padding: 8px 10px;
+  font-family: var(--cp-font-mono);
+  font-size: 14px;
+  border-radius: var(--cp-r-sm);
+  outline: none;
+}
+.cpm-lanemod-config-input:focus { border-color: rgba(52,224,255,0.6); }
+.cpm-lanemod-config-btn,
+.cpm-lanemod-config-chev {
+  flex: 0 0 auto;
+  background: var(--cp-panel-2);
+  color: var(--cp-text);
+  border: 1px solid var(--cp-line);
+  border-radius: var(--cp-r-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  cursor: pointer;
+  font-family: var(--cp-font-ui);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.cpm-lanemod-config-chev { padding: 8px 10px; }
+.cpm-lanemod-config-btn:active,
+.cpm-lanemod-config-chev:active { background: #131a2a; border-color: var(--cp-cyan); color: var(--cp-cyan); }
+.cpm-lanemod-config-hint {
+  color: var(--cp-text-mute);
+  font-family: var(--cp-font-mono);
+  font-size: 11px;
+}
+.cpm-lanemod-config-error {
+  color: var(--cp-miss);
+  font-family: var(--cp-font-mono);
+  font-size: 11px;
+  min-height: 14px;
 }
 
 @media (min-width: 1024px) {

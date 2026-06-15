@@ -147,6 +147,32 @@ sitemap: false
     <button type="button" class="cpm-help-close" data-cpm-config-close aria-label="Close">×</button>
   </form>
   <ul class="cpm-config-list">
+    <li class="cpm-config-row">
+      <div class="cpm-config-rowhead">
+        <span class="cpm-config-toggle__label" data-cpm-lanemod-label>Random</span>
+        <button type="button" class="cpm-lanemod-gear" data-cpm-lanemod-gear="1p" aria-label="Edit lane mapping" disabled>⚙</button>
+      </div>
+      <div class="cpm-config-radios" data-cpm-config-lanemod>
+        <label><input type="radio" name="cpm-lanemod" value="off" checked>Off</label>
+        <label><input type="radio" name="cpm-lanemod" value="random">Random</label>
+        <label><input type="radio" name="cpm-lanemod" value="r-random">R-Random</label>
+        <label><input type="radio" name="cpm-lanemod" value="mirror">Mirror</label>
+      </div>
+      <span class="cpm-config-hint">Shuffles key-lane order. ⚙ edits the mapping. Session-only.</span>
+    </li>
+    <li class="cpm-config-row" data-cpm-config-row="lanemod-2p" hidden>
+      <div class="cpm-config-rowhead">
+        <span class="cpm-config-toggle__label">2P Lane</span>
+        <button type="button" class="cpm-lanemod-gear" data-cpm-lanemod-gear="2p" aria-label="Edit 2P lane mapping" disabled>⚙</button>
+      </div>
+      <div class="cpm-config-radios" data-cpm-config-lanemod-2p>
+        <label><input type="radio" name="cpm-lanemod-2p" value="off" checked>Off</label>
+        <label><input type="radio" name="cpm-lanemod-2p" value="random">Random</label>
+        <label><input type="radio" name="cpm-lanemod-2p" value="r-random">R-Random</label>
+        <label><input type="radio" name="cpm-lanemod-2p" value="mirror">Mirror</label>
+      </div>
+      <span class="cpm-config-hint">2P side — DP only.</span>
+    </li>
     <li class="cpm-config-row" data-cpm-config-row="hide-rail">
       <label class="cpm-config-toggle">
         <input type="checkbox" data-cpm-config-hide-rail>
@@ -174,6 +200,14 @@ sitemap: false
       <span class="cpm-config-hint">ms — pause before audio resumes after loop wrap.</span>
     </li>
   </ul>
+</dialog>
+
+<dialog class="cpm-lanemod-config-modal" data-cpm-lanemod-config aria-label="Lane mapping">
+  <form method="dialog" class="cpm-help-head">
+    <h2 class="cpm-help-title" data-cpm-lanemod-config-title>Lane mapping</h2>
+    <button type="button" class="cpm-help-close" data-cpm-lanemod-config-close aria-label="Close">×</button>
+  </form>
+  <div class="cpm-lanemod-config-body" data-cpm-lanemod-config-body></div>
 </dialog>
 
 {% include chart-search-dialog.html %}

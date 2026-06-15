@@ -73,6 +73,14 @@
     const configClose  = $("[data-cpm-config-close]");
     const configHideRail = $("[data-cpm-config-hide-rail]");
     const configLoop     = $("[data-cpm-config-loop]");
+    const configLanemod   = $("[data-cpm-config-lanemod]");
+    const configLanemod2P = $("[data-cpm-config-lanemod-2p]");
+    const lanemodLabelEl  = $("[data-cpm-lanemod-label]");
+    const lanemodGears       = $$("[data-cpm-lanemod-gear]");
+    const lanemodConfigModal = $("[data-cpm-lanemod-config]");
+    const lanemodConfigTitle = $("[data-cpm-lanemod-config-title]");
+    const lanemodConfigBody  = $("[data-cpm-lanemod-config-body]");
+    const lanemodConfigClose = $("[data-cpm-lanemod-config-close]");
     const standbyGroup   = $("[data-cpm-config-standby]");
     const progressWrap   = $("[data-cpm-progress-wrap]");
     const loopBand       = $("[data-cpm-loop-band]");
@@ -107,7 +115,7 @@
     let sudplusTipTimer = null;
     let progressActive = false;
     let progressWasPlaying = false;
-    const mobileSettings = { hideMeasureRail: false, loopWrapHoldMs: 250, loopStandby: "instant" };
+    const mobileSettings = { hideMeasureRail: false, loopWrapHoldMs: 250, loopStandby: "instant", laneMod: "off", laneMod2P: "off" };
     let loopEnabled = false;
     let loopStartSec = 0;
     let loopEndSec = 0;
@@ -454,6 +462,10 @@
         hideJudgment: true,
         hideMeasureRail: !!mobileSettings.hideMeasureRail,
         loopWrapHoldMs: mobileSettings.loopWrapHoldMs | 0,
+        // 1P / 2P lane mods persist across chart switches. laneMod2P is
+        // ignored on SP; on DP it shuffles the 2P side independently.
+        laneMod: mobileSettings.laneMod || "off",
+        laneMod2P: mobileSettings.laneMod2P || "off",
       });
       if (view.setOnLoopChange) {
         view.setOnLoopChange(function (loop) {
@@ -507,9 +519,14 @@
       } else {
         syncLoopUI();
       }
-      // SP-only config rows. Toggle visibility now that we know the mode.
+      // Mode-dependent config rows. Toggle visibility now that we know the mode.
       const hideRailRow = document.querySelector('[data-cpm-config-row="hide-rail"]');
       if (hideRailRow) hideRailRow.hidden = t.mode !== "SP";
+      // DP exposes a separate 2P lane-mod row; the 1P row relabels to "1P Lane".
+      const lanemod2pRow = document.querySelector('[data-cpm-config-row="lanemod-2p"]');
+      if (lanemod2pRow) lanemod2pRow.hidden = t.mode !== "DP";
+      if (lanemodLabelEl) lanemodLabelEl.textContent = (t.mode === "DP") ? "1P Lane" : "Random";
+      updateGearState();
       showEmpty(false);
       // Defer one more draw to the frame after layout settles. Without this,
       // the very first paint on DP can happen while cp-field.clientWidth is
@@ -997,6 +1014,15 @@
     if (configBtn && configModal) {
       configBtn.addEventListener("click", function () {
         if (configHideRail) configHideRail.checked = !!mobileSettings.hideMeasureRail;
+        if (configLanemod) {
+          const r1 = configLanemod.querySelector('input[value="' + (mobileSettings.laneMod || "off") + '"]');
+          if (r1) r1.checked = true;
+        }
+        if (configLanemod2P) {
+          const r2 = configLanemod2P.querySelector('input[value="' + (mobileSettings.laneMod2P || "off") + '"]');
+          if (r2) r2.checked = true;
+        }
+        updateGearState();
         try { configModal.showModal(); } catch (e) { configModal.setAttribute("open", ""); }
       });
     }
@@ -1028,6 +1054,213 @@
         applyLoop();
       });
     }
+    // Lane-mod (RANDOM family). SP exposes one group (1P side); DP adds a
+    // separate 2P group. 'click' (not 'change') so re-picking the active mode
+    // still fires and rerolls the permutation. MIRROR is deterministic, so its
+    // reroll no-ops in the renderer.
+    function attachLanemodGroup(rootEl, settingKey, side) {
+      if (!rootEl) return;
+      rootEl.querySelectorAll("input[type=radio]").forEach(function (r) {
+        r.addEventListener("click", function () {
+          const val = r.value;
+          const changed = val !== mobileSettings[settingKey];
+          mobileSettings[settingKey] = val;
+          updateGearState();
+          if (!view || !view.setSettings) return;
+          if (changed) {
+            const patch = {};
+            patch[settingKey] = val;
+            view.setSettings(patch);   // regenerates the permutation + redraws
+          } else if (val !== "off" && view.rerollLaneMapping) {
+            const isDP = !!(view.timeline && view.timeline.mode === "DP");
+            if (side === "2p" && !isDP) return;   // 2P range invalid on SP
+            view.rerollLaneMapping(side);
+          }
+        });
+      });
+    }
+    attachLanemodGroup(configLanemod, "laneMod", "1p");
+    attachLanemodGroup(configLanemod2P, "laneMod2P", "2p");
+
+    /* ── Lane-mod manual mapping modal (the ⚙ gear) ───────────────── */
+    // Ported from the desktop config modal. The one touch adaptation: chip
+    // reordering uses tap-two-to-swap instead of HTML5 drag (unsupported on
+    // touch). User-facing lane numbers are always 1..7; the 2P side maps them
+    // onto chart lanes 8..14 transparently.
+    let lanemodConfigCtx = null;
+    function lmSideStart(side) { return side === "2p" ? 8 : 1; }
+    function lmSetError(msg) {
+      if (!lanemodConfigBody) return;
+      const el = lanemodConfigBody.querySelector("[data-cpm-lanemod-config-error]");
+      if (el) el.textContent = msg || "";
+    }
+    function lmCurrentUserPerm() {
+      if (!view || !view.getLaneMapping || !lanemodConfigCtx) return [1, 2, 3, 4, 5, 6, 7];
+      const start = lmSideStart(lanemodConfigCtx.side);
+      return view.getLaneMapping(lanemodConfigCtx.side).map(function (cl) { return cl - (start - 1); });
+    }
+    function lmReadChips() {
+      if (!lanemodConfigBody) return [];
+      return Array.from(lanemodConfigBody.querySelectorAll("[data-cpm-lanemod-config-chip]"))
+        .map(function (c) { return parseInt(c.getAttribute("data-val"), 10); });
+    }
+    function lmApplyUserPerm(userNums) {
+      if (!view || !view.setLaneMapping || !lanemodConfigCtx) return false;
+      const start = lmSideStart(lanemodConfigCtx.side);
+      return view.setLaneMapping(lanemodConfigCtx.side,
+        userNums.map(function (n) { return n + (start - 1); }));
+    }
+    function lmRenderChips(container, userNums, interactive) {
+      container.innerHTML = "";
+      userNums.forEach(function (n) {
+        const chip = document.createElement("span");
+        chip.className = "cpm-lanemod-config-chip" + (interactive ? "" : " cpm-lanemod-config-chip--readonly");
+        chip.setAttribute("data-cpm-lanemod-config-chip", "");
+        chip.setAttribute("data-val", String(n));
+        chip.textContent = String(n);
+        container.appendChild(chip);
+      });
+    }
+    function lmWireChipSwap(container) {
+      let selected = null;
+      container.querySelectorAll("[data-cpm-lanemod-config-chip]").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          if (!selected) { selected = chip; chip.classList.add("is-selected"); return; }
+          if (selected === chip) { chip.classList.remove("is-selected"); selected = null; return; }
+          const a = selected.getAttribute("data-val");
+          const b = chip.getAttribute("data-val");
+          selected.setAttribute("data-val", b); selected.textContent = b;
+          chip.setAttribute("data-val", a); chip.textContent = a;
+          selected.classList.remove("is-selected"); selected = null;
+          const nums = lmReadChips();
+          if (nums.length === 7) { lmApplyUserPerm(nums); lmSetError(""); }
+        });
+      });
+    }
+    function lmWireReroll() {
+      const btn = lanemodConfigBody.querySelector("[data-cpm-lanemod-config-reroll]");
+      if (!btn) return;
+      btn.addEventListener("click", function () {
+        if (!view || !view.rerollLaneMapping) return;
+        if (!view.rerollLaneMapping(lanemodConfigCtx.side)) {
+          lmSetError("Cannot re-roll this mode."); return;
+        }
+        lmSetError("");
+        const chipsEl = lanemodConfigBody.querySelector("[data-cpm-lanemod-config-chips]");
+        if (chipsEl) {
+          const interactive = lanemodConfigCtx.modType === "random";
+          lmRenderChips(chipsEl, lmCurrentUserPerm(), interactive);
+          if (interactive) lmWireChipSwap(chipsEl);
+        }
+      });
+    }
+    function lmRenderBody() {
+      if (!lanemodConfigBody || !lanemodConfigCtx) return;
+      const perm = lmCurrentUserPerm();
+      if (lanemodConfigCtx.modType === "random") {
+        lanemodConfigBody.innerHTML =
+          '<div class="cpm-lanemod-config-row">' +
+          '<div class="cpm-lanemod-config-chips" data-cpm-lanemod-config-chips></div>' +
+          '<button type="button" class="cpm-lanemod-config-btn" data-cpm-lanemod-config-reroll>Re-roll</button>' +
+          '</div>' +
+          '<div class="cpm-lanemod-config-row">' +
+          '<input type="text" inputmode="numeric" class="cpm-lanemod-config-input" data-cpm-lanemod-config-input maxlength="7" placeholder="e.g. 4725163">' +
+          '<button type="button" class="cpm-lanemod-config-btn" data-cpm-lanemod-config-apply>Apply</button>' +
+          '</div>' +
+          '<div class="cpm-lanemod-config-hint">Tap two lanes to swap, or type a 7-digit order.</div>' +
+          '<div class="cpm-lanemod-config-error" data-cpm-lanemod-config-error></div>';
+        const chipsEl = lanemodConfigBody.querySelector("[data-cpm-lanemod-config-chips]");
+        lmRenderChips(chipsEl, perm, true);
+        lmWireChipSwap(chipsEl);
+        const input = lanemodConfigBody.querySelector("[data-cpm-lanemod-config-input]");
+        if (input) input.addEventListener("input", function () {
+          input.value = input.value.replace(/[^1-7]/g, "").slice(0, 7);
+        });
+        const applyBtn = lanemodConfigBody.querySelector("[data-cpm-lanemod-config-apply]");
+        if (applyBtn) applyBtn.addEventListener("click", function () {
+          if (!input) return;
+          const raw = (input.value || "").trim();
+          let userNums;
+          if (raw === "") {
+            userNums = lmReadChips();
+          } else {
+            if (!/^[1-7]{7}$/.test(raw)) { lmSetError("7 digits, each 1-7 (e.g. 4725163)."); return; }
+            userNums = raw.split("").map(function (c) { return parseInt(c, 10); });
+            if (new Set(userNums).size !== 7) { lmSetError("Each digit exactly once."); return; }
+          }
+          if (!lmApplyUserPerm(userNums)) { lmSetError("Permutation rejected."); return; }
+          lmSetError(""); input.value = "";
+          lmRenderChips(chipsEl, lmCurrentUserPerm(), true);
+          lmWireChipSwap(chipsEl);
+        });
+      } else {
+        // R-RANDOM — ◄ [chips] ► + Re-roll. Chevrons cycle the cyclic shift 1..6.
+        lanemodConfigBody.innerHTML =
+          '<div class="cpm-lanemod-config-row">' +
+          '<button type="button" class="cpm-lanemod-config-chev" data-cpm-lanemod-config-step="-1" aria-label="Shift left">◄</button>' +
+          '<div class="cpm-lanemod-config-chips" data-cpm-lanemod-config-chips></div>' +
+          '<button type="button" class="cpm-lanemod-config-chev" data-cpm-lanemod-config-step="1" aria-label="Shift right">►</button>' +
+          '<button type="button" class="cpm-lanemod-config-btn" data-cpm-lanemod-config-reroll>Re-roll</button>' +
+          '</div>' +
+          '<div class="cpm-lanemod-config-hint">◄ ► shift the cycle. Re-roll picks a random shift.</div>' +
+          '<div class="cpm-lanemod-config-error" data-cpm-lanemod-config-error></div>';
+        const chipsEl = lanemodConfigBody.querySelector("[data-cpm-lanemod-config-chips]");
+        lmRenderChips(chipsEl, perm, false);
+        const s0 = perm[0] - 1;
+        lanemodConfigCtx.rrandomShift = (s0 >= 1 && s0 <= 6) ? s0 : 1;
+        lanemodConfigBody.querySelectorAll("[data-cpm-lanemod-config-step]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            const delta = parseInt(b.getAttribute("data-cpm-lanemod-config-step"), 10) || 0;
+            let next = lanemodConfigCtx.rrandomShift + delta;
+            if (next < 1) next = 6;
+            if (next > 6) next = 1;
+            lanemodConfigCtx.rrandomShift = next;
+            const base = [1, 2, 3, 4, 5, 6, 7];
+            lmApplyUserPerm(base.slice(next).concat(base.slice(0, next)));
+            lmRenderChips(chipsEl, lmCurrentUserPerm(), false);
+          });
+        });
+      }
+      lmWireReroll();
+    }
+    function openLanemodConfig(side, modType) {
+      if (!view || !lanemodConfigModal) return;
+      if (modType !== "random" && modType !== "r-random") return;
+      lanemodConfigCtx = { side: side || "1p", modType: modType };
+      const isDP = !!(view.timeline && view.timeline.mode === "DP");
+      const sideLabel = isDP ? (side === "2p" ? "2P " : "1P ") : "";
+      const modLabel = modType === "random" ? "RANDOM" : "R-RANDOM";
+      if (lanemodConfigTitle) lanemodConfigTitle.textContent = sideLabel + modLabel + " mapping";
+      lmRenderBody();
+      try { lanemodConfigModal.showModal(); } catch (e) { lanemodConfigModal.setAttribute("open", ""); }
+    }
+    if (lanemodConfigClose && lanemodConfigModal) {
+      lanemodConfigClose.addEventListener("click", function () {
+        try { lanemodConfigModal.close(); } catch (e) { lanemodConfigModal.removeAttribute("open"); }
+      });
+    }
+    if (lanemodConfigModal) {
+      lanemodConfigModal.addEventListener("click", function (e) {
+        if (e.target === lanemodConfigModal) {
+          try { lanemodConfigModal.close(); } catch (err) { lanemodConfigModal.removeAttribute("open"); }
+        }
+      });
+    }
+    function modeForSide(side) {
+      return side === "2p" ? mobileSettings.laneMod2P : mobileSettings.laneMod;
+    }
+    function updateGearState() {
+      lanemodGears.forEach(function (g) {
+        const m = modeForSide(g.getAttribute("data-cpm-lanemod-gear"));
+        g.disabled = !(m === "random" || m === "r-random");
+      });
+    }
+    lanemodGears.forEach(function (g) {
+      g.addEventListener("click", function () {
+        const side = g.getAttribute("data-cpm-lanemod-gear");
+        openLanemodConfig(side, modeForSide(side));
+      });
+    });
     if (standbyGroup) {
       standbyGroup.querySelectorAll("input[type=radio]").forEach(function (r) {
         r.addEventListener("change", function () {
