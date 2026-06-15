@@ -913,9 +913,16 @@
 }
 
 // Mode badge inside search results — color tokens kept from the legacy
-// list row styling so SP / DP remain visually distinct.
+// list row styling so SP / DP remain visually distinct. DP gets a red-neon
+// glow (box-shadow, not border, so the badge box size matches SP and rows
+// don't shift). SP stays the calm blue.
 .note-attrs-row-mode--sp { background: #dbeafe; color: #1e3a8a; }
-.note-attrs-row-mode--dp { background: #fee2e2; color: #7f1d1d; }
+.note-attrs-row-mode--dp {
+  background: #fee2e2;
+  color: #e11d48;
+  box-shadow: 0 0 7px rgba(225, 29, 72, 0.5);
+  text-shadow: 0 0 4px rgba(225, 29, 72, 0.35);
+}
 
 .note-attrs-empty {
   grid-column: 1 / -1;
