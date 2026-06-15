@@ -120,6 +120,15 @@ sitemap: false
       </div>
     </li>
     <li class="cpm-help-row">
+      <div class="cpm-gesture cpm-gesture--seek" aria-hidden="true">
+        <span class="cpm-gesture__finger cpm-gesture__finger--drag"></span>
+      </div>
+      <div class="cpm-help-text">
+        <strong>Horizontal drag</strong>
+        <span>Scrub — left rewinds, right advances</span>
+      </div>
+    </li>
+    <li class="cpm-help-row">
       <div class="cpm-gesture cpm-gesture--pinch" aria-hidden="true">
         <span class="cpm-gesture__finger cpm-gesture__finger--left"></span>
         <span class="cpm-gesture__finger cpm-gesture__finger--right"></span>

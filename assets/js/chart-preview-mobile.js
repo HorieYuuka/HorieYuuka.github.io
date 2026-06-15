@@ -27,6 +27,15 @@
     return m + ":" + (r < 10 ? "0" + r : r);
   }
 
+  // Tenths-resolution variant for the scrub readout, so the finer seek
+  // granularity is actually visible while dragging.
+  function fmtTimeFine(s) {
+    if (!isFinite(s) || s < 0) s = 0;
+    const m = Math.floor(s / 60);
+    const r = s - m * 60;
+    return m + ":" + (r < 10 ? "0" : "") + r.toFixed(1);
+  }
+
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
   function ready(fn) {
@@ -105,6 +114,10 @@
     const SUDPLUS_TIP_MS = 900;
     const SUDPLUS_MAX = 500;
     const DRAG_THRESHOLD_PX = 12;
+    // Scrub sensitivity: a full canvas-width swipe covers this many seconds,
+    // independent of chart length (YouTube-style fine seek). Clamped to the
+    // chart's own length so short charts never get coarser than whole-chart.
+    const SEEK_SEC_PER_FULLWIDTH = 60;
     // Loop standby — 250 ms of decoder grace is silent; anything beyond is
     // the visible countdown the user picks ("500" / "1000" / "2000").
     const STANDBY_INSTANT_MS = 250;
@@ -259,11 +272,14 @@
       cpCanvas.addEventListener("click", clickBlocker, true);
 
       const pts = new Map();
-      let mode = "idle";                 // "idle" | "drag-sudplus" | "pinch"
+      let mode = "idle";                 // "idle" | "drag-sudplus" | "drag-seek" | "pinch"
       let multiTouchSeen = false;
       let pinchInitialDist = 0;
       let pinchInitialHs = 1;
       let dragInitialSudplus = 0;
+      let seekInitialSec = 0;
+      let seekWasPlaying = false;
+      let seekFieldWidth = 1;
 
       function resetSequence() {
         mode = "idle";
@@ -325,6 +341,22 @@
               pendingSingleTapTimer = null;
             }
             lastTapAt = 0;
+          } else if (Math.abs(dx) > DRAG_THRESHOLD_PX && Math.abs(dx) > Math.abs(dy)) {
+            // Horizontal drag = scrub. Anchor on the playhead at gesture start
+            // and pause during the drag so audio doesn't stutter on each seek;
+            // resume on release if it had been playing.
+            mode = "drag-seek";
+            const st = (view && view.getState) ? view.getState() : null;
+            seekInitialSec = (st && st.currentSec) || 0;
+            seekWasPlaying = !!(st && st.playing);
+            if (seekWasPlaying && view && view.pause) view.pause();
+            seekFieldWidth = cpField.clientWidth ||
+              cpField.getBoundingClientRect().width || 1;
+            if (pendingSingleTapTimer) {
+              clearTimeout(pendingSingleTapTimer);
+              pendingSingleTapTimer = null;
+            }
+            lastTapAt = 0;
           }
         }
 
@@ -332,6 +364,21 @@
           const dy = e.clientY - p.origY;
           applySudplus(dragInitialSudplus + dy);
           showSudplusTip();
+        }
+
+        if (mode === "drag-seek" && pts.size === 1 && view) {
+          // Fixed-window scrub: a full-width swipe covers SEEK_SEC_PER_FULLWIDTH
+          // seconds (not the whole chart), so long charts get fine, consistent
+          // control. min() keeps short charts from ever being coarser than a
+          // whole-chart swipe.
+          const dx = e.clientX - p.origX;
+          const span = Math.min(SEEK_SEC_PER_FULLWIDTH, totalSec || SEEK_SEC_PER_FULLWIDTH);
+          const target = clamp(
+            seekInitialSec + (dx / seekFieldWidth) * span, 0, totalSec);
+          if (view.seekToSec) view.seekToSec(target);
+          if (progressEl && !progressActive) progressEl.value = String(target);
+          if (timeCurEl) timeCurEl.textContent = fmtTime(target);
+          showToast((dx < 0 ? "◀ " : "▶ ") + fmtTimeFine(target), 600);
         }
       };
 
@@ -344,6 +391,14 @@
         const endedMode = mode;
         const endedMulti = multiTouchSeen;
         resetSequence();
+
+        // A scrub gesture ends here (covers both pointerup and pointercancel):
+        // resume playback if it had been running when the drag began.
+        if (endedMode === "drag-seek") {
+          if (seekWasPlaying && view && view.play) view.play();
+          seekWasPlaying = false;
+          return;
+        }
 
         if (e.type !== "pointerup" || !p) return;
         if (endedMode !== "idle" || endedMulti) return;
