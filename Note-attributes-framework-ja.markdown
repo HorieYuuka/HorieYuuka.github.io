@@ -160,15 +160,15 @@ BMS コミュニティのキュレーション慣行により、各 family は *
 
 **[Figure 1]** SP family × tier 単調性。左 → 右: tier 別の mean IRT EASY-clear · NPS_mean · NPS_max。色は family を、線スタイルは class を表す (linear-rank solid bold / body-linear solid / mean-tracking dotted)。
 
-![SP family × tier monotonicity](figures/family_tier_monotonicity_SP.png)
+![SP family × tier monotonicity](/Resource/Framework/figures/family_tier_monotonicity_SP.png)
 
-→ インタラクティブ HTML: [`figures/family_tier_monotonicity_SP.html`](figures/family_tier_monotonicity_SP.html) (hover で tier 別の n と値を表示)
+→ インタラクティブ HTML: [`figures/family_tier_monotonicity_SP.html`](/Resource/Framework/figures/family_tier_monotonicity_SP.html) (hover で tier 別の n と値を表示)
 
 **[Figure 2]** DP family × tier 単調性。同じレイアウト。DP コーパスはより小さい (n = 1,852) ため tier 範囲は短いが、同じ単調パターンが成立する。
 
-![DP family × tier monotonicity](figures/family_tier_monotonicity_DP.png)
+![DP family × tier monotonicity](/Resource/Framework/figures/family_tier_monotonicity_DP.png)
 
-→ HTML: [`figures/family_tier_monotonicity_DP.html`](figures/family_tier_monotonicity_DP.html)
+→ HTML: [`figures/family_tier_monotonicity_DP.html`](/Resource/Framework/figures/family_tier_monotonicity_DP.html)
 
 再生成: `python paper/plot_family_tier.py --mode both --png`
 

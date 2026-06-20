@@ -160,15 +160,15 @@ By BMS community curation convention, each family carries a different expectatio
 
 **[Figure 1]** SP family × tier monotonicity. Left → right: mean IRT EASY-clear · NPS_mean · NPS_max by tier. Colour encodes family, line style encodes class (linear-rank solid bold / body-linear solid / mean-tracking dotted).
 
-![SP family × tier monotonicity](figures/family_tier_monotonicity_SP.png)
+![SP family × tier monotonicity](/Resource/Framework/figures/family_tier_monotonicity_SP.png)
 
-→ Interactive HTML: [`figures/family_tier_monotonicity_SP.html`](figures/family_tier_monotonicity_SP.html) (hover for per-tier n and values)
+→ Interactive HTML: [`figures/family_tier_monotonicity_SP.html`](/Resource/Framework/figures/family_tier_monotonicity_SP.html) (hover for per-tier n and values)
 
 **[Figure 2]** DP family × tier monotonicity. Same layout. The DP corpus is smaller (n = 1,852), so the tier ranges are shorter, but the same monotonic pattern holds.
 
-![DP family × tier monotonicity](figures/family_tier_monotonicity_DP.png)
+![DP family × tier monotonicity](/Resource/Framework/figures/family_tier_monotonicity_DP.png)
 
-→ HTML: [`figures/family_tier_monotonicity_DP.html`](figures/family_tier_monotonicity_DP.html)
+→ HTML: [`figures/family_tier_monotonicity_DP.html`](/Resource/Framework/figures/family_tier_monotonicity_DP.html)
 
 Regenerate: `python paper/plot_family_tier.py --mode both --png`
 
