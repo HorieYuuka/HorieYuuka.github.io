@@ -25,7 +25,7 @@ window.MathJax = {
 .fp-langtab:hover { color: #1f2328 !important; background: #f6f8fa; text-decoration: none; }
 .fp-langtab.is-active { color: #1f2328 !important; background: #fff; border-color: #d0d7de; border-bottom: 1px solid #fff; }
 </style>
-<div class="fp-langbar"><a class="fp-langtab is-active" href="/Note-attributes/Framework-paper">EN</a><a class="fp-langtab" href="/Note-attributes/Framework-paper-ja">日本語</a></div>
+<div class="fp-langbar"><a class="fp-langtab is-active" href="/Note-attributes/Framework-paper">EN</a><a class="fp-langtab" href="/Note-attributes/Framework-paper-ko">한국어</a><a class="fp-langtab" href="/Note-attributes/Framework-paper-ja">日本語</a></div>
 
 *Live tool: [Chart comparison](/Note-attributes)*
 
