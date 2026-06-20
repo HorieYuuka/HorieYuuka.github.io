@@ -3,7 +3,7 @@ layout: scale_analyzer
 title: "Framework paper (日本語)"
 permalink: /Note-attributes/Framework-paper-ja
 parent: "Note attributes"
-nav_order: 2
+nav_exclude: true
 has_toc: false
 ---
 
@@ -19,7 +19,15 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-*Live tool: [Chart comparison](/Note-attributes)*  ・ *English: [Framework paper](/Note-attributes/Framework-paper)*
+<style>
+.fp-langbar { display: flex; gap: 0; margin: 0.4rem 0 1.1rem 0; border-bottom: 1px solid #d0d7de; }
+.fp-langtab { padding: 0.4rem 0.95rem; font-size: 0.9rem; font-weight: 600; color: #57606a !important; text-decoration: none; border: 1px solid transparent; border-bottom: none; border-radius: 6px 6px 0 0; margin-bottom: -1px; }
+.fp-langtab:hover { color: #1f2328 !important; background: #f6f8fa; text-decoration: none; }
+.fp-langtab.is-active { color: #1f2328 !important; background: #fff; border-color: #d0d7de; border-bottom: 1px solid #fff; }
+</style>
+<div class="fp-langbar"><a class="fp-langtab" href="/Note-attributes/Framework-paper">EN</a><a class="fp-langtab is-active" href="/Note-attributes/Framework-paper-ja">日本語</a></div>
+
+*Live tool: [Chart comparison](/Note-attributes)*
 
 # BMS チャートキャラクターフレームワーク — 7軸レーダー、タグ、そして時間軸正規化
 

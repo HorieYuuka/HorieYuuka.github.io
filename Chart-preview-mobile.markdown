@@ -2,7 +2,7 @@
 layout: chart_preview_mobile
 title: "Chart preview (mobile)"
 permalink: /chart-preview/m
-nav_order: 99
+nav_exclude: true
 sitemap: false
 ---
 
