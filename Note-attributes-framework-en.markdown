@@ -700,11 +700,15 @@ SP and DP have different mechanics, so they use **separate formulations**.
 distraction = **quantification of scratch entering stream flow** — *within stream regions only*, how disruptive scratches are. User intuition: "playing a stream, then scratches punch in and break flow".
 
 **DP** (two hands separated, P1 / P2 each with scratch + 7 keys):
-SP's "stream interruption" framing does not transfer. DP's strong hand independence makes user define distraction as three patterns:
+SP's "stream interruption" framing does not transfer. DP's strong hand independence makes user define distraction as three patterns.
+
+DP key layout is **`S 1 2 3 4 5 6 7 │ 1 2 3 4 5 6 7 S`** — both scratches sit on the *outer* edges, so each side's near/far split is **mirrored** relative to its own scratch:
+- **1P** (scratch on the left): near = KEY1-3, far (inner) = KEY4-7
+- **2P** (scratch on the right): near = KEY5-7, far (inner) = KEY1-4
 
 1. **Rapid hand-role transition** — LH scratch + RH keys ↔ LH keys + RH scratch, fast cycling of which hand owns the scratch role.
-2. **Impossible scratch** — same-side scratch + same-side **far keys (KEY4-7)** simultaneous or slightly offset. Forces the *other* hand onto the same side to reach those inner keys, an ergonomically unworkable placement.
-3. **Adjacent scratch** — same-side scratch + same-side **near keys (KEY1-3)** simultaneous or slightly offset. Playable by one hand but produces an awkward hand shape.
+2. **Impossible scratch** — same-side scratch + same-side **far keys** (1P KEY4-7 / 2P KEY1-4) simultaneous or slightly offset. The shape reads as unplayable for one hand, but the judgment window lets the player *stagger* the two inputs — scratch a hair early, key a hair late (or vice versa) — and clear both single-handed. The burden is this precise timing-split under pressure, **not** a forced second hand; the name reflects how the pattern reads on-screen, not a literal two-hand requirement.
+3. **Adjacent scratch** — same-side scratch + same-side **near keys** (1P KEY1-3 / 2P KEY5-7) simultaneous or slightly offset. Playable by one hand but produces an awkward hand shape.
 
 Responsibility split (both modes):
 - Whole-chart scratch share → scratch axis (§4.3)
@@ -766,14 +770,14 @@ where $K_s$ = same-side KEY1-7 events within window of $s$.
 
 **Window: half-beat at local BPM, clamped [0.10, 0.40] s.** The legacy 1-beat window was 0.46 s at 130 BPM — perceptually two separate events. Half-beat matches user's "simultaneous or slightly offset" definition.
 
-**Why merge near (KEY1-3) / far (KEY4-7)?** A compound chord (S + KEY1 + KEY5) activates both groups, causing the same scratch event to fire two components and inflate the score (~44% of $trange's firing scratches activate BOTH near and far). The near/far distinction is preserved at the *tag* layer, not the axis:
+**Why merge near / far keys?** A compound chord (S + KEY1 + KEY5) activates both groups, causing the same scratch event to fire two components and inflate the score (~44% of $trange's firing scratches activate BOTH near and far). The near/far distinction is preserved at the *tag* layer, not the axis:
 
 **DP-specific tags** (chord-tier ≤ 16.67 ms exact, or per-measure pattern):
 
 | tag | fire condition | meaning |
 |---|---|---|
-| `adjacent_scratch` | same-side $S$ + KEY1-3 chord-tier count ≥ 4 | One-hand chord, awkward hand shape |
-| `impossible_scratch` | same-side $S$ + KEY4-7 chord-tier count ≥ 2 | Forces both hands onto one side |
+| `adjacent_scratch` | same-side $S$ + near keys chord-tier count ≥ 4 | One-hand chord, awkward hand shape |
+| `impossible_scratch` | same-side $S$ + far keys chord-tier count ≥ 2 | Reads unplayable; cleared one-handed by staggering the inputs within the judgment window |
 | `bilateral_scratch` | ≥3 scratches on each side in same measure, count ≥5 | P1/P2 wheels busy simultaneously |
 
 #### 4.7.4 BPM-trick handling
@@ -1535,8 +1539,8 @@ Each tag's fire condition and SP corpus (n = 6,703) fire counts. The two zero-fi
 | `scratch_burst` | scratch | Scratch flurry within a 1-sec window exceeds threshold | 845 | 12.6% |
 | `last_killing` | structural | Late-chart NPS spike (escalating finale or back-spike + calm coda) | 543 | 8.1% |
 | `scratch_chord` | cross-mech | (SP) Scratch coincides with chord-tier notes (cross-domain pressure) | 425 | 6.3% |
-| `impossible_scratch` | cross-mech | (DP) Same-side $S$ + KEY4-7 chord-tier exact (both hands forced to one side) | 130 | 7.0% DP |
-| `adjacent_scratch` | cross-mech | (DP) Same-side $S$ + KEY1-3 chord-tier exact (awkward one-hand chord) | 103 | 5.6% DP |
+| `impossible_scratch` | cross-mech | (DP) Same-side $S$ + far keys (1P KEY4-7 / 2P KEY1-4) chord-tier exact (reads unplayable; cleared one-handed by a staggered timing-split within the judgment window) | 130 | 7.0% DP |
+| `adjacent_scratch` | cross-mech | (DP) Same-side $S$ + near keys (1P KEY1-3 / 2P KEY5-7) chord-tier exact (awkward one-hand chord) | 103 | 5.6% DP |
 | `bilateral_scratch` | cross-mech | (DP) ≥3 scratches per side in same measure, count ≥ 5 | 39 | 2.1% DP |
 | `long_scratch` | scratch | Sustained Long-Scratch (wheel-hold) presence above floor | 385 | 5.7% |
 | `flow_break` | jack | Jacks interrupt running streams at a high rate | 348 | 5.2% |
