@@ -118,7 +118,7 @@ The "adequate" framing (v12 §21) is deliberate: the rule-based policy aims to *
 
 - **C5 — Double-play synthesis (draft).** An `--dp` mode synthesizes a 14-key DP chart from an SP source under the same source-faithful stance: it splits each phrase across two hands by load (balance, the default, §8.2) and refines the result with a timing-invariant, jack-aware lane post-processor, never moving an onset and never altering SP output. (§8)
 
-A fifth, cross-cutting property — **determinism** — was hardened along the way: a class of `PYTHONHASHSEED`-dependent set/dict iteration non-determinism was found and removed (§5.5), and a 6-song regression baseline now guards byte-identical output.
+A separate cross-cutting property — **determinism** — was hardened along the way: a class of `PYTHONHASHSEED`-dependent set/dict iteration non-determinism was found and removed (§5.5), and a 6-song regression baseline now guards byte-identical output.
 
 ---
 
@@ -561,7 +561,7 @@ Open items:
 
 - **The no-invention ceiling on placement appropriateness — the onset-invention frontier.** The move-based generation of §8.7 places scratches at strong-beat-aligned *eligible residual* positions. When those positions diverge from the song's groove (kick/snare) — because the groove slots are occupied by keys or scratch-ineligible tokens — a move alone cannot reach them. Reaching them needs **onset-invention** (placing one of the song's existing palette tokens at a *new* time, which is what human charters do). To gauge it we measured an onset-coalition backbone score — summing the evidence from *all* events at a tick (a refinement of single-dominant-token detection): the composite score clears the positional ceiling (per-chart AUC 0.69 → 0.77), but the *conditional* signal with position held fixed was thin (AUC 0.56 within on-quarter onsets), and injecting that thin signal into the existing move ranking left placement-quality metrics unchanged — the move candidates are already uniformly strong-beat-aligned, and most weakly-placed scratches are *source mirrors* we cannot move. Conclusion: the value of no-invention scratch is *reach*, not *better ranking*, and that reach (= onset-invention) is the *re-timing* the §2.4 source-fidelity stance holds out of scope by construction — so it is left as a deliberate frontier (future work under the token-set ⊆ source and chart-preservation invariants).
 - **Two of six characters are uncovered.** The split router handles stream / peak / chord; the **ln** (long-note vs tap hand-split) and **soft** characters are not yet addressed.
-- **Strategy auto-routing is unsolved** (DR-DP7); character must be chosen by the user.
+- **Character auto-routing is unsolved** (DR-DP7); the user must still choose the intended source character / intensity guidance explicitly.
 - **Normative promotion is pending** broader validation, an LN pass, and tighter rail-weight calibration (the spillover from rejected notes makes the current rail bias a "feel," not an exact ratio).
 
 ---
@@ -771,5 +771,4 @@ The DP extension (§8) is anchored on a separate survey of 1,852 human DP charts
 ---
 
 *This report describes BMS.Generator's note-placement pipeline as of 2026-05-25, with a draft double-play synthesis addendum (§8). The source code is the authoritative reference for exact behavior; this document is a narrative synthesis for readers.*
-
 
