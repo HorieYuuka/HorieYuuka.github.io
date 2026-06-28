@@ -164,3 +164,19 @@ DP
 #### Download Links :
 
 [Torrent](https://drive.google.com/file/d/1ZymTReyhwwni_494vJqyk2_nl5ajZVZO/view?usp=sharing){: .btn .btn-blue }
+
+### 16分乱打難易度表(仮) (2026-06-20) : Additional patch
+
+A supplementary patch for the 16分乱打難易度表(仮). Many songs and sabuns are missing (hash mismatches or unavailable source data), but this fills in as many as could be recovered.
+
+#### Compatible with :
+
+SP
+{: .label .label-blue }
+
+>16分乱打難易度表(仮)
+>{: .label .label-blue }
+
+#### Download Links :
+
+[Torrent](https://drive.google.com/file/d/1Ql4o0cMF-VvocM_dZecA_IV7LQHcnp6Z/view?usp=sharing){: .btn .btn-blue }
