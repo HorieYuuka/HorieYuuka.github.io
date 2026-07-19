@@ -326,9 +326,9 @@ RUSH-rest 는 fallback 에서만 발동; primary 모드는 소스 pacing 을 신
 
 ### 4.8 롱노트 후처리
 
-배치 후, 적격 Tap 노트가 롱노트(LN)로 승격된다. Tap 은 토큰 샘플 duration 이 `LN_MIN_DURATION_MS = 800`(인간 LN duration 의 대략 p75 에 맞춘 게이트) 이상일 때 LN 후보다. 그려지는 hold 길이는 `LN_MAX_HOLD_TICKS = 96`(2-beat 가시 cap, v11)으로 cap 되어 긴 샘플이 화면을 채우는 막대를 그리지 않게 한다; *오디오* 샘플은 끝까지 재생된다 — 가시 막대만 cap. hold 는 선언된 경우 채보의 `#LNOBJ` 토큰으로 쓰인다.
+배치 후, 적격 Tap 노트가 롱노트(LN)로 승격된다. Tap 은 토큰 샘플 duration 이 `LN_MIN_DURATION_MS = 350`(인간 부수-LN hold 의 median; 800 에서 낮춘 재평가는 §8.8) 이상일 때 LN 후보다. 그려지는 hold 길이는 `LN_MAX_HOLD_TICKS = 96`(2-beat 가시 cap, v11)으로 cap 되어 긴 샘플이 화면을 채우는 막대를 그리지 않게 한다; *오디오* 샘플은 끝까지 재생된다 — 가시 막대만 cap. 카운트는 두 governor 로 제한된다: chart-wide `LN_MAX_RATIO = 2%` cap 과, 예산이 한 구간에 몰리지 않게 하는 per-窓 국소 cap(§8.8). hold 는 선언된 경우 채보의 `#LNOBJ` 토큰으로 쓰인다.
 
-알려진 긴장(§10.3): 800 ms 선정 게이트가 *자연스럽게 짧은* 인간 LN 의 ~75% 를 차단하므로, 파이프라인은 LN-과다 곡에서 LN 을 과소 생산한다. 게이트를 일률적으로 낮추면 모든 것을 over-LN 하므로, source-LN-signal 인프라가 곡별 게이트의 선행 조건이다(future work).
+이 게이트는 오래 800 ms(인간 LN duration 의 대략 p75)에 고정돼 *자연스럽게 짧은* 인간 LN 의 ~75% 를 차단하고 LN-과다 곡을 굶겼다. §8.8 의 재평가가 두 가지를 바로잡았다: corpus 부수-hold median 은 353 ms 고, "일률 인하 시 모든 것을 over-LN 한다"던 옛 우려 자체가 틀렸다 — 2% 비율 cap 이 이미 카운트를 실링하므로 진짜 결함은 *국소* 몰림(한 곡은 LN 의 57%를 단일 8마디 窓에)이었고, 게이트가 아니라 per-窓 cap 으로 고쳤다.
 
 ### 4.9 Density rebalance
 
@@ -452,7 +452,7 @@ baseline 은 β-1 + nondet fix 로 재생성됐다; 이 회귀가 "β-1 이 출�
 
 ### 7.2 happiness — BPM-naive LN cap
 
-`hapiness_lnext` 는 인간 LN-과다 채보(757 LN)다. 파이프라인은 0–6 을 냈다. 두 원인이 겹쳤다: 800 ms 선정 게이트(§4.8)가 자연스럽게 짧은 인간 LN 의 ~75% 를 차단, 그리고 이전 draw-length 정책이 BPM-naive — 242 BPM 에서 고정 틱 hold 가 화면을 채우는 막대를 그렸다. draw-length cap `LN_MAX_HOLD_TICKS = 96`(가시 전용)이 막대 문제를 고쳤다(v12 §22 DR-G1); 선정-게이트 문제는 일률 인하 시 모든 채보를 over-LN 하므로 열린 채로 남아있다(§10.3).
+`hapiness_lnext` 는 인간 LN-과다 채보(757 LN)다. 파이프라인은 0–6 을 냈다. 두 원인이 겹쳤다: 800 ms 선정 게이트(§4.8)가 자연스럽게 짧은 인간 LN 의 ~75% 를 차단, 그리고 이전 draw-length 정책이 BPM-naive — 242 BPM 에서 고정 틱 hold 가 화면을 채우는 막대를 그렸다. draw-length cap `LN_MAX_HOLD_TICKS = 96`(가시 전용)이 막대 문제를 고쳤다(v12 §22 DR-G1); 선정 게이트는 이후 350 ms 로 낮추고 per-窓 국소 cap(§8.8)과 결합해, 밀집 곡을 over-LN 하지 않으면서 과소생산을 해소했다.
 
 ### 7.3 단일 measure reroll — Resume API end-to-end
 
@@ -553,16 +553,28 @@ DP 전용 보정 교훈(DR-DP11): DP 에서 **intensity 는 약한 전역-밀도
 
 **정직한 천장.** 위치 선택과 밀도 *목표* 는 소스 독립이나, 후보 *가용성* 과 밀도 *상한* 은 소스에 묶인다(발명 0 의 필연). 적합 residual onset 이 소진되면 생성기는 평탄해진다(mightyA 는 ~62 에서 cap — 소스 천장의 증거; lepontinia 는 공급이 많아 더 간다). 이는 결함이 아니라 §2.4 입장의 직접적 귀결이다: 발명 없이 가능한 최대 위치-독립.
 
-### 8.8 Conformance 와 DP 전용 한계
+### 8.8 롱노트 합성 (`--dp --ln`)
+
+롱노트(hold)는 split router 가 표현하지 않는 여섯 번째 character 로, 전용 **opt-in** 패스가 다룬다 — DP hold 는 성긴 장식(인간 DP corpus 의 18.4%에만 존재, p50 비율 1.2%)이라 `--dp --ln` 을 넘기지 않으면 꺼져 있다. 이 패스는 DP 분기 최후단에 돌며 이미 배치된 탭을 **hold 로 변환만** 한다; 타이밍·레인·`(measure, idx, token)` 멀티셋이 구성상 전부 보존된다(게이트 실패 시 노트를 지우는 게 아니라 hold 를 *거부*한다).
+
+**미러 우선.** hold 의 1차 출처는 소스 채보 자신이다: SP 소스의 실제 key-채널 LN 이 같은 온셋의 DP 탭을 hold 로 승격한다. (`#LNOBJ` 인코딩은 각 레인 마지막 탭을 zero-length Long 으로 파싱하므로 duration > 0 필터가 필수 — 아니면 유병률이 25.3%로 부풀려진다.) 긴 hold 를 먼저, 4% 비율 cap(corpus p90) 아래 취해 음악적으로 지배적인 hold 가 cap 을 살아남게 한다.
+
+**800 ms 바닥이 아니라 BPM-인지 fallback.** 소스가 hold-빈곤이면 fallback 이 긴-소리 토큰에서 corpus median(1.2%)까지 채운다. 여기 게이트는 고정-밀리초 바닥이 *아니다*: DP corpus hold 길이는 p50 = 365 ms(p25 = 238)이고, 800 ms 바닥은 실제 DP hold 의 74%를 배제한다. 대신 토큰은 로컬 BPM 에서 **박-양자화** hold 를 지속할 수 있으면 적격이다(240 ms prefilter ≈ corpus p25). SP 자신의 LN 게이트도 같은 이유로 동시에 재평가돼 800 → 350 ms 로 내려갔다(SP 부수-hold median 353 ms; 800 ms 바닥은 짧은-소리 곡의 hold 를 완전히 굶겼다 — 한 밀집 곡은 가능한 76 hold 에서 0 으로 떨어졌다).
+
+**기하.** hold 는 주변을 게이트한다(같은 손만, 13,668-LN corpus 조사): 호스트 레인과 같은쪽 스크래치는 hold 전체에서 hard 금지, 미들 인접 탭은 soft 제한, 자유 손은 의도적으로 방치(hold 아래 스트림이 60% 계속된다). 한 규칙은 통계가 아니라 물리다 — **한 손가락이 담당 두 버튼 중 하나를 누르고 있으면 나머지는 못 누른다.** 약지가 버튼 {2,3}, 검지가 {5,6} 을 담당하므로, 어느 한 버튼의 hold 는 hold 내내 그 짝 버튼의 노트를 금지한다. 쌍 집합 {{2,3},{5,6}} 은 미러 대칭(`S 1234567 │ 1234567 S` 배치에서 2↔6, 3↔5)이라 같은 raw-키 규칙이 양손에 적용된다.
+
+**국소 몰림 방지.** chart-wide 비율 cap 은 *전역* 예산이라, 방치하면 긴 토큰이 가장 많은 구간으로 덤프된다(측정된 한 곡은 hold 의 57%를 단일 8마디 窓에, 다른 곡은 전부 후반부에 몰았다). per-窓 cap — 각 8마디 窓은 전역 LN 비율의 배수까지 hold 가능 — 이 예산을 곡 전체로 퍼뜨리면서 자연 클러스터링은 허용해, 그 수치를 23%와 곡-전체 분산으로 낮춘다. cap 은 절대 카운트가 아닌 로컬 노트의 *비율*이다: corpus 는 窓당 70+ hold 를 담는 LN-전용 채보에 오염돼 있어 절대 앵커는 쓸 수 없다. 같은 窓 cap 이 SP 경로도 지배한다.
+
+### 8.9 Conformance 와 DP 전용 한계
 
 DP 는 5곡 smoke 스위트(`tools/_dp_smoke.py`)를 돌린다: side-코드 > 2 = 0, 합산 코드 > 3 = 0, 스크래치-게이트 위반 = 0, 충돌 = 0. 매 실행은 `dp_pp_report`(타이밍-불변 플래그, 잭 전/후, 패턴 적용/폴백 카운트, per-lane 분포)도 내고, A/B harness(`tools/dp_pp_report.py`)가 후처리 레이어를 on/off 로 재검증한다. DP 는 resume / finalize / ML 을 거부한다 — 전체 chart, RB 전용이다.
 
 열린 항목:
 
 - **위치 적절성의 무발명 천장 — onset-invention 경계.** §8.7 의 이동 생성은 스크래치를 강박-정렬된 *적합 residual* 위치에 둔다. 그 위치가 곡의 그루브(킥/스네어)와 어긋날 때 — 그루브 자리가 키나 스크래치-부적합 토큰에 점유됐기 때문 — 이동만으로는 닿을 수 없다. 닿으려면 곡의 기존 팔레트 토큰을 *새 시각* 에 두는 **onset-invention**(인간 제작자가 채보 시 하는 것)이 필요하다. 이를 가늠하려 onset-coalition 백본 스코어 — 한 시각의 *모든* 이벤트 증거를 합산(단일 dominant-토큰 검출의 개선판) — 를 측정했다: 합성 점수는 위치 천장(per-chart AUC 0.69)을 넘되(0.77), 위치를 고정한 *조건부* 신호는 얇았고(on-quarter 내 AUC 0.56), 그 신호를 기존 이동 랭킹에 주입해도 배치 품질 측정은 불변이었다 — 이동 후보가 이미 균일하게 강박-정렬이고, 약한-배치 스크래치 대부분이 우리가 옮길 수 없는 *소스 미러*이기 때문. 결론: 무발명 스크래치의 가치는 *더 나은 랭킹* 이 아니라 *도달(reach)* 이며, 그 reach(= onset-invention)는 §2.4 의 소스 충실 입장이 구성상 범위 밖에 두는 *재타이밍* 에 해당한다 — 그래서 의도적으로 frontier 로 남긴다(토큰 SET ⊆ 소스 + 채보 보존 불변식 아래의 미래 작업).
-- **6개 character 중 둘이 미커버.** split router 는 stream / peak / chord 를 다룬다; **ln**(롱노트 vs 탭 손-분리)과 **soft** character 는 아직 다루지 않는다.
+- **6개 character 중 하나가 미커버.** split router 는 stream / peak / chord 를 다루고 롱노트는 전용 패스(§8.8)를 가진다; **soft** character 만 아직 다루지 않는다.
 - **전략 auto-routing 미해결**(DR-DP7); character 는 사용자가 선택해야 한다.
-- **normative 승격은** 폭넓은 검증, LN 패스, 더 정밀한 rail-가중치 보정(거부 노트의 spillover 때문에 현재 rail bias 는 정확 비율이 아닌 "느낌")을 기다린다.
+- **normative 승격은** 폭넓은 검증과 더 정밀한 rail-가중치 보정(거부 노트의 spillover 때문에 현재 rail bias 는 정확 비율이 아닌 "느낌")을 기다린다.
 
 ---
 
@@ -632,7 +644,7 @@ v9 baseline 에서 레인 모델의 ~50% top-1 정확도(chance 25% 대비)는 �
 
 ### 10.3 LN-스타일 blindness
 
-RB 도 ML 도 소스의 LN *스타일*에 blind 하다: `build_pool_universe` 와 라벨링 파이프라인 둘 다 Long event 를 `(start, token)` 페어로 평탄화하여 hold 길이를 버린다. 그래서 학습 데이터 자체에 LN-스타일 차원이 없고, RB 게이트는 고정 800 ms 다. source-LN-signal 인프라(`(start, end)` hold 틱 보존; 패키지별 LN 통계 산출; 동적 게이트 구동)가 곡별 RB 게이트와 미래 LN-aware 모델 둘의 선행 조건이다.
+`build_pool_universe` 와 라벨링 파이프라인 둘 다 Long event 를 `(start, token)` 페어로 평탄화하여 hold 길이를 버린다 — 그래서 ML 학습 데이터에 LN-스타일 차원이 없고, LN-aware *모델*은 여전히 라벨링 파이프라인 변경이 필요하다. 하지만 RB 경로는 더는 blind 하지 않다: SP 게이트는 이제 corpus-앵커된 350 ms + per-窓 cap(§4.8)이고, DP-LN 패스(§8.8)는 소스의 실제 LN 을 파싱된 events 에서 직접 읽어(풀 평탄화를 우회) 미러하며 hold-빈곤 소스엔 BPM-인지 fallback 을 둔다. 열린 것은 *모델* 측과 더 폭넓은 패키지별 LN-스타일 통계다.
 
 ### 10.4 Resume API v1 범위
 
@@ -693,8 +705,9 @@ SCRATCH_RUSH_REST_MEASURES     = 4
 SCRATCH_FALLBACK_DURATION_MAX  = 300    # ms
 
 # LN
-LN_MIN_DURATION_MS             = 800
+LN_MIN_DURATION_MS             = 350
 LN_MAX_HOLD_TICKS              = 96     # 2-beat 가시 cap
+LN_LOCAL_RATIO                 = 0.08   # per-窓 LN cap (예산 분산)
 
 # Density rebalance
 DENSITY_REBALANCE_MAX_DELTA    ≈ 0.21

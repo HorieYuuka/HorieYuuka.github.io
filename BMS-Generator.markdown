@@ -326,9 +326,9 @@ RUSH-rest fires in fallback only; primary mode trusts source pacing and disables
 
 ### 4.8 Long-note post-processing
 
-After placement, eligible Tap notes are promoted to Long Notes (LN). A Tap is an LN candidate when its token's sample duration ≥ `LN_MIN_DURATION_MS = 800` (a gate tuned to roughly the p75 of human LN duration). The drawn hold length is capped at `LN_MAX_HOLD_TICKS = 96` (a 2-beat visible cap, v11) so a long sample does not paint a screen-filling bar; the *audio* sample still plays in full — only the visible bar is capped. The hold is written using the chart's `#LNOBJ` token when one is declared.
+After placement, eligible Tap notes are promoted to Long Notes (LN). A Tap is an LN candidate when its token's sample duration ≥ `LN_MIN_DURATION_MS = 350` (the median of incidental human LN holds; §8.8 records the re-evaluation that lowered this from 800). The drawn hold length is capped at `LN_MAX_HOLD_TICKS = 96` (a 2-beat visible cap, v11) so a long sample does not paint a screen-filling bar; the *audio* sample still plays in full — only the visible bar is capped. Two governors bound the count: a chart-wide `LN_MAX_RATIO = 2%` cap and a per-window local cap (§8.8) that keeps the budget from piling into one region. The hold is written using the chart's `#LNOBJ` token when one is declared.
 
-A known tension (§10.3): the 800 ms selection gate blocks ~75% of *naturally short* human LNs, so the pipeline under-produces LNs on LN-heavy songs. Lowering the gate uniformly would over-LN everything; a source-LN-signal infrastructure is the prerequisite for a per-song gate (future work).
+This gate was long fixed at 800 ms (roughly the p75 of human LN duration), which blocked ~75% of *naturally short* human LNs and starved LN-heavy songs. The re-evaluation of §8.8 corrected two things: the corpus incidental-hold median is 353 ms, and the old worry that "lowering it uniformly would over-LN everything" was itself wrong — the 2% ratio cap already ceilings the count, so the real defect was *local* piling (one chart put 57% of its LNs in a single 8-bar window), fixed by the per-window cap rather than by the gate.
 
 ### 4.9 Density rebalancing
 
@@ -452,7 +452,7 @@ An early diagnostic metric, `same_hand_streak`, showed an alarming fat tail on m
 
 ### 7.2 happiness — the BPM-naive LN cap
 
-`hapiness_lnext` is a human LN-heavy chart (757 LNs). The pipeline produced 0–6. Two causes compounded: the 800 ms selection gate (§4.8) blocks ~75% of naturally-short human LNs, and an earlier draw-length policy was BPM-naive — at 242 BPM a fixed tick hold painted a screen-filling bar. The draw-length cap `LN_MAX_HOLD_TICKS = 96` (visible-only) fixed the painting problem (v12 §22 DR-G1); the selection-gate problem remains open (§10.3) because lowering it uniformly would over-LN every chart.
+`hapiness_lnext` is a human LN-heavy chart (757 LNs). The pipeline produced 0–6. Two causes compounded: the 800 ms selection gate (§4.8) blocks ~75% of naturally-short human LNs, and an earlier draw-length policy was BPM-naive — at 242 BPM a fixed tick hold painted a screen-filling bar. The draw-length cap `LN_MAX_HOLD_TICKS = 96` (visible-only) fixed the painting problem (v12 §22 DR-G1); the selection gate has since been lowered to 350 ms and paired with a per-window local cap (§8.8), which resolves the under-production without over-LNing dense charts.
 
 ### 7.3 Single-measure reroll — the Resume API end-to-end
 
@@ -553,16 +553,28 @@ Because it only moves, the `(measure, idx, token)` multiset is preserved — the
 
 **An honest ceiling.** The position choice and density *target* are source-independent, but candidate *availability* and the density *ceiling* are source-bound (the necessity of zero invention). When eligible residual onsets are exhausted the generator plateaus (mightyA caps at ~62 — evidence of the source ceiling; lepontinia, supply-rich, goes further). This is not a defect but a direct consequence of the §2.4 stance: the maximum position-independence achievable without invention.
 
-### 8.8 Conformance and DP-specific limitations
+### 8.8 Long-note synthesis (`--dp --ln`)
+
+Long notes (holds) are the sixth character the split router does not express, handled by a dedicated **opt-in** pass — DP holds are a sparse ornament (present in only 18.4% of the human DP corpus, p50 share 1.2%), so the feature stays off unless `--dp --ln` is passed. The pass runs last in the DP branch and only **converts an already-placed tap into a hold**; timing, lane, and the `(measure, idx, token)` multiset are all preserved by construction (when a gate fails a hold is *refused*, never a note deleted).
+
+**Mirror first.** The primary source of holds is the source chart itself: a real key-channel LN in the SP source promotes the DP tap at the same onset into a hold. (The `#LNOBJ` encoding makes the last tap of every lane parse as a zero-length Long — a duration > 0 filter is mandatory, or prevalence inflates to 25.3%.) Longest holds are taken first under a 4% ratio cap (the corpus p90), so the musically dominant holds survive the cap.
+
+**A BPM-aware fallback, not an 800 ms floor.** When the source is hold-poor, a fallback tops up to the corpus median (1.2%) from long-sounding tokens. The gate here is *not* a fixed-millisecond floor: the DP corpus hold length is p50 = 365 ms (p25 = 238), and an 800 ms floor rejects 74% of real DP holds. A token is instead eligible if it can sustain a **beat-quantized** hold at the local BPM (with a 240 ms prefilter ≈ the corpus p25). SP's own LN gate was re-evaluated at the same time and lowered 800 → 350 ms for the same reason (the SP incidental-hold median is 353 ms; an 800 ms floor starved short-sound charts of holds entirely — one dense chart dropped from 76 possible holds to zero).
+
+**Geometry.** A hold gates its surroundings (same hand only, from a 13,668-LN corpus survey): the host lane and any same-side scratch are hard-forbidden across the hold, middle-adjacent taps are soft-limited, and the free hand is deliberately left alone (streams continue under a hold 60% of the time). One rule is physical rather than statistical — **a finger holding one of its two buttons cannot press the other.** With the ring finger on buttons {2,3} and the index on {5,6}, a hold on either button forbids any note on its partner for the whole hold. The pair set {{2,3},{5,6}} is mirror-symmetric (2↔6, 3↔5 on the `S 1234567 │ 1234567 S` layout), so the same raw-key rule applies to both hands.
+
+**No local pile-up.** The chart-wide ratio cap is a *global* budget, and left alone it dumps into whatever region carries the most long tokens (one measured chart put 57% of its holds in a single 8-bar window; another put all of them in the second half). A per-window cap — each 8-bar window may hold up to a multiple of the global LN ratio — spreads the budget across the chart while still allowing natural clustering, dropping those figures to 23% and a whole-chart spread. The cap is a *ratio* of local notes, not an absolute count: the corpus is contaminated by LN-specialty charts whose windows carry 70+ holds, so an absolute anchor is unusable. The same window cap governs the SP path.
+
+### 8.9 Conformance and DP-specific limitations
 
 DP runs a 5-song smoke suite (`tools/_dp_smoke.py`): zero side-chords > 2, zero combined chords > 3, zero scratch-gate violations, zero collisions. Every run also emits `dp_pp_report` (timing-invariant flag, jack-before/after, pattern applied/fallback counts, per-lane distribution), and an A/B harness (`tools/dp_pp_report.py`) re-verifies the post-processing layer with it on and off. DP rejects resume / finalize / ML — it is full-chart, RB-only.
 
 Open items:
 
 - **The no-invention ceiling on placement appropriateness — the onset-invention frontier.** The move-based generation of §8.7 places scratches at strong-beat-aligned *eligible residual* positions. When those positions diverge from the song's groove (kick/snare) — because the groove slots are occupied by keys or scratch-ineligible tokens — a move alone cannot reach them. Reaching them needs **onset-invention** (placing one of the song's existing palette tokens at a *new* time, which is what human charters do). To gauge it we measured an onset-coalition backbone score — summing the evidence from *all* events at a tick (a refinement of single-dominant-token detection): the composite score clears the positional ceiling (per-chart AUC 0.69 → 0.77), but the *conditional* signal with position held fixed was thin (AUC 0.56 within on-quarter onsets), and injecting that thin signal into the existing move ranking left placement-quality metrics unchanged — the move candidates are already uniformly strong-beat-aligned, and most weakly-placed scratches are *source mirrors* we cannot move. Conclusion: the value of no-invention scratch is *reach*, not *better ranking*, and that reach (= onset-invention) is the *re-timing* the §2.4 source-fidelity stance holds out of scope by construction — so it is left as a deliberate frontier (future work under the token-set ⊆ source and chart-preservation invariants).
-- **Two of six characters are uncovered.** The split router handles stream / peak / chord; the **ln** (long-note vs tap hand-split) and **soft** characters are not yet addressed.
+- **One of six characters is uncovered.** The split router handles stream / peak / chord and long notes have their own pass (§8.8); only the **soft** character is not yet addressed.
 - **Character auto-routing is unsolved** (DR-DP7); the user must still choose the intended source character / intensity guidance explicitly.
-- **Normative promotion is pending** broader validation, an LN pass, and tighter rail-weight calibration (the spillover from rejected notes makes the current rail bias a "feel," not an exact ratio).
+- **Normative promotion is pending** broader validation and tighter rail-weight calibration (the spillover from rejected notes makes the current rail bias a "feel," not an exact ratio).
 
 ---
 
@@ -632,7 +644,7 @@ The strongest open problem: RB-aligned metrics do not capture the ML-vs-RB liste
 
 ### 10.3 LN-style blindness
 
-Both RB and ML are blind to the source's LN *style*: `build_pool_universe` and the labeling pipeline both flatten a Long event to a `(start, token)` pair, discarding hold length. So the training data itself has no LN-style dimension, and the RB gate is a fixed 800 ms. A source-LN-signal infrastructure (preserve `(start, end)` hold ticks; derive per-package LN statistics; drive a dynamic gate) is the prerequisite for both a per-song RB gate and any future LN-aware model.
+`build_pool_universe` and the labeling pipeline both flatten a Long event to a `(start, token)` pair, discarding hold length — so the ML training data has no LN-style dimension, and an LN-aware *model* still needs a labeling-pipeline change. The RB path is no longer blind: the SP gate is a corpus-anchored 350 ms with a per-window cap (§4.8), and the DP-LN pass (§8.8) reads the source's real LNs directly from the parsed events — bypassing the pool flattening — to mirror them, with a BPM-aware fallback for hold-poor sources. What remains open is the *model* side and a broader per-package LN-style statistic.
 
 ### 10.4 Resume API v1 scope
 
@@ -693,8 +705,9 @@ SCRATCH_RUSH_REST_MEASURES     = 4
 SCRATCH_FALLBACK_DURATION_MAX  = 300    # ms
 
 # LN
-LN_MIN_DURATION_MS             = 800
+LN_MIN_DURATION_MS             = 350
 LN_MAX_HOLD_TICKS              = 96     # 2-beat visible cap
+LN_LOCAL_RATIO                 = 0.08   # per-window LN cap (spread the budget)
 
 # Density rebalance
 DENSITY_REBALANCE_MAX_DELTA    ≈ 0.21
