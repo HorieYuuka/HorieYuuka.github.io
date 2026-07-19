@@ -718,6 +718,42 @@
     height: 1rem;
   }
 
+// Per-part NAS download buttons (Home). Each group issues a file-API grant
+// and then follows the returned one-time URL.
+.nas-dl {
+  margin: 0 0 0.5rem;
+}
+
+// Native <button> normalization so the Direct buttons render identically to
+// the Pixeldrain <a class="btn btn-blue"> links (native buttons don't inherit
+// font-family and carry UA chrome).
+.nas-dl button.btn {
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.nas-dl .btn {
+  margin: 0 0.3rem 0.5rem 0;
+}
+
+.nas-dl .btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.nas-dl-status {
+  color: #57606a;
+  margin: 0 0 0.75rem;
+  min-height: 1.2em;
+  font-size: 0.85em;
+}
+
+.nas-dl-status.is-error {
+  color: #b3261e;
+}
+
 // Phase 1Z-1G (2026-05-25): aside (list / scale / tag / sort) was removed
 // — chart navigation is 100% via the search modal. The container is now a
 // single full-width column.

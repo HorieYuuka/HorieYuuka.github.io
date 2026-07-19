@@ -71,6 +71,25 @@ DP
 
 [Torrent](https://drive.google.com/file/d/1--RsHVtdw-OZC91wiE2d3aKXK11Pn2H2/view?usp=drive_link){: .btn .btn-blue }
 
+**(2026-04-26)**
+
+Pixeldrain :
+
+[part1](https://pixeldrain.com/u/S8E1xAXJ){: .btn .btn-blue }
+[part2](https://pixeldrain.com/u/CVnuCRiF){: .btn .btn-blue }
+[part3](https://pixeldrain.com/u/kQjBSNoZ){: .btn .btn-blue }
+[part4](https://pixeldrain.com/u/Y3BJWLpQ){: .btn .btn-blue }
+
+Direct :
+
+<div class="nas-dl" data-nas-download data-nas-origin="https://horie.synology.me:8443">
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Stellaverse (2026-04-26).part1.rar">part1</button>
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Stellaverse (2026-04-26).part2.rar">part2</button>
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Stellaverse (2026-04-26).part3.rar">part3</button>
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Stellaverse (2026-04-26).part4.rar">part4</button>
+  <p class="nas-dl-status" data-nas-status></p>
+</div>
+
 ### Insane BMS (2025-12-14) : Full package (230 GB)
 
 #### Compatible with :
@@ -132,6 +151,27 @@ DP
 #### Download Links :
 
 [Torrent](https://drive.google.com/file/d/1Fn9raDo546GrH0gPW3Ogs3cQmqv_dYCY/view?usp=drive_link){: .btn .btn-blue }
+
+**(2026-04-26)**
+
+Pixeldrain :
+
+[part1](https://pixeldrain.com/u/isZTk55g){: .btn .btn-blue }
+[part2](https://pixeldrain.com/u/yJhDpZoo){: .btn .btn-blue }
+[part3](https://pixeldrain.com/u/TEw6RHFq){: .btn .btn-blue }
+[part4](https://pixeldrain.com/u/XQKmmW5r){: .btn .btn-blue }
+[part5](https://pixeldrain.com/u/UpkJ9aUa){: .btn .btn-blue }
+
+Direct :
+
+<div class="nas-dl" data-nas-download data-nas-origin="https://horie.synology.me:8443">
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Insane BMS (2026-04-26).part1.rar">part1</button>
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Insane BMS (2026-04-26).part2.rar">part2</button>
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Insane BMS (2026-04-26).part3.rar">part3</button>
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Insane BMS (2026-04-26).part4.rar">part4</button>
+  <button type="button" class="btn btn-blue" data-nas-file="Packages/Insane BMS (2026-04-26).part5.rar">part5</button>
+  <p class="nas-dl-status" data-nas-status></p>
+</div>
 
 ### Patch (2025-12-14 to 2026-04-26) : Patch for the previous distribution (10 GB)
 

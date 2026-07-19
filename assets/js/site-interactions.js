@@ -797,12 +797,113 @@
     loadPage(1);
   }
 
+  function initNasDownload(root) {
+    if (root.dataset.nasDownloadInitialized === "true") {
+      return;
+    }
+
+    const apiOrigin = root.dataset.nasOrigin || "";
+    const grantPathTemplate = root.dataset.nasGrantPathTemplate || "/api/v1/files/{id}/download-grants";
+    const status = root.querySelector("[data-nas-status]");
+    const buttons = Array.from(root.querySelectorAll("[data-nas-file]"));
+    if (!apiOrigin || !buttons.length) {
+      return;
+    }
+
+    let isDownloading = false;
+
+    const setStatus = (message, isError) => {
+      if (!status) {
+        return;
+      }
+      status.textContent = message || "";
+      status.classList.toggle("is-error", Boolean(isError));
+    };
+
+    // Same scheme the file API uses for folder listing ids: base64url(JSON({relativePath})).
+    const encodeFileId = (relativePath) => {
+      const b64 = btoa(unescape(encodeURIComponent(JSON.stringify({ relativePath }))));
+      return b64.replace(/=+$/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+    };
+
+    const startDownload = (button) => {
+      const relativePath = button.dataset.nasFile || "";
+      if (!relativePath || isDownloading) {
+        return;
+      }
+
+      const originalLabel = button.textContent;
+      isDownloading = true;
+      buttons.forEach((entry) => {
+        entry.disabled = true;
+      });
+      button.textContent = "Preparing...";
+      setStatus(`Preparing ${relativePath.split("/").pop()}...`, false);
+
+      const grantPath = grantPathTemplate.replace("{id}", encodeURIComponent(encodeFileId(relativePath)));
+      fetch(new URL(grantPath, apiOrigin).toString(), {
+        method: "POST",
+        credentials: "include",
+      })
+        .then(async (response) => {
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            if (response.status === 403) {
+              throw new Error("Download was blocked by the current origin or session policy.");
+            }
+            if (response.status === 404) {
+              throw new Error("This part is not available on the NAS right now. Use the Pixeldrain link instead.");
+            }
+            if (response.status === 429) {
+              throw new Error("Download quota reached for now. Try again later or use the Pixeldrain link.");
+            }
+            const errorMessage = typeof payload.error === "string" ? payload.error : "";
+            throw new Error(errorMessage || "Failed to prepare the download.");
+          }
+
+          if (!payload.downloadUrl) {
+            throw new Error("The server did not return a download URL.");
+          }
+
+          const link = document.createElement("a");
+          link.href = new URL(payload.downloadUrl, apiOrigin).toString();
+          link.style.display = "none";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          setStatus("Download started.", false);
+        })
+        .catch((error) => {
+          setStatus(error.message || "Failed to prepare the download.", true);
+          console.error(error);
+        })
+        .finally(() => {
+          isDownloading = false;
+          buttons.forEach((entry) => {
+            entry.disabled = false;
+          });
+          button.textContent = originalLabel;
+        });
+    };
+
+    root.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-nas-file]");
+      if (!(button instanceof HTMLElement) || !root.contains(button)) {
+        return;
+      }
+      startDownload(button);
+    });
+
+    root.dataset.nasDownloadInitialized = "true";
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-tab-control]").forEach(initTabs);
     document.querySelectorAll("table.sortable-table").forEach(initSortableTable);
     document.querySelectorAll("[data-scale-analyzer]").forEach(initScaleAnalyzer);
     document.querySelectorAll("[data-player-analyzer]").forEach(initPlayerAnalyzer);
     document.querySelectorAll("[data-archive-search]").forEach(initArchiveSearch);
+    document.querySelectorAll("[data-nas-download]").forEach(initNasDownload);
   });
 })();
 
