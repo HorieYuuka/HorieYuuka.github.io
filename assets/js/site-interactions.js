@@ -897,6 +897,146 @@
     root.dataset.nasDownloadInitialized = "true";
   }
 
+  // --- Scan report modal (Home package cards) ---------------------------
+  // Renders a scan report markdown file into a native <dialog>. Minimal GFM
+  // subset: headings, tables, lists (1-level nesting), blockquotes, bold, code.
+  function scanEscape(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function scanInline(s) {
+    s = scanEscape(s);
+    s = s.replace(/`([^`]+)`/g, (_m, c) => "<code>" + c + "</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    return s;
+  }
+
+  function scanSplitRow(line) {
+    return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim());
+  }
+
+  function scanBuildList(items) {
+    let out = "<ul>";
+    for (let k = 0; k < items.length; k++) {
+      const it = items[k];
+      if (it.indent === 0) {
+        out += "<li>" + scanInline(it.text);
+        let sub = "";
+        while (k + 1 < items.length && items[k + 1].indent > 0) {
+          sub += "<li>" + scanInline(items[k + 1].text) + "</li>";
+          k++;
+        }
+        if (sub) out += "<ul>" + sub + "</ul>";
+        out += "</li>";
+      } else {
+        out += "<li>" + scanInline(it.text) + "</li>";
+      }
+    }
+    return out + "</ul>";
+  }
+
+  function scanRender(md) {
+    const lines = md.replace(/\r\n?/g, "\n").split("\n");
+    let html = "";
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      if (/^\s*$/.test(line)) { i++; continue; }
+      const h = line.match(/^(#{1,6})\s+(.*)$/);
+      if (h) { html += "<h" + h[1].length + ">" + scanInline(h[2]) + "</h" + h[1].length + ">"; i++; continue; }
+      if (/^\s*\|/.test(line) && i + 1 < lines.length && /-/.test(lines[i + 1]) && /^\s*\|?[\s:|\-]+\|?\s*$/.test(lines[i + 1])) {
+        const header = scanSplitRow(line);
+        i += 2;
+        const rows = [];
+        while (i < lines.length && /^\s*\|/.test(lines[i])) { rows.push(scanSplitRow(lines[i])); i++; }
+        html += "<table><thead><tr>" + header.map((c) => "<th>" + scanInline(c) + "</th>").join("") +
+          "</tr></thead><tbody>" +
+          rows.map((r) => "<tr>" + r.map((c) => "<td>" + scanInline(c) + "</td>").join("") + "</tr>").join("") +
+          "</tbody></table>";
+        continue;
+      }
+      if (/^-{3,}\s*$/.test(line)) { html += "<hr>"; i++; continue; }
+      if (/^\s*>/.test(line)) {
+        const qb = [];
+        while (i < lines.length && /^\s*>/.test(lines[i])) { qb.push(lines[i].replace(/^\s*>\s?/, "")); i++; }
+        html += "<blockquote>" + scanInline(qb.join(" ")) + "</blockquote>";
+        continue;
+      }
+      if (/^(\s*)-\s+/.test(line)) {
+        const items = [];
+        while (i < lines.length && /^(\s*)-\s+/.test(lines[i])) {
+          const m = lines[i].match(/^(\s*)-\s+(.*)$/);
+          items.push({ indent: m[1].length, text: m[2] });
+          i++;
+        }
+        html += scanBuildList(items);
+        continue;
+      }
+      const pb = [];
+      while (i < lines.length && !/^\s*$/.test(lines[i]) && !/^(#{1,6})\s/.test(lines[i]) &&
+        !/^\s*\|/.test(lines[i]) && !/^\s*>/.test(lines[i]) && !/^(\s*)-\s+/.test(lines[i]) &&
+        !/^-{3,}\s*$/.test(lines[i])) { pb.push(lines[i]); i++; }
+      if (pb.length) html += "<p>" + scanInline(pb.join(" ")) + "</p>";
+    }
+    return html;
+  }
+
+  function initScanModals() {
+    const buttons = Array.from(document.querySelectorAll("[data-scan]"));
+    if (!buttons.length) {
+      return;
+    }
+
+    let dialog = null;
+    let titleEl = null;
+    let bodyEl = null;
+
+    const ensureDialog = () => {
+      if (dialog) {
+        return;
+      }
+      dialog = document.createElement("dialog");
+      dialog.className = "scan-modal";
+      dialog.innerHTML =
+        '<div class="scan-modal-bar"><span class="scan-modal-title"></span>' +
+        '<button type="button" class="scan-modal-close" aria-label="Close">✕</button></div>' +
+        '<div class="scan-modal-body"></div>';
+      document.body.appendChild(dialog);
+      titleEl = dialog.querySelector(".scan-modal-title");
+      bodyEl = dialog.querySelector(".scan-modal-body");
+      dialog.querySelector(".scan-modal-close").addEventListener("click", () => dialog.close());
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) {
+          dialog.close();
+        }
+      });
+    };
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const f = btn.dataset.scan || "";
+        if (!f || /[\\/]/.test(f) || f.indexOf("..") >= 0) {
+          return;
+        }
+        ensureDialog();
+        titleEl.textContent = f.replace(/\.md$/, "");
+        bodyEl.innerHTML = '<p class="scan-modal-status">Loading report&hellip;</p>';
+        if (typeof dialog.showModal === "function") {
+          dialog.showModal();
+        } else {
+          dialog.setAttribute("open", "");
+        }
+        fetch("/Resource/Scans/" + encodeURIComponent(f))
+          .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+          .then((md) => { bodyEl.innerHTML = scanRender(md); })
+          .catch((e) => {
+            bodyEl.innerHTML = '<p class="scan-modal-status is-error">Could not load report (' +
+              scanEscape(String(e.message || e)) + ").</p>";
+          });
+      });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("[data-tab-control]").forEach(initTabs);
     document.querySelectorAll("table.sortable-table").forEach(initSortableTable);
@@ -904,6 +1044,7 @@
     document.querySelectorAll("[data-player-analyzer]").forEach(initPlayerAnalyzer);
     document.querySelectorAll("[data-archive-search]").forEach(initArchiveSearch);
     document.querySelectorAll("[data-nas-download]").forEach(initNasDownload);
+    initScanModals();
   });
 })();
 

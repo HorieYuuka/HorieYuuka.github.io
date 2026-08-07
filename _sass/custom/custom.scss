@@ -754,6 +754,176 @@
   color: #b3261e;
 }
 
+// Collapsible package cards (Home). Collapsed = one scannable summary line
+// per package; expand for compatible tables + download buttons + scan report.
+.pkg {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  margin: 0.55rem 0;
+  background: #fff;
+}
+
+.pkg > summary {
+  cursor: pointer;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  list-style: none;
+  user-select: none;
+}
+
+.pkg > summary::-webkit-details-marker { display: none; }
+
+.pkg > summary::before {
+  content: "\25B8"; // ▸
+  color: #8c959f;
+  font-size: 0.85em;
+}
+
+.pkg[open] > summary::before { content: "\25BE"; } // ▾
+
+.pkg-title { font-weight: 600; }
+
+.pkg-sub { color: #57606a; font-size: 0.88em; }
+
+.pkg-tags { margin-left: auto; display: flex; gap: 0.3rem; align-items: center; }
+
+.pkg-badge {
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.08rem 0.42rem;
+  border-radius: 999px;
+}
+
+.pkg-badge.sp { background: #ddf4ff; color: #0969da; }
+.pkg-badge.dp { background: #dafbe1; color: #1a7f37; }
+
+.pkg-body {
+  padding: 0.2rem 0.85rem 0.85rem;
+  border-top: 1px solid #eaeef2;
+}
+
+.pkg-rel { margin: 0.75rem 0 0; }
+
+.pkg-rel-head {
+  font-weight: 600;
+  font-size: 0.9em;
+  margin: 0 0 0.35rem;
+}
+
+.pkg-rel-head .pkg-rel-size { color: #57606a; font-weight: 400; }
+
+.pkg-compat {
+  margin: 0.15rem 0 0.55rem;
+  font-size: 0.9em;
+  line-height: 1.9;
+}
+
+.pkg-compat .compat-side { color: #57606a; font-weight: 600; margin-right: 0.25rem; }
+
+.pkg-dl-sub { font-size: 0.85em; color: #57606a; margin: 0.35rem 0 0.15rem; }
+
+.pkg-scan {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+  font-family: inherit;
+  font-size: 0.9em;
+  color: #1a7f37;
+  text-decoration: none;
+  border: 1px solid #b7e0c0;
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+  background: #f0fbf3;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.pkg-scan:hover { text-decoration: underline; }
+
+// Scan report dialog modal (opened from a package card's scan button).
+.scan-modal {
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  width: 92vw;
+  max-width: 860px;
+  max-height: 86vh;
+  color: #1f2328;
+  background: #fff;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+
+.scan-modal::backdrop { background: rgba(0, 0, 0, 0.45); }
+
+.scan-modal-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #d0d7de;
+  background: #f6f8fa;
+}
+
+.scan-modal-title { font-weight: 600; }
+
+.scan-modal-close {
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: #57606a;
+  cursor: pointer;
+  padding: 0.2rem 0.3rem;
+}
+
+.scan-modal-close:hover { color: #1f2328; }
+
+.scan-modal-body {
+  padding: 1rem 1.25rem 1.6rem;
+  overflow-y: auto;
+  max-height: calc(86vh - 3.1rem);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.scan-modal-status { color: #57606a; padding: 1.5rem 0; }
+.scan-modal-status.is-error { color: #cf222e; }
+
+.scan-modal-body h1 { font-size: 1.4rem; margin: 0.1rem 0 0.9rem; padding-bottom: 0.3rem; border-bottom: 1px solid #d0d7de; }
+.scan-modal-body h2 { font-size: 1.1rem; margin: 1.4rem 0 0.5rem; }
+.scan-modal-body h3 { font-size: 1rem; margin: 1.1rem 0 0.4rem; }
+.scan-modal-body table { border-collapse: collapse; width: 100%; margin: 0.4rem 0 1rem; display: block; overflow-x: auto; }
+.scan-modal-body th, .scan-modal-body td { border: 1px solid #d0d7de; padding: 0.35rem 0.55rem; text-align: left; vertical-align: top; white-space: nowrap; }
+.scan-modal-body thead th { background: #f6f8fa; font-weight: 600; }
+.scan-modal-body td:nth-child(2) { white-space: normal; }
+.scan-modal-body ul { margin: 0.3rem 0 1rem; padding-left: 1.3rem; }
+.scan-modal-body li { margin: 0.12rem 0; }
+.scan-modal-body ul ul li { color: #57606a; font-size: 0.92em; }
+.scan-modal-body code { background: #eff1f3; padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.86em; white-space: nowrap; }
+.scan-modal-body blockquote { margin: 0.4rem 0 1rem; padding-left: 0.9rem; border-left: 3px solid #d0d7de; color: #6a737d; }
+.scan-modal-body p { margin: 0.5rem 0; }
+.scan-modal-body hr { border: 0; border-top: 1px solid #d0d7de; margin: 1.3rem 0; }
+
+.pkg-pending {
+  font-size: 0.9em;
+  color: #9a6700;
+  background: #fff8c5;
+  border: 1px solid #eac54f;
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+  display: inline-block;
+  margin-top: 0.3rem;
+}
+
 // Phase 1Z-1G (2026-05-25): aside (list / scale / tag / sort) was removed
 // — chart navigation is 100% via the search modal. The container is now a
 // single full-width column.
