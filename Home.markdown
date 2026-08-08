@@ -95,7 +95,7 @@ Click a package to expand its download links. <span class="label label-blue">SP<
 <div class="pkg-rel">
 <div class="pkg-rel-head">2026-08-07 <span class="pkg-rel-size">· 20.2 GB · 329 song folders</span></div>
 <div class="pkg-dl-sub">Direct</div>
-<div class="nas-dl" data-nas-download data-nas-origin="https://horie.synology.me:8443"><button type="button" class="btn btn-blue" data-nas-file="Packages/Patch (2026-04-26 to 2026-08-07).7z">Download (20.2 GB)</button><p class="nas-dl-status" data-nas-status></p></div>
+<div class="nas-dl" data-nas-download data-nas-origin="https://horie.synology.me:8443"><button type="button" class="btn btn-blue" data-nas-file="Packages/Patch (2026-04-26 to 2026-08-07).rar">Download (20.2 GB)</button><p class="nas-dl-status" data-nas-status></p></div>
 </div>
 <button type="button" class="pkg-scan" data-scan="Patch (2026-04-26 to 2026-08-07).md">&#128737; Virus / integrity scan &mdash; CLEAN</button>
 </div>
