@@ -1578,3 +1578,30 @@
   20%, 60% { transform: translateX(-4px); }
   40%, 80% { transform: translateX(4px); }
 }
+
+// Top-of-page service notice (Home)
+.service-notice {
+  margin: 0 0 2rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid #cf222e;
+  border-left-width: 8px;
+  border-radius: 6px;
+  background: #ffebe9;
+  color: #82071e;
+  font-size: 1rem;
+  line-height: 1.55;
+
+  p {
+    margin: 0 0 0.4rem;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  .service-notice-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+}

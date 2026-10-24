@@ -5,6 +5,12 @@ permalink: /
 nav_order: 1
 ---
 
+<div class="service-notice" role="alert">
+  <p class="service-notice-title">⚠ Service Notice — Server Offline</p>
+  <p>A service was found using a server I operate and manage without my permission. I'm taking the server offline for the time being.</p>
+  <p>My apologies to legitimate users for the inconvenience.</p>
+</div>
+
 # BMS Library
 
 ## Information
