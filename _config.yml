@@ -23,6 +23,7 @@ email: Horie.lunaticrave@gmail.com
 description: ""
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://horieyuuka.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+turnstile_sitekey: "0x4AAAAAAFk0SL1B-YJDe2U6" # public Cloudflare Turnstile site key; empty disables the check
 github_username: HorieYuuka
 repository: HorieYuuka/horieyuuka.github.io
 

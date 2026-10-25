@@ -3871,7 +3871,8 @@
     const grantUrl = apiBase.replace(/\/+$/, "") +
       "/api/v1/files/" + encodeURIComponent(fileId) + "/download-grants";
     try {
-      const resp = await fetch(grantUrl, {
+      const grantFetch = window.HYVisitorPass ? window.HYVisitorPass.fetchGrant : fetch;
+      const resp = await grantFetch(grantUrl, {
         method: "POST",
         credentials: "include",
         headers: { "Accept": "application/json" },

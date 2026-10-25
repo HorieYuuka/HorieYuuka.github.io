@@ -212,7 +212,9 @@ sitemap: false
 
 {% include chart-search-dialog.html %}
 
+<meta name="hy-turnstile-sitekey" content="{{ site.turnstile_sitekey }}">
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="{{ '/assets/js/visitor-pass.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/chart-renderer.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/chart-search.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/chart-preview-mobile.js' | relative_url }}"></script>

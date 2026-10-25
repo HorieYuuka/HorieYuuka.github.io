@@ -1,6 +1,12 @@
 (function () {
   "use strict";
 
+  const VISITOR_CHECK_FAILED_MESSAGE = "The browser check did not complete. Reload the page and try again.";
+
+  function grantFetch(url, init) {
+    return window.HYVisitorPass ? window.HYVisitorPass.fetchGrant(url, init) : fetch(url, init);
+  }
+
   function initTabs(root) {
     const buttons = Array.from(root.querySelectorAll("[data-tab-target]"));
     const panels = Array.from(root.querySelectorAll("[data-tab-panel]"));
@@ -723,7 +729,7 @@
 
       const grantPath = downloadGrantPathTemplate.replace("{id}", encodeURIComponent(fileId));
       const grantUrl = new URL(grantPath, apiOrigin);
-      fetch(grantUrl.toString(), {
+      grantFetch(grantUrl.toString(), {
         method: "POST",
         credentials: "include",
       })
@@ -731,6 +737,9 @@
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) {
             const errorMessage = typeof payload.error === "string" ? payload.error : "";
+            if (response.status === 401) {
+              throw new Error(VISITOR_CHECK_FAILED_MESSAGE);
+            }
             if (response.status === 403) {
               throw new Error("Download request was blocked by the current origin or session policy.");
             }
@@ -841,13 +850,16 @@
       setStatus(`Preparing ${relativePath.split("/").pop()}...`, false);
 
       const grantPath = grantPathTemplate.replace("{id}", encodeURIComponent(encodeFileId(relativePath)));
-      fetch(new URL(grantPath, apiOrigin).toString(), {
+      grantFetch(new URL(grantPath, apiOrigin).toString(), {
         method: "POST",
         credentials: "include",
       })
         .then(async (response) => {
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) {
+            if (response.status === 401) {
+              throw new Error(VISITOR_CHECK_FAILED_MESSAGE);
+            }
             if (response.status === 403) {
               throw new Error("Download was blocked by the current origin or session policy.");
             }
